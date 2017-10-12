@@ -110,7 +110,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1186883007261640}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.494, y: -0.332, z: 0}
+  m_LocalPosition: {x: 0.11, y: 0.3, z: 0}
   m_LocalScale: {x: 0.999998, y: 0.9999989, z: 0.99999803}
   m_Children: []
   m_Father: {fileID: 4655120214670008}
@@ -153,7 +153,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1528566446527500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.003, y: -0.293, z: 0}
+  m_LocalPosition: {x: 0, y: -0.293, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4655120214670008}
@@ -210,15 +210,16 @@ MonoBehaviour:
   myRB: {fileID: 50310238054895654}
   accVersionOn: 0
   accOnAir: 1
-  acceleration: 40
-  deacceleration: 40
+  acceleration: 50
+  deacceleration: 70
   MaxHorizontalSpeed: 14
-  gravity: 400
+  gravity: 360
   jumpForce: 30
   maxJumpSpeed: 25
   maxFallSpeed: -30
   maxTimeJumping: 0.3
   groundcheck1: {fileID: 4689949497463050}
+  groundcheck2: {fileID: 4321195290440798}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 4294967039

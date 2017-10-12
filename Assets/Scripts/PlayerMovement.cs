@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool accVersionOn;
     public bool accOnAir;
+    public bool stopJumpOnCollision;
     public float acceleration;
     public float deacceleration;
     public float MaxHorizontalSpeed;
@@ -34,10 +35,11 @@ public class PlayerMovement : MonoBehaviour
     public float maxTimeJumping;
 
     public Transform groundcheck1;
-    //public Transform groundcheck2;
+    public Transform groundcheck2;
     //float groundRadius = 0.2f;
     public LayerMask whatIsGround;
     private bool IsGrounded;
+    
 
 
 
@@ -176,6 +178,14 @@ public class PlayerMovement : MonoBehaviour
             IsGrounded = true;
         }
     }*/
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+
+        if(stopJumpOnCollision && jumping && (groundcheck2.position.y<=col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y))
+        {
+            jumping = false;
+        }
+    }
     private void OnCollisionExit2D(Collision2D col)
     {
         if (col.gameObject.tag == "ground")

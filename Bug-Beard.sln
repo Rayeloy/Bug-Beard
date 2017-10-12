@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bug-Beard", "Bug-Beard.csproj", "{392CDFF5-F114-CB30-C6F5-790841E9CDEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{392CDFF5-F114-CB30-C6F5-790841E9CDEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{392CDFF5-F114-CB30-C6F5-790841E9CDEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{392CDFF5-F114-CB30-C6F5-790841E9CDEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{392CDFF5-F114-CB30-C6F5-790841E9CDEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
