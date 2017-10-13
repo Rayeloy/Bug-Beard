@@ -509,6 +509,56 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
         type: 2}
+      propertyPath: jumpWithAcc
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: timeToReach
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: maxHeight
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: jumpWithHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: gtimesStop
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: shortHops
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: accOnAir
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: accVersionOn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: deacceleration
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: acceleration
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
       propertyPath: stopJumpOnCollision
       value: 1
       objectReference: {fileID: 0}
