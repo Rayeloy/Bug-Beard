@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
     public float timeToReach;//hay que darlo
     private float gravity;//se calcula solo
     private bool jumpingStopped;
-    private jumpphase phase;
+    public jumpphase phase;
     public float gtimesStop;
     private float initialHeight;
     private float lastSpeedY;
@@ -57,10 +57,12 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask whatIsGround;
     private bool IsGrounded;
 
+    public PlayerSlash pSlash;
 
     public enum jumpphase
     {
         none,
+        normal,
         rise,
         stop,
         fall
@@ -76,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         deAccDir = 0;
         jumping = false;
         jumpingStopped = false;
-        phase = jumpphase.none;
+        phase = jumpphase.normal;
         gravity = (-2 * maxHeight) / Mathf.Pow(timeToReach, 2); Debug.Log("la gravedad es de " + gravity);
         initialHeight = 0;
         newOcurrence = true;
@@ -106,10 +108,10 @@ public class PlayerMovement : MonoBehaviour
     {
         v = Input.GetAxisRaw(axis);
         //Orientación del transform(sprite)
-        if (myRB.velocity.x > 0 && v>0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
+        if (myRB.velocity.x > 0 && v > 0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
         else
         {
-            if (myRB.velocity.x < 0 && v<0) spriteTransf.rotation = Quaternion.identity;
+            if (myRB.velocity.x < 0 && v < 0) spriteTransf.rotation = Quaternion.identity;
         }
 
         if (accVersionOn || (accOnAir && !IsGrounded))
@@ -171,11 +173,19 @@ public class PlayerMovement : MonoBehaviour
             myRB.velocity = new Vector2(1 * HorzSpeed, myRB.velocity.y);
         }
         else
-            myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
-
+        {
+            //this is to let the slash mechanic move the character
+            if ((v != 0 && pSlash.stopOnMove) || (pSlash.stopOnGround && pSlash.slashing && IsGrounded && pSlash.timeSlashing > 0.1))//if we detect some movement
+            {
+                pSlash.StopSlash();
+            }
+            if (!pSlash.slashing)
+                myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
+        }
     }
     void gravityFalls()
     {
+        Debug.Log("EN FASE "+phase.ToString());
         if (!IsGrounded)//------------------- LA GRAVEDAD NO PERDONA ---------------------------------
         {
             if (newOcurrence)
@@ -188,6 +198,9 @@ public class PlayerMovement : MonoBehaviour
                 switch (phase)
                 {
                     case jumpphase.none:
+                        gravityAct = 0;
+                        break;
+                    case jumpphase.normal:
                         gravityAct = gravity;
                         break;
                     case jumpphase.rise:
@@ -195,10 +208,10 @@ public class PlayerMovement : MonoBehaviour
                         break;
                     case jumpphase.stop:
                         gravityAct = gravity * gtimesStop;
-                       // if((transform.position.y - initialHeight < maxHeight/4))
+                        // if((transform.position.y - initialHeight < maxHeight/4))
                         break;
                     case jumpphase.fall:
-                        gravityAct = gravity*gtimesStop/2;
+                        gravityAct = gravity * gtimesStop / 2;
                         break;
                 }
             }
@@ -217,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 fallSpeed = maxFallSpeed;
             }
-            if(shortHops && phase==jumpphase.stop && (transform.position.y - initialHeight < maxHeight / 2))//CASO ESPECIAL PARA DAR SHORT HOPS
+            if (shortHops && phase == jumpphase.stop && (transform.position.y - initialHeight < maxHeight / 2))//CASO ESPECIAL PARA DAR SHORT HOPS
             {
                 Debug.Log("CASO ESPECIAL");
                 fallSpeed = 0;
@@ -289,7 +302,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (phase == jumpphase.fall && IsGrounded)
         {
-            phase = jumpphase.none;
+            phase = jumpphase.normal;
             newOcurrence = true;
         }
 
@@ -304,10 +317,14 @@ public class PlayerMovement : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D col)
     {
 
-        if (stopJumpOnCollision && (jumping || phase == jumpphase.rise) && (groundcheck2.position.y <= col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y))
+        if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop) && (groundcheck2.position.y <= col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y))
         {
             jumping = false;
             phase = jumpphase.fall;
+        }
+        if (pSlash.slashing)
+        {
+            pSlash.StopSlash();
         }
     }
     private void OnCollisionExit2D(Collision2D col)
