@@ -43,11 +43,9 @@ public class PlayerMovement : MonoBehaviour
     public float maxHeight;//hay que darlo
     public float timeToReach;//hay que darlo
     private float gravity;//se calcula solo
-    private bool jumpingStopped;
     public jumpphase phase;
     public float gtimesStop;
     private float initialHeight;
-    private float lastSpeedY;
     private bool newOcurrence;
 
 
@@ -77,7 +75,6 @@ public class PlayerMovement : MonoBehaviour
         HorzSpeed = 0;
         deAccDir = 0;
         jumping = false;
-        jumpingStopped = false;
         phase = jumpphase.normal;
         gravity = (-2 * maxHeight) / Mathf.Pow(timeToReach, 2); Debug.Log("la gravedad es de " + gravity);
         initialHeight = 0;
@@ -175,11 +172,12 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             //this is to let the slash mechanic move the character
-            if ((v != 0 && pSlash.stopOnMove) || (pSlash.stopOnGround && pSlash.slashing && IsGrounded && pSlash.timeSlashing > 0.1))//if we detect some movement
+            if ((v != 0 && pSlash.stopOnMove && pSlash.slashSt==PlayerSlash.SlashState.slashing) || 
+                (pSlash.stopOnGround && pSlash.slashSt==PlayerSlash.SlashState.slashing && IsGrounded && pSlash.timeSlashing > 0.1))//if we detect some movement
             {
                 pSlash.StopSlash();
             }
-            if (!pSlash.slashing)
+            if (pSlash.slashSt!=PlayerSlash.SlashState.slashing)
                 myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
         }
     }
@@ -191,7 +189,6 @@ public class PlayerMovement : MonoBehaviour
             if (newOcurrence)
             {
                 newOcurrence = false;
-                lastSpeedY = myRB.velocity.y;
             }
             if (jumpWithHeight)
             {
@@ -322,7 +319,7 @@ public class PlayerMovement : MonoBehaviour
             jumping = false;
             phase = jumpphase.fall;
         }
-        if (pSlash.slashing)
+        if (pSlash.slashSt == PlayerSlash.SlashState.slashing)
         {
             pSlash.StopSlash();
         }

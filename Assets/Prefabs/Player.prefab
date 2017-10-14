@@ -369,12 +369,13 @@ MonoBehaviour:
   gravityOn: 1
   stopOnMove: 1
   InitialSpeed: 30
+  cdTime: 4
   MaxTimeSlashing: 0.5
   camera: {fileID: 0}
   myRB: {fileID: 50310238054895654}
   playerM: {fileID: 114111340313332842}
   timeSlashing: 0
-  slashing: 0
+  slashSt: 0
 --- !u!114 &114942935569062598
 MonoBehaviour:
   m_ObjectHideFlags: 1
