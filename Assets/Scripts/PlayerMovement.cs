@@ -106,10 +106,10 @@ public class PlayerMovement : MonoBehaviour
     {
         v = Input.GetAxisRaw(axis);
         //Orientación del transform(sprite)
-        if (myRB.velocity.x > 0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
+        if (myRB.velocity.x > 0 && v>0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
         else
         {
-            if (myRB.velocity.x < 0) spriteTransf.rotation = Quaternion.identity;
+            if (myRB.velocity.x < 0 && v<0) spriteTransf.rotation = Quaternion.identity;
         }
 
         if (accVersionOn || (accOnAir && !IsGrounded))
