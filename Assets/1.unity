@@ -154,6 +154,16 @@ Prefab:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 86cccdfb58e33814097619d61110045c, type: 2}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayerID
+      value: 2070550741
+      objectReference: {fileID: 0}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b1603db0b0c56bb4ab085352da5e2d1c, type: 2}
   m_IsPrefabParent: 0
@@ -205,6 +215,16 @@ Prefab:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 86cccdfb58e33814097619d61110045c, type: 2}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayerID
+      value: 2070550741
+      objectReference: {fileID: 0}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b1603db0b0c56bb4ab085352da5e2d1c, type: 2}
   m_IsPrefabParent: 0
@@ -252,6 +272,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114473014263933748, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 1716308125}
     - target: {fileID: 114942935569062598, guid: 30aa4899019bd1d4ba1d81005994ba88,
         type: 2}
       propertyPath: camera
@@ -308,6 +333,16 @@ Prefab:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 86cccdfb58e33814097619d61110045c, type: 2}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayerID
+      value: 2070550741
+      objectReference: {fileID: 0}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b1603db0b0c56bb4ab085352da5e2d1c, type: 2}
   m_IsPrefabParent: 0
@@ -359,6 +394,16 @@ Prefab:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 86cccdfb58e33814097619d61110045c, type: 2}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayerID
+      value: 2070550741
+      objectReference: {fileID: 0}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b1603db0b0c56bb4ab085352da5e2d1c, type: 2}
   m_IsPrefabParent: 0
@@ -410,6 +455,16 @@ Prefab:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 86cccdfb58e33814097619d61110045c, type: 2}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayerID
+      value: 2070550741
+      objectReference: {fileID: 0}
+    - target: {fileID: 212282679969961572, guid: b1603db0b0c56bb4ab085352da5e2d1c,
+        type: 2}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b1603db0b0c56bb4ab085352da5e2d1c, type: 2}
   m_IsPrefabParent: 0
@@ -474,7 +529,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

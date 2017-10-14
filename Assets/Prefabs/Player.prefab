@@ -84,6 +84,7 @@ GameObject:
   - component: {fileID: 70435103192552846}
   - component: {fileID: 50310238054895654}
   - component: {fileID: 114111340313332842}
+  - component: {fileID: 114473014263933748}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -187,7 +188,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1266553704032388}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.589438, z: -9.030109}
+  m_LocalPosition: {x: 0, y: 3.95, z: -9.030109}
   m_LocalScale: {x: 0.7413524, y: 2.4200354, z: 0.90301096}
   m_Children: []
   m_Father: {fileID: 4655120214670008}
@@ -256,7 +257,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1980992647870296}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.60187685, w: 0.79858893}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8219984, y: 0.8219985, z: 0.8219988}
   m_Children:
@@ -331,7 +332,7 @@ MonoBehaviour:
   accVersionOn: 0
   accOnAir: 0
   stopJumpOnCollision: 1
-  jumpWithAcc: 1
+  jumpWithAcc: 0
   acceleration: 70
   deacceleration: 90
   MaxHorizontalSpeed: 20
@@ -345,12 +346,35 @@ MonoBehaviour:
   shortHops: 1
   maxHeight: 5
   timeToReach: 0.4
+  phase: 0
   gtimesStop: 2
   groundcheck1: {fileID: 4689949497463050}
   groundcheck2: {fileID: 4321195290440798}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 4294967039
+  pSlash: {fileID: 114473014263933748}
+--- !u!114 &114473014263933748
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1318990619047536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa08c42c825cf3f4c932e6818106c686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stopOnGround: 1
+  gravityOn: 1
+  stopOnMove: 1
+  InitialSpeed: 30
+  MaxTimeSlashing: 0.5
+  camera: {fileID: 0}
+  myRB: {fileID: 50310238054895654}
+  playerM: {fileID: 114111340313332842}
+  timeSlashing: 0
+  slashing: 0
 --- !u!114 &114942935569062598
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -396,7 +420,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 39426f7646aeaee43ba62c15214e659e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -438,7 +462,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300002, guid: 39426f7646aeaee43ba62c15214e659e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -480,7 +504,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b058986d2c4ea164caa96f61687faafb, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

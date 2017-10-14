@@ -20,7 +20,6 @@ public class Pointer : MonoBehaviour {
 
         //Grab the current mouse position on the screen
         mousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z - camera.transform.position.z));
-        Debug.Log("Mouse Position =" + mousePosition);
 
         //Rotates toward the mouse
         transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2((mousePosition.y - transform.position.y), (mousePosition.x - transform.position.x)) * Mathf.Rad2Deg + 90);
