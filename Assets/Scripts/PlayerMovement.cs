@@ -133,10 +133,7 @@ public class PlayerMovement : MonoBehaviour
 
                         HorzSpeed = Mathf.Clamp(HorzSpeed + finalAcc * v * Time.deltaTime, -MaxHorizontalSpeed, MaxHorizontalSpeed);
 
-                    }/*else if(HorzSpeed >= MaxHorizontalSpeed)
-            {
-                HorzSpeed=MaxHorizontalSpeed;
-            }*/
+                    }
                 }
                 else if (myRB.velocity.x != 0)//no hay input
                 {
@@ -309,13 +306,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-    /*private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "ground" && col.gameObject.transform.position.y <= groundcheck1.position.y)
-        {
-            IsGrounded = true;
-        }
-    }*/
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == "crystal" && pSlash.slashSt == PlayerSlash.SlashState.slashing)
@@ -348,19 +338,11 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnCollisionStay2D(Collision2D col)
     {
-        //distToGround = col.collider.bounds.extents.y;
         float top = (col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y);
         float feet = groundcheck1.position.y;//(transform.position.y - GetComponent<SpriteRenderer>().bounds.extents.y);
         if (col.gameObject.tag == "ground" && top <= feet)
         {
             IsGrounded = true;
-            //Debug.Log("Dist a ground= " + distToGround);
         }
-        //Debug.Log("Grounded = " + IsGrounded+"; top= "+top+" y feet = "+feet);
     }
-    /*bool IsGrounded()
-    {
-        Debug.Log("Im grounded= " + Physics2D.OverlapArea(groundcheck1.position, groundcheck2.position, whatIsGround));
-        return Physics2D.OverlapArea(groundcheck1.position, groundcheck2.position, whatIsGround);
-    }*/
 }
