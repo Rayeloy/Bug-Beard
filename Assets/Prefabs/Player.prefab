@@ -365,12 +365,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa08c42c825cf3f4c932e6818106c686, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stopOnGround: 1
+  stopOnGround: 0
   gravityOn: 1
-  stopOnMove: 1
-  InitialSpeed: 30
-  cdTime: 4
-  MaxTimeSlashing: 0.5
+  stopOnMove: 0
+  InitialSpeed: 40
+  cdTime: 1
+  MaxTimeSlashing: 1
   camera: {fileID: 0}
   myRB: {fileID: 50310238054895654}
   playerM: {fileID: 114111340313332842}

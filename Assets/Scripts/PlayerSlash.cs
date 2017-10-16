@@ -65,7 +65,7 @@ public class PlayerSlash : MonoBehaviour
 void Update()
 {
     mousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z - camera.transform.position.z));
-    if (Input.GetButtonDown("Slash") && slashSt==SlashState.ready)
+    if (Input.GetButtonDown("Slash") && (slashSt==SlashState.ready||slashSt==SlashState.crystal))
     {
             Debug.Log("SLASH!");
         slash();
@@ -82,6 +82,7 @@ void slash()
     slashSt = SlashState.slashing;
     timeSlashing = 0;
     myPos = transform.position;
+        Debug.Log("SLASHING STATE= "+slashSt);
     Debug.Log("myPos=" + myPos.x + ", " + myPos.y);
     //Vector2 vel = DecomposeSpeed(InitialSpeed, mousePosition, myPos);
     Vector2 vel = new Vector2((mousePosition.x - myPos.x), (mousePosition.y - myPos.y)).normalized;

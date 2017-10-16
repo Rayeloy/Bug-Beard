@@ -103,87 +103,92 @@ public class PlayerMovement : MonoBehaviour
     }
     void HorizontalMovement()
     {
-        v = Input.GetAxisRaw(axis);
-        //Orientación del transform(sprite)
-        if (myRB.velocity.x > 0 && v > 0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
-        else
+        if (pSlash.slashSt != PlayerSlash.SlashState.crystal)
         {
-            if (myRB.velocity.x < 0 && v < 0) spriteTransf.rotation = Quaternion.identity;
-        }
-
-        if (accVersionOn || (accOnAir && !IsGrounded))
-        {
-            HorzSpeed = myRB.velocity.x;
-            if (v != 0)//si hay input de movimiento
+            Debug.Log("SLASHING STATE= " + pSlash.slashSt);
+            v = Input.GetAxisRaw(axis);
+            //Orientación del transform(sprite)
+            if (myRB.velocity.x > 0 && v > 0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
+            else
             {
+                if (myRB.velocity.x < 0 && v < 0) spriteTransf.rotation = Quaternion.identity;
+            }
 
-                if (Mathf.Abs(HorzSpeed) < MaxHorizontalSpeed)
+            if (accVersionOn || (accOnAir && !IsGrounded))
+            {
+                HorzSpeed = myRB.velocity.x;
+                if (v != 0)//si hay input de movimiento
                 {
-                    if (Mathf.Sign(HorzSpeed) != Mathf.Sign(v))
-                    {
-                        finalAcc = deacceleration + acceleration / 2;
-                    }
-                    else
-                    {
-                        finalAcc = acceleration;
-                    }
 
-                    HorzSpeed = Mathf.Clamp(HorzSpeed + finalAcc * v * Time.deltaTime, -MaxHorizontalSpeed, MaxHorizontalSpeed);
+                    if (Mathf.Abs(HorzSpeed) < MaxHorizontalSpeed)
+                    {
+                        if (Mathf.Sign(HorzSpeed) != Mathf.Sign(v))
+                        {
+                            finalAcc = deacceleration + acceleration / 2;
+                        }
+                        else
+                        {
+                            finalAcc = acceleration;
+                        }
 
-                }/*else if(HorzSpeed >= MaxHorizontalSpeed)
+                        HorzSpeed = Mathf.Clamp(HorzSpeed + finalAcc * v * Time.deltaTime, -MaxHorizontalSpeed, MaxHorizontalSpeed);
+
+                    }/*else if(HorzSpeed >= MaxHorizontalSpeed)
             {
                 HorzSpeed=MaxHorizontalSpeed;
             }*/
+                }
+                else if (myRB.velocity.x != 0)//no hay input
+                {
+                    if (HorzSpeed > 0)
+                    {
+                        HorzSpeed -= deacceleration * Time.deltaTime;
+                        deAccDir = 1;
+                    }
+                    else if (HorzSpeed < 0)
+                    {
+                        HorzSpeed += deacceleration * Time.deltaTime;
+                        deAccDir = -1;
+                    }
+                    else
+                    {
+                        deAccDir = 0;
+                    }
+
+                    switch (deAccDir)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            HorzSpeed = Mathf.Clamp(HorzSpeed, 0, MaxHorizontalSpeed);
+                            break;
+                        case -1:
+                            HorzSpeed = Mathf.Clamp(HorzSpeed, -MaxHorizontalSpeed, 0);
+                            break;
+
+                    }
+                }
+
+                //finalmente actualizamos la velocidad
+                myRB.velocity = new Vector2(1 * HorzSpeed, myRB.velocity.y);
             }
-            else if (myRB.velocity.x != 0)//no hay input
+
+            else
             {
-                if (HorzSpeed > 0)
+                //this is to let the slash mechanic move the character
+                if ((v != 0 && pSlash.stopOnMove && pSlash.slashSt == PlayerSlash.SlashState.slashing) ||
+                    (pSlash.stopOnGround && pSlash.slashSt == PlayerSlash.SlashState.slashing && IsGrounded && pSlash.timeSlashing > 0.1))//if we detect some movement
                 {
-                    HorzSpeed -= deacceleration * Time.deltaTime;
-                    deAccDir = 1;
+                    pSlash.StopSlash();
                 }
-                else if (HorzSpeed < 0)
-                {
-                    HorzSpeed += deacceleration * Time.deltaTime;
-                    deAccDir = -1;
-                }
-                else
-                {
-                    deAccDir = 0;
-                }
-
-                switch (deAccDir)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        HorzSpeed = Mathf.Clamp(HorzSpeed, 0, MaxHorizontalSpeed);
-                        break;
-                    case -1:
-                        HorzSpeed = Mathf.Clamp(HorzSpeed, -MaxHorizontalSpeed, 0);
-                        break;
-
-                }
+                if (pSlash.slashSt != PlayerSlash.SlashState.slashing)
+                    myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
             }
-
-            //finalmente actualizamos la velocidad
-            myRB.velocity = new Vector2(1 * HorzSpeed, myRB.velocity.y);
-        }
-        else
-        {
-            //this is to let the slash mechanic move the character
-            if ((v != 0 && pSlash.stopOnMove && pSlash.slashSt==PlayerSlash.SlashState.slashing) || 
-                (pSlash.stopOnGround && pSlash.slashSt==PlayerSlash.SlashState.slashing && IsGrounded && pSlash.timeSlashing > 0.1))//if we detect some movement
-            {
-                pSlash.StopSlash();
-            }
-            if (pSlash.slashSt!=PlayerSlash.SlashState.slashing)
-                myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
         }
     }
     void gravityFalls()
     {
-        Debug.Log("EN FASE "+phase.ToString());
+        Debug.Log("EN FASE " + phase.ToString());
         if (!IsGrounded)//------------------- LA GRAVEDAD NO PERDONA ---------------------------------
         {
             if (newOcurrence)
@@ -311,9 +316,18 @@ public class PlayerMovement : MonoBehaviour
             IsGrounded = true;
         }
     }*/
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "crystal" && pSlash.slashSt == PlayerSlash.SlashState.slashing)
+        {
+            phase = jumpphase.none;
+            pSlash.slashSt = PlayerSlash.SlashState.crystal;
+            myRB.velocity = Vector2.zero;
+            transform.position = col.gameObject.transform.GetChild(0).transform.position;
+        }
+    }
     private void OnCollisionEnter2D(Collision2D col)
     {
-
         if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop) && (groundcheck2.position.y <= col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y))
         {
             jumping = false;
