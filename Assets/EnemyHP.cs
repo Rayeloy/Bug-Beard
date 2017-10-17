@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GroundCheck : MonoBehaviour {
+public class EnemyHP : MonoBehaviour {
+
+    public float HP;
+    public float damage;
 
 	// Use this for initialization
 	void Start () {

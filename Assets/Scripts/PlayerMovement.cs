@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     public jumpphase phase;
     public float gtimesStop;
     private float initialHeight;
-    private bool newOcurrence;
+    //private bool newOcurrence;
 
 
     public Transform groundcheck1;
@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         phase = jumpphase.normal;
         gravity = (-2 * maxHeight) / Mathf.Pow(timeToReach, 2); Debug.Log("la gravedad es de " + gravity);
         initialHeight = 0;
-        newOcurrence = true;
+        //newOcurrence = true;
     }
     private void Start()
     {
@@ -188,10 +188,10 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("EN FASE " + phase.ToString());
         if (!IsGrounded)//------------------- LA GRAVEDAD NO PERDONA ---------------------------------
         {
-            if (newOcurrence)
+            /*if (newOcurrence)
             {
                 newOcurrence = false;
-            }
+            }*/
             if (jumpWithHeight)
             {
                 switch (phase)
@@ -302,7 +302,7 @@ public class PlayerMovement : MonoBehaviour
         if (phase == jumpphase.fall && IsGrounded)
         {
             phase = jumpphase.normal;
-            newOcurrence = true;
+            //newOcurrence = true;
         }
 
     }

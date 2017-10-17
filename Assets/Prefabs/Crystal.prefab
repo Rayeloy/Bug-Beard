@@ -36,7 +36,6 @@ GameObject:
   - component: {fileID: 4511740379113294}
   - component: {fileID: 212921337789703102}
   - component: {fileID: 58341326118928610}
-  - component: {fileID: 114715496989200660}
   m_Layer: 0
   m_Name: Crystal
   m_TagString: crystal
@@ -63,8 +62,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1419521429672124}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.3, y: 1.72, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 6.3, y: 1.72, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4016331432386536}
@@ -86,17 +85,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.46
---- !u!114 &114715496989200660
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1419521429672124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 887c2df547c09e846977e89cc0181574, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &212921337789703102
 SpriteRenderer:
   m_ObjectHideFlags: 1
