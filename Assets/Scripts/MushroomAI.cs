@@ -53,12 +53,15 @@ public class MushroomAI : MonoBehaviour {
         if (myRB.velocity.y > maxFallSpeed)
         {
             fallSpeed = myRB.velocity.y + (gravity * Time.deltaTime);
+            Debug.Log("++++++++++++++++++++++++++++++++++++++++GRAVEDAD A: fallSpeed=" + fallSpeed);
         }
         else
         {
             fallSpeed = maxFallSpeed;
+            Debug.Log("++++++++++++++++++++++++++++++++++++++++GRAVEDAD B: fallSpeed=" + fallSpeed);
         }
         fallSpeed = Mathf.Clamp(fallSpeed, maxFallSpeed, 10000);//poner valores grandes que no opriman la parabola
+        Debug.Log("++++++++++++++++++++++++++++++++++++++++GRAVEDAD C: fallSpeed=" + fallSpeed);
         myRB.velocity = new Vector2(myRB.velocity.x, fallSpeed);
     }
 
@@ -71,7 +74,7 @@ public class MushroomAI : MonoBehaviour {
                 {
                     if (sprite.flipX)
                         sprite.flipX = false;
-                    myRB.velocity = new Vector2(speed, 0);
+                    myRB.velocity = new Vector2(speed, myRB.velocity.y);
                 }
                 break;
             case mushroomState.wLeft:
@@ -79,7 +82,7 @@ public class MushroomAI : MonoBehaviour {
                 {
                     if(!sprite.flipX)
                     sprite.flipX = true;
-                    myRB.velocity = new Vector2(-speed, 0);
+                    myRB.velocity = new Vector2(-speed, myRB.velocity.y);
                 }
                 break;
         }

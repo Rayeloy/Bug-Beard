@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerHP : MonoBehaviour {
 
+    public static PlayerHP instance;
     public float HitPoints;
     public float MaxInmunityTime;
     private float InmTime;
@@ -13,6 +14,7 @@ public class PlayerHP : MonoBehaviour {
     {
         InmTime = 0;
         Inmune = false;
+        instance = this;
     }
 
     private void Update()
@@ -32,13 +34,25 @@ public class PlayerHP : MonoBehaviour {
             GameController.instance.GameOver();
         }
     }
-    private void OnCollisionEnter2D(Collision2D col)
+
+    public void TakeDamage(float damage)
     {
-        if (col.gameObject.tag == "enemy" && !Inmune)
+        if (!Inmune)
         {
-            HitPoints -= col.gameObject.GetComponent<EnemyHP>().damage;
+            HitPoints -= damage;
+            GameController.instance.updateHUD();
             Debug.Log("HP= " + HitPoints);
             Inmunidad();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "enemy")
+        {
+            GameObject hitBox = GameController.instance.GetChild(col.gameObject, "hitBox");
+            Debug.Log("-------------------------hitBox= " + hitBox);
+            TakeDamage(hitBox.GetComponent<EnemyHP>().damage);
         }
     }
     void Inmunidad()

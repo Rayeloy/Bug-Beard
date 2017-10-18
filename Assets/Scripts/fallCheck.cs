@@ -16,16 +16,19 @@ public class fallCheck : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        stillInside -= 1;
-        if (col.gameObject.tag == "ground" && stillInside == 0)
+        if (col.gameObject.tag == "ground")
         {
-            if (soyDcha)
+            stillInside -= 1;
+            if (stillInside == 0)
             {
-                mAI.mState = MushroomAI.mushroomState.wLeft;
-            }
-            else
-            {
-                mAI.mState = MushroomAI.mushroomState.wRight;
+                if (soyDcha)
+                {
+                    mAI.mState = MushroomAI.mushroomState.wLeft;
+                }
+                else
+                {
+                    mAI.mState = MushroomAI.mushroomState.wRight;
+                }
             }
         }
     }

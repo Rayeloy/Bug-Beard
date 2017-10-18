@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerSlash : MonoBehaviour
 {
-
+    public static PlayerSlash instance;
+    
     public bool stopOnGround;
     public bool gravityOn;
     public bool stopOnMove;
@@ -16,6 +17,7 @@ public class PlayerSlash : MonoBehaviour
     public float cdTime;
     private float cd;
     public float MaxDistSlash;
+    public float slashDamage;
     //public float MaxTimeSlashing;
     public new Camera camera;
     public Rigidbody2D myRB;
@@ -38,6 +40,7 @@ public class PlayerSlash : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         slashSt = SlashState.ready;
         slashDist = 0;
         timeSlashing = 0;
@@ -95,7 +98,6 @@ public class PlayerSlash : MonoBehaviour
         slashSt = SlashState.slashing;
         timeSlashing = 0;
         myPos = transform.position;
-        Debug.Log("SLASHING STATE= " + slashSt);
         //Debug.Log("myPos=" + myPos.x + ", " + myPos.y);
         //Vector2 vel = DecomposeSpeed(InitialSpeed, mousePosition, myPos);
         Vector2 vel = new Vector2((mousePosition.x - myPos.x), (mousePosition.y - myPos.y)).normalized;
@@ -103,7 +105,17 @@ public class PlayerSlash : MonoBehaviour
         //myRB.velocity = new Vector2(80f, 20f);
         //Debug.Log("mouse pos=" + mousePosition.x + ", " + mousePosition.y + "; vx=" + vel.x + ";vy=" + vel.y);
     }
+    /*private void OnCollisionEnter2D(Collision2D col)
+    {
+        Debug.Log("PUTA "+col.gameObject.tag+": "+ (col.gameObject.tag == "hitBox")+" && "+ (slashSt == SlashState.slashing));
 
+        if (col.gameObject.tag == "hitBox" && slashSt==SlashState.slashing)
+        {
+            Debug.Log("PUTA MADRE");
+            StopSlash();
+            col.gameObject.transform.GetChild(0).GetComponent<EnemyHP>().HP -= slashDamage;
+        }
+    }*/
     public void StopSlash()
     {
         if (abruptEnd)

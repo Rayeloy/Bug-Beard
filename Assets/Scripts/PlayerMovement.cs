@@ -103,9 +103,9 @@ public class PlayerMovement : MonoBehaviour
     }
     void HorizontalMovement()
     {
+        Debug.Log("SLASHING STATE= " + pSlash.slashSt);
         if (pSlash.slashSt != PlayerSlash.SlashState.crystal)
         {
-            Debug.Log("SLASHING STATE= " + pSlash.slashSt);
             v = Input.GetAxisRaw(axis);
             //Orientación del transform(sprite)
             if (myRB.velocity.x > 0 && v > 0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
@@ -279,7 +279,6 @@ public class PlayerMovement : MonoBehaviour
         {
             phase = jumpphase.rise;
             jumpingTime = 0;
-            Debug.Log("comenzamos salto; jumping= " + phase.ToString());
             initialHeight = transform.position.y;
             myRB.velocity = new Vector2(myRB.velocity.x, 2 * maxHeight / timeToReach);
         }
@@ -288,12 +287,10 @@ public class PlayerMovement : MonoBehaviour
             jumpingTime += Time.deltaTime;
             if (jumpingTime >= timeToReach)
                 phase = jumpphase.fall;
-            Debug.Log("saltando...; jumping= " + phase.ToString());
         }
         if (Input.GetButtonUp("Jump") && phase == jumpphase.rise)//no podemos seguir aumentando el salto al soltar el boton
         {
             phase = jumpphase.stop;
-            Debug.Log("salto terminado; jumping= " + phase.ToString());
         }
         if (phase == jumpphase.stop && (myRB.velocity.y <= 0))
         {
@@ -313,19 +310,24 @@ public class PlayerMovement : MonoBehaviour
             phase = jumpphase.none;
             pSlash.slashSt = PlayerSlash.SlashState.crystal;
             myRB.velocity = Vector2.zero;
-            transform.position = col.gameObject.transform.GetChild(0).transform.position;
+            GameObject crystalPos = GameController.instance.GetChild(col.gameObject, "playerPos");
+            transform.position = crystalPos.transform.position;
         }
     }
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop) && (groundcheck2.position.y <= col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y))
+        if (col.gameObject.tag == "ground")
         {
-            jumping = false;
-            phase = jumpphase.fall;
-        }
-        if (pSlash.slashSt == PlayerSlash.SlashState.slashing)
-        {
-            pSlash.StopSlash();
+            if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop) &&
+                (groundcheck2.position.y <= col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y))
+            {
+                jumping = false;
+                phase = jumpphase.fall;
+            }
+            if (pSlash.slashSt == PlayerSlash.SlashState.slashing)
+            {
+                pSlash.StopSlash();
+            }
         }
     }
     private void OnCollisionExit2D(Collision2D col)
@@ -338,11 +340,14 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnCollisionStay2D(Collision2D col)
     {
-        float top = (col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y);
-        float feet = groundcheck1.position.y;//(transform.position.y - GetComponent<SpriteRenderer>().bounds.extents.y);
-        if (col.gameObject.tag == "ground" && top <= feet)
+        if (col.gameObject.tag == "ground")
         {
-            IsGrounded = true;
+            float top = (col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y);
+            float feet = groundcheck1.position.y;//(transform.position.y - GetComponent<SpriteRenderer>().bounds.extents.y);
+            if (col.gameObject.tag == "ground" && top <= feet)
+            {
+                IsGrounded = true;
+            }
         }
     }
 }

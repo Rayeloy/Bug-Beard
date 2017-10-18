@@ -85,9 +85,10 @@ GameObject:
   - component: {fileID: 50310238054895654}
   - component: {fileID: 114111340313332842}
   - component: {fileID: 114473014263933748}
+  - component: {fileID: 114598144317762952}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -368,15 +369,30 @@ MonoBehaviour:
   stopOnGround: 1
   gravityOn: 0
   stopOnMove: 0
-  abruptEnd: 0
+  abruptEnd: 1
+  jumpOutOfCrystal: 1
   InitialSpeed: 50
   cdTime: 2
   MaxDistSlash: 12
+  slashDamage: 35
   camera: {fileID: 0}
   myRB: {fileID: 50310238054895654}
   playerM: {fileID: 114111340313332842}
   timeSlashing: 0
   slashSt: 0
+--- !u!114 &114598144317762952
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1318990619047536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141baa213e7528a4886b7f5d4f092178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HitPoints: 100
+  MaxInmunityTime: 3
 --- !u!114 &114942935569062598
 MonoBehaviour:
   m_ObjectHideFlags: 1
