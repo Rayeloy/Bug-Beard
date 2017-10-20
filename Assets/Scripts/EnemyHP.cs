@@ -6,16 +6,12 @@ public class EnemyHP : MonoBehaviour {
 
     public float HP;
     public float damage;
-    public PolygonCollider2D hitBox;
-    public static List<EnemyHP> enemyList;
+    public Collider2D hitBox;
+    public GameObject wholeEnemy;
 
-    private void Awake()
+    private void Start()
     {
-        if (enemyList == null)
-        {
-            enemyList = new List<EnemyHP>();
-        }
-        enemyList.Add(this);
+        GameController.enemyList.Add(this);
     }
 
     // Update is called once per frame
@@ -28,7 +24,8 @@ public class EnemyHP : MonoBehaviour {
 
     public void Die()
     {
-        Destroy(transform.parent.gameObject);
+        GameController.enemyList.Remove(this);
+        Destroy(wholeEnemy);
     }
     public void TakeDamage(float damage)
     {
@@ -42,8 +39,10 @@ public class EnemyHP : MonoBehaviour {
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
+#if DEBUG_LOG
         Debug.Log("-----------------------------COLLISION HIT BOX con "+col.gameObject.tag);
         Debug.Log("PUTA " + col.gameObject.tag + ": " + (col.gameObject.tag == "Player") + " && " + (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing));
+#endif
         if (col.gameObject.tag=="Player" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
         {
             float dam = 0;
@@ -53,8 +52,10 @@ public class EnemyHP : MonoBehaviour {
                     dam = PlayerSlash.instance.slashDamage;
                     break;
             }
+#if DEBUG_LOG
             Debug.Log("--------------------------------------DAMAGE=" + dam);
-           TakeDamage(dam);
+#endif
+            TakeDamage(dam);
         }
     }
 

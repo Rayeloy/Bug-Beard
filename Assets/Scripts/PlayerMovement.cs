@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [HideInInspector]
-    public PlayerMovement instance;
+    static public PlayerMovement instance;
 
     public Transform spriteTransf;
     public Rigidbody2D myRB;
@@ -55,8 +55,6 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask whatIsGround;
     private bool IsGrounded;
 
-    public PlayerSlash pSlash;
-
     public enum jumpphase
     {
         none,
@@ -78,7 +76,6 @@ public class PlayerMovement : MonoBehaviour
         phase = jumpphase.normal;
         gravity = (-2 * maxHeight) / Mathf.Pow(timeToReach, 2); Debug.Log("la gravedad es de " + gravity);
         initialHeight = 0;
-        //newOcurrence = true;
     }
     private void Start()
     {
@@ -103,8 +100,10 @@ public class PlayerMovement : MonoBehaviour
     }
     void HorizontalMovement()
     {
-        Debug.Log("SLASHING STATE= " + pSlash.slashSt);
-        if (pSlash.slashSt != PlayerSlash.SlashState.crystal)
+#if DEBUG_LOG
+        Debug.Log("SLASHING STATE= " + PlayerSlash.instance.slashSt);
+#endif
+        if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.crystal)
         {
             v = Input.GetAxisRaw(axis);
             //Orientación del transform(sprite)
@@ -173,25 +172,23 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 //this is to let the slash mechanic move the character
-                if ((v != 0 && pSlash.stopOnMove && pSlash.slashSt == PlayerSlash.SlashState.slashing) ||
-                    (pSlash.stopOnGround && pSlash.slashSt == PlayerSlash.SlashState.slashing && IsGrounded && pSlash.timeSlashing > 0.1))//if we detect some movement
+                if ((v != 0 && PlayerSlash.instance.stopOnMove && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing) ||
+                    (PlayerSlash.instance.stopOnGround && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing && IsGrounded && PlayerSlash.instance.timeSlashing > 0.1))//if we detect some movement
                 {
-                    pSlash.StopSlash();
+                    PlayerSlash.instance.StopSlash();
                 }
-                if (pSlash.slashSt != PlayerSlash.SlashState.slashing)
+                if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
                     myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
             }
         }
     }
     void gravityFalls()
     {
+#if DEBUG_LOG
         Debug.Log("EN FASE " + phase.ToString());
+#endif
         if (!IsGrounded)//------------------- LA GRAVEDAD NO PERDONA ---------------------------------
         {
-            /*if (newOcurrence)
-            {
-                newOcurrence = false;
-            }*/
             if (jumpWithHeight)
             {
                 switch (phase)
@@ -231,7 +228,9 @@ public class PlayerMovement : MonoBehaviour
             }
             if (shortHops && phase == jumpphase.stop && (transform.position.y - initialHeight < maxHeight / 2))//CASO ESPECIAL PARA DAR SHORT HOPS
             {
-                Debug.Log("CASO ESPECIAL");
+#if DEBUG_LOG
+                Debug.Log("CASO ESPECIAL SHORT HOPS");
+#endif
                 fallSpeed = 0;
                 phase = jumpphase.fall;
             }
@@ -241,12 +240,16 @@ public class PlayerMovement : MonoBehaviour
     }
     void Jump()
     {
+#if DEBUG_LOG
         Debug.Log("isGrounded= " + IsGrounded);
+#endif
         if (Input.GetButtonDown("Jump") && IsGrounded)//Nos abre las puertas para saltar
         {
             jumping = true;
             jumpingTime = 0;
+#if DEBUG_LOG
             Debug.Log("comenzamos salto; jumping= " + jumping);
+#endif
         }
         if (Input.GetButton("Jump") && jumping)//saltando
         {
@@ -264,12 +267,16 @@ public class PlayerMovement : MonoBehaviour
             jumpingTime += Time.deltaTime;
             if (jumpingTime >= maxTimeJumping)
                 jumping = false;
+#if DEBUG_LOG
             Debug.Log("saltando...; jumping= " + jumping);
+#endif
         }
         if (Input.GetButtonUp("Jump") && jumping)//no podemos seguir aumentando el salto al soltar el boton
         {
             jumping = false;
+#if DEBUG_LOG
             Debug.Log("salto terminado; jumping= " + jumping);
+#endif
         }
     }
     void JumpWithHeight()
@@ -305,10 +312,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.tag == "crystal" && pSlash.slashSt == PlayerSlash.SlashState.slashing)
+        if (col.gameObject.tag == "crystal" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
         {
             phase = jumpphase.none;
-            pSlash.slashSt = PlayerSlash.SlashState.crystal;
+            PlayerSlash.instance.slashSt = PlayerSlash.SlashState.crystal;
             myRB.velocity = Vector2.zero;
             GameObject crystalPos = GameController.instance.GetChild(col.gameObject, "playerPos");
             transform.position = crystalPos.transform.position;
@@ -324,9 +331,9 @@ public class PlayerMovement : MonoBehaviour
                 jumping = false;
                 phase = jumpphase.fall;
             }
-            if (pSlash.slashSt == PlayerSlash.SlashState.slashing)
+            if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
             {
-                pSlash.StopSlash();
+                PlayerSlash.instance.StopSlash();
             }
         }
     }
@@ -335,7 +342,6 @@ public class PlayerMovement : MonoBehaviour
         if (col.gameObject.tag == "ground")
         {
             IsGrounded = false;
-            //Debug.Log("Dist a ground= " + distToGround);
         }
     }
     private void OnCollisionStay2D(Collision2D col)

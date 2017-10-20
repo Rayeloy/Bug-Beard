@@ -80,7 +80,7 @@ public class PlayerSlash : MonoBehaviour
         mousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z - camera.transform.position.z));
         if (Input.GetButtonDown("Slash") && (slashSt == SlashState.ready || slashSt == SlashState.crystal))
         {
-            Debug.Log("SLASH!");
+            //Debug.Log("SLASH!");
             slash();
         }
         if (jumpOutOfCrystal && Input.GetButton("Jump") && slashSt == PlayerSlash.SlashState.crystal)

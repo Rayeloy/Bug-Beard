@@ -9,10 +9,16 @@ public class GameController : MonoBehaviour {
     public Text HPText;
     public bool CheatsOn;
 
+    public static List<EnemyHP> enemyList;
+
     private void Awake()
     {
         DontDestroyOnLoad(this);
         instance = this;
+        if (enemyList == null)
+        {
+            enemyList = new List<EnemyHP>();
+        }
     }
     // Update is called once per frame
 
@@ -43,14 +49,18 @@ public class GameController : MonoBehaviour {
             }
         }
     }
-    public GameObject GetChild(GameObject padre, string childName)
+    public GameObject GetChild(GameObject padre, string childName)//Busca recursivamente un hijo con nombre childName
     {
-        for(int i = 0; i <= padre.transform.childCount; i++)
+        GameObject findResult;
+        for(int i = 0; i < padre.transform.childCount; i++)
         {
             if (padre.transform.GetChild(i).name == childName)
             {
                 return padre.transform.GetChild(i).gameObject;
             }
+            findResult = GetChild(padre.transform.GetChild(i).gameObject, childName);
+            if(findResult != null)//Recursivo
+                return findResult;
         }
 
         return null;

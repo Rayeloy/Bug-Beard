@@ -327,7 +327,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a5e60bdc5ad0343bd9bf5c2a98c70a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instance: {fileID: 114111340313332842}
   spriteTransf: {fileID: 4267900683797960}
   myRB: {fileID: 50310238054895654}
   accVersionOn: 0
@@ -354,7 +353,6 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 4294967039
-  pSlash: {fileID: 114473014263933748}
 --- !u!114 &114473014263933748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -570,7 +568,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 86ce912717672b8429c58e6960c12e25, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

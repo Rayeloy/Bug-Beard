@@ -225,11 +225,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\EnemyHP.cs" />
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
+    <Compile Include="Assets\Scripts\DetectPlayer.cs" />
+    <Compile Include="Assets\Scripts\EnemyAI\EnemyAI.cs" />
+    <Compile Include="Assets\Scripts\EnemyAI\HeavyAI.cs" />
+    <Compile Include="Assets\Scripts\EnemyAI\MushroomAI.cs" />
+    <Compile Include="Assets\Scripts\EnemyAttackRange.cs" />
+    <Compile Include="Assets\Scripts\EnemyHP.cs" />
+    <Compile Include="Assets\Scripts\EnemySight.cs" />
     <Compile Include="Assets\Scripts\fallCheck.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
-    <Compile Include="Assets\Scripts\MushroomAI.cs" />
     <Compile Include="Assets\Scripts\PlayerHP.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\PlayerSlash.cs" />

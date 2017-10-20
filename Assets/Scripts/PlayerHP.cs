@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHP : MonoBehaviour {
+public class PlayerHP : MonoBehaviour
+{
 
     public static PlayerHP instance;
     public float HitPoints;
@@ -19,6 +20,7 @@ public class PlayerHP : MonoBehaviour {
 
     private void Update()
     {
+        //INMUNE CONTROL
         if (InmTime < MaxInmunityTime && Inmune)
         {
             InmTime += Time.deltaTime;
@@ -28,7 +30,7 @@ public class PlayerHP : MonoBehaviour {
                 gameObject.layer = 8;
             }
         }
-        
+        //DEATH CONTROL
         if (HitPoints <= 0)
         {
             GameController.instance.GameOver();
@@ -50,9 +52,18 @@ public class PlayerHP : MonoBehaviour {
     {
         if (col.gameObject.tag == "enemy")
         {
-            GameObject hitBox = GameController.instance.GetChild(col.gameObject, "hitBox");
-            Debug.Log("-------------------------hitBox= " + hitBox);
-            TakeDamage(hitBox.GetComponent<EnemyHP>().damage);
+            if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
+            {
+                PlayerSlash.instance.StopSlash();
+                BounceBack();
+            }
+            else
+            {
+                BounceBack();
+                GameObject hitBox = GameController.instance.GetChild(col.gameObject, "hitBox");
+                Debug.Log("-------------------------hitBox= " + hitBox);
+                TakeDamage(hitBox.GetComponent<EnemyHP>().damage);
+            }
         }
     }
     void Inmunidad()
@@ -60,6 +71,11 @@ public class PlayerHP : MonoBehaviour {
         Inmune = true;
         //animacion inmune por t
         InmTime = 0;
-        gameObject.layer = 10;//nmune
+        gameObject.layer = 10;//Inmune
+    }
+    private void BounceBack()
+    {
+        //bounce
+        PlayerMovement.instance.phase = PlayerMovement.jumpphase.fall;
     }
 }

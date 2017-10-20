@@ -6,13 +6,14 @@ public class fallCheck : MonoBehaviour
 {
 
     public bool soyDcha;
-    public MushroomAI mAI;
+    public EnemyAI eAI;
     private int stillInside;
 
     private void Awake()
     {
         stillInside = 0;
     }
+
 
     private void OnTriggerExit2D(Collider2D col)
     {
@@ -23,11 +24,13 @@ public class fallCheck : MonoBehaviour
             {
                 if (soyDcha)
                 {
-                    mAI.mState = MushroomAI.mushroomState.wLeft;
+                    eAI.eState = EnemyAI.enemyState.wLeft;
+                    eAI.currentDirection = EnemyAI.enemyState.wLeft;
                 }
                 else
                 {
-                    mAI.mState = MushroomAI.mushroomState.wRight;
+                    eAI.eState = EnemyAI.enemyState.wRight;
+                    eAI.currentDirection = EnemyAI.enemyState.wRight;
                 }
             }
         }

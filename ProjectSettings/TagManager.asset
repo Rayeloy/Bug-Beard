@@ -8,6 +8,7 @@ TagManager:
   - crystal
   - enemy
   - hitBox
+  - wall
   layers:
   - Default
   - TransparentFX
