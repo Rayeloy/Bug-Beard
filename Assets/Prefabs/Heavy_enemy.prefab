@@ -113,7 +113,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1435752824315350
 GameObject:
   m_ObjectHideFlags: 0
@@ -613,6 +613,7 @@ MonoBehaviour:
   eState: 0
   currentDirection: 0
   AState: 0
+  olgura: 0.3
   timeToAttack: 0.3
   timeDamaging: 0.5
   timeRecovering: 3

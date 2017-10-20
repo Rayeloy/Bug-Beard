@@ -56,6 +56,7 @@ public class EnemyHP : MonoBehaviour {
             Debug.Log("--------------------------------------DAMAGE=" + dam);
 #endif
             TakeDamage(dam);
+            PlayerMovement.instance.BounceBack();
         }
     }
 

@@ -373,7 +373,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 239411188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -250.11076, y: 147.15959, z: 0}
+  m_LocalPosition: {x: -330.87976, y: 194.68225, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 543857386}
@@ -816,7 +816,7 @@ RectTransform:
   m_GameObject: {fileID: 543857382}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 90}
-  m_LocalScale: {x: 0.08320333, y: 0.08320333, z: 0.08320333}
+  m_LocalScale: {x: 0.062893085, y: 0.062893085, z: 0.062893085}
   m_Children:
   - {fileID: 239411189}
   m_Father: {fileID: 0}
@@ -980,6 +980,11 @@ Prefab:
         type: 2}
       propertyPath: MaxBounceTime
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114111340313332842, guid: 30aa4899019bd1d4ba1d81005994ba88,
+        type: 2}
+      propertyPath: accOnAir
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 30aa4899019bd1d4ba1d81005994ba88, type: 2}
@@ -2003,11 +2008,6 @@ Prefab:
     - target: {fileID: 4194358364246972, guid: 42397acaea898bc4e90461118b759730, type: 2}
       propertyPath: m_RootOrder
       value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114270516277133522, guid: 42397acaea898bc4e90461118b759730,
-        type: 2}
-      propertyPath: olgura
-      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 42397acaea898bc4e90461118b759730, type: 2}
