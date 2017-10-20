@@ -46,14 +46,16 @@ public class PlayerMovement : MonoBehaviour
     public jumpphase phase;
     public float gtimesStop;
     private float initialHeight;
-    //private bool newOcurrence;
-
 
     public Transform groundcheck1;
     public Transform groundcheck2;
-    //float groundRadius = 0.2f;
     public LayerMask whatIsGround;
     private bool IsGrounded;
+
+    public float bounceForce;
+    private bool bouncing;
+    private float bounceTime;
+    public float MaxBounceTime;
 
     public enum jumpphase
     {
@@ -76,6 +78,8 @@ public class PlayerMovement : MonoBehaviour
         phase = jumpphase.normal;
         gravity = (-2 * maxHeight) / Mathf.Pow(timeToReach, 2); Debug.Log("la gravedad es de " + gravity);
         initialHeight = 0;
+        bouncing = false;
+        bounceTime = 0;
     }
     private void Start()
     {
@@ -96,14 +100,21 @@ public class PlayerMovement : MonoBehaviour
         {
             JumpWithHeight();
         }
-
+        if (bouncing)//tiempo rebotando (perdemos el control del jugador)
+        {
+            bounceTime += Time.deltaTime;
+            if (bounceTime > MaxBounceTime)
+            {
+                bouncing = false;
+            }
+        }
     }
     void HorizontalMovement()
     {
 #if DEBUG_LOG
         Debug.Log("SLASHING STATE= " + PlayerSlash.instance.slashSt);
 #endif
-        if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.crystal)
+        if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.crystal && !bouncing)
         {
             v = Input.GetAxisRaw(axis);
             //Orientación del transform(sprite)
@@ -171,12 +182,13 @@ public class PlayerMovement : MonoBehaviour
 
             else
             {
-                //this is to let the slash mechanic move the character
+                //this is to let the slash mechanic moves the character
                 if ((v != 0 && PlayerSlash.instance.stopOnMove && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing) ||
                     (PlayerSlash.instance.stopOnGround && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing && IsGrounded && PlayerSlash.instance.timeSlashing > 0.1))//if we detect some movement
                 {
                     PlayerSlash.instance.StopSlash();
                 }
+                //--------------MOVER JUGADOR SEGUN CONTROLES---------------
                 if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
                     myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
             }
@@ -238,7 +250,7 @@ public class PlayerMovement : MonoBehaviour
             myRB.velocity = new Vector2(myRB.velocity.x, fallSpeed);
         }
     }
-    void Jump()
+    void Jump()//Mecanica de salto antigua
     {
 #if DEBUG_LOG
         Debug.Log("isGrounded= " + IsGrounded);
@@ -279,7 +291,7 @@ public class PlayerMovement : MonoBehaviour
 #endif
         }
     }
-    void JumpWithHeight()
+    void JumpWithHeight()//Mecanica de salto chachi piruli
     {
 
         if (Input.GetButtonDown("Jump") && IsGrounded)//Nos abre las puertas para saltar
@@ -310,6 +322,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+    public void BounceBack()
+    {
+            Debug.Log("BOUNCE BACK!! dir= " + (PlayerSlash.instance.lastSlashDir * -1));
+            bouncing = true;
+            bounceTime = 0;
+            myRB.velocity = PlayerSlash.instance.lastSlashDir * -1 * bounceForce;
+            instance.phase = jumpphase.fall;
+    }
+
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == "crystal" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)

@@ -28,6 +28,8 @@ public class PlayerSlash : MonoBehaviour
     [HideInInspector]
     public float timeSlashing;
     [HideInInspector]
+    public Vector2 lastSlashDir;
+    [HideInInspector]
     public SlashState slashSt;
 
     public enum SlashState
@@ -44,6 +46,7 @@ public class PlayerSlash : MonoBehaviour
         slashSt = SlashState.ready;
         slashDist = 0;
         timeSlashing = 0;
+        lastSlashDir = Vector2.zero;
     }
 
     private void FixedUpdate()
@@ -100,22 +103,11 @@ public class PlayerSlash : MonoBehaviour
         myPos = transform.position;
         //Debug.Log("myPos=" + myPos.x + ", " + myPos.y);
         //Vector2 vel = DecomposeSpeed(InitialSpeed, mousePosition, myPos);
-        Vector2 vel = new Vector2((mousePosition.x - myPos.x), (mousePosition.y - myPos.y)).normalized;
-        myRB.velocity = new Vector2(vel.x * InitialSpeed, vel.y * InitialSpeed); ;
+        lastSlashDir = new Vector2((mousePosition.x - myPos.x), (mousePosition.y - myPos.y)).normalized;
+        myRB.velocity = new Vector2(lastSlashDir.x * InitialSpeed, lastSlashDir.y * InitialSpeed);
         //myRB.velocity = new Vector2(80f, 20f);
         //Debug.Log("mouse pos=" + mousePosition.x + ", " + mousePosition.y + "; vx=" + vel.x + ";vy=" + vel.y);
     }
-    /*private void OnCollisionEnter2D(Collision2D col)
-    {
-        Debug.Log("PUTA "+col.gameObject.tag+": "+ (col.gameObject.tag == "hitBox")+" && "+ (slashSt == SlashState.slashing));
-
-        if (col.gameObject.tag == "hitBox" && slashSt==SlashState.slashing)
-        {
-            Debug.Log("PUTA MADRE");
-            StopSlash();
-            col.gameObject.transform.GetChild(0).GetComponent<EnemyHP>().HP -= slashDamage;
-        }
-    }*/
     public void StopSlash()
     {
         if (abruptEnd)
@@ -125,7 +117,9 @@ public class PlayerSlash : MonoBehaviour
         slashDist = 0;
         playerM.phase = PlayerMovement.jumpphase.normal;
         cd = 0;
+#if DEBUG_LOG
         Debug.Log("STOP SLASH");
+#endif
     }
 
     public void ExitCrystal()

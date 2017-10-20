@@ -134,7 +134,7 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
     }
-    private float olgura = 0.3f;
+    public float olgura;
     public virtual void Pursue()//check if stopIfNoPlayerDetected, if it is detected, where is it and where to go
     {
         if (doesPursue)
@@ -145,11 +145,15 @@ public class EnemyAI : MonoBehaviour
             }
             else if (playerDetected > 0)
             {
-                if (playerGO.transform.position.x > transform.position.x + olgura)
+                if (playerGO.transform.position.x < transform.position.x + olgura && playerGO.transform.position.x > transform.position.x - olgura)
+                {
+                    eState = enemyState.stop;
+                }
+                else if (playerGO.transform.position.x > transform.position.x)
                 {
                     eState = enemyState.wRight;
                 }
-                else if (playerGO.transform.position.x < transform.position.x - olgura)
+                else if (playerGO.transform.position.x < transform.position.x)
                 {
                     eState = enemyState.wLeft;
                 }

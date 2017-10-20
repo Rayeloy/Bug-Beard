@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4693985154011184}
   m_Layer: 9
-  m_Name: weakBoxPos
+  m_Name: turnAround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 60916211998043522}
   - component: {fileID: 114500399704447662}
   m_Layer: 9
-  m_Name: hitBox
+  m_Name: weakBox
   m_TagString: hitBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,6 +11,7 @@ public class HeavyAI : EnemyAI
     private float attackTimeline;
     public EnemyHP eHP;
     public EnemyAttackRange EARange;
+    public EnemyAttackRange EAHitBox;
     private bool damaged;
     public GameObject garrote;
 
@@ -42,15 +43,18 @@ public class HeavyAI : EnemyAI
         }
         else
         {
-            if (attackTimeline > timeToAttack && AState == AttackState.preparing)
+            if (attackTimeline > timeToAttack && attackTimeline < timeToAttack + timeDamaging)//quito la condicion  && AState == AttackState.preparing, la pongo abajo vv
             {
-                if (!damaged && EARange.thereIsPlayer)
+                if (!damaged && EAHitBox.thereIsPlayer)
                 {
                     damaged = true;
                     PlayerHP.instance.TakeDamage(eHP.damage);
                 }
-                AState = AttackState.damaging;
-                garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 3);
+                if (AState == AttackState.preparing)//separo la condición aqui abajo para poder comprobar si hace daño constantemente y no una sola vez
+                {
+                    AState = AttackState.damaging;
+                    garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 3);
+                }
             }
             else if (attackTimeline > timeDamaging + timeToAttack && AState == AttackState.damaging)
             {

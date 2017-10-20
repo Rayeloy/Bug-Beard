@@ -11,6 +11,7 @@ public class PlayerHP : MonoBehaviour
     private float InmTime;
     private bool Inmune;
 
+
     private void Awake()
     {
         InmTime = 0;
@@ -43,7 +44,9 @@ public class PlayerHP : MonoBehaviour
         {
             HitPoints -= damage;
             GameController.instance.updateHUD();
+#if DEBUG_LOG
             Debug.Log("HP= " + HitPoints);
+#endif 
             Inmunidad();
         }
     }
@@ -55,12 +58,12 @@ public class PlayerHP : MonoBehaviour
             if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
             {
                 PlayerSlash.instance.StopSlash();
-                BounceBack();
+                PlayerMovement.instance.BounceBack();
             }
             else
             {
-                BounceBack();
-                GameObject hitBox = GameController.instance.GetChild(col.gameObject, "hitBox");
+                //PlayerMovement.instance.BounceBack();
+                GameObject hitBox = GameController.instance.GetChild(col.gameObject, "weakBox");
                 Debug.Log("-------------------------hitBox= " + hitBox);
                 TakeDamage(hitBox.GetComponent<EnemyHP>().damage);
             }
@@ -72,10 +75,5 @@ public class PlayerHP : MonoBehaviour
         //animacion inmune por t
         InmTime = 0;
         gameObject.layer = 10;//Inmune
-    }
-    private void BounceBack()
-    {
-        //bounce
-        PlayerMovement.instance.phase = PlayerMovement.jumpphase.fall;
     }
 }
