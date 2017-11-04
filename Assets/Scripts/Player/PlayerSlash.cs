@@ -15,7 +15,8 @@ public class PlayerSlash : MonoBehaviour
     private Vector3 mousePosition;
     public float InitialSpeed;
     public float cdTime;
-    private float cd;
+    [HideInInspector]
+    public float cd;
     public float MaxDistSlash;
     public float slashDamage;
     //public float MaxTimeSlashing;
@@ -47,6 +48,7 @@ public class PlayerSlash : MonoBehaviour
         slashDist = 0;
         timeSlashing = 0;
         lastSlashDir = Vector2.zero;
+        cd = cdTime;//para la barra de progreso, si no empieza en cdTime, empieza en 0
     }
 
     private void FixedUpdate()
@@ -70,6 +72,7 @@ public class PlayerSlash : MonoBehaviour
                 if (cd >= cdTime)
                 {
                     slashSt = SlashState.ready;
+                    cd = cdTime;
                 }
                 break;
 

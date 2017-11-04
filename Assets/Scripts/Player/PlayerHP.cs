@@ -6,6 +6,8 @@ public class PlayerHP : MonoBehaviour
 {
 
     public static PlayerHP instance;
+    public float MaxHitPoints;
+    [HideInInspector]
     public float HitPoints;
     public float MaxInmunityTime;
     private float InmTime;
@@ -17,6 +19,7 @@ public class PlayerHP : MonoBehaviour
         InmTime = 0;
         Inmune = false;
         instance = this;
+        HitPoints = MaxHitPoints;
     }
 
     private void Update()
@@ -34,7 +37,7 @@ public class PlayerHP : MonoBehaviour
         //DEATH CONTROL
         if (HitPoints <= 0)
         {
-            GameController.instance.GameOver();
+            GameController.instance.GameOver(gameObject);
         }
     }
 
@@ -43,7 +46,7 @@ public class PlayerHP : MonoBehaviour
         if (!Inmune)
         {
             HitPoints -= damage;
-            GameController.instance.updateHUD();
+            GameController.instance.updateHUDHP();
 #if DEBUG_LOG
             Debug.Log("HP= " + HitPoints);
 #endif 
