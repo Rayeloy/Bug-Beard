@@ -616,7 +616,7 @@ MonoBehaviour:
   olgura: 0.3
   timeToAttack: 0.3
   timeDamaging: 0.5
-  timeRecovering: 3
+  timeRecovering: 2.5
   eHP: {fileID: 114562527897176266}
   EARange: {fileID: 114112784354722682}
   EAHitBox: {fileID: 114980272178783116}
