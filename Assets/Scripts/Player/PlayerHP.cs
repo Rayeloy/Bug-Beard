@@ -63,7 +63,7 @@ public class PlayerHP : MonoBehaviour
                 PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack();
             }
-            else
+            else//recibir daño
             {
                 //PlayerMovement.instance.BounceBack();
                 GameObject hitBox = GameController.instance.GetChild(col.gameObject, "weakBox");

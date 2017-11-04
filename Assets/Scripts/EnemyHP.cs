@@ -50,6 +50,7 @@ public class EnemyHP : MonoBehaviour {
             {
                 case PlayerSlash.SlashState.slashing:
                     dam = PlayerSlash.instance.slashDamage;
+                    PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
                     break;
             }
 #if DEBUG_LOG
