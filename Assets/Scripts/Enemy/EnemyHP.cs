@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHP : MonoBehaviour {
+public class EnemyHP : MonoBehaviour
+{
 
     public float HP;
     public float damage;
-    public Collider2D hitBox;
+    public CheckHitBox[] hitBox;
     public GameObject wholeEnemy;
 
     private void Start()
@@ -15,12 +16,13 @@ public class EnemyHP : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         if (HP <= 0)
         {
             Die();
         }
-	}
+    }
 
     public void Die()
     {
@@ -37,13 +39,29 @@ public class EnemyHP : MonoBehaviour {
         }
         HP -= damage;
     }
-    private void OnTriggerEnter2D(Collider2D col)
+
+    /*public void CheckTakeDamage()
+    {
+        if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
+        {
+            foreach (CheckHitBox HB in hitBox)
+            {
+                if (HB.CheckFor("AttackHitBox"))
+                {
+                    TakeDamage(PlayerSlash.instance.slashDamage);
+                    break;//intento de que solo pueda hacerme daño una vez
+                }
+            }
+        }
+    }*/
+
+    /*private void OnTriggerEnter2D(Collider2D col)
     {
 #if DEBUG_LOG
         Debug.Log("-----------------------------COLLISION HIT BOX con "+col.gameObject.tag);
         Debug.Log("PUTA " + col.gameObject.tag + ": " + (col.gameObject.tag == "Player") + " && " + (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing));
 #endif
-        if (col.gameObject.tag=="Player" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
+        if (col.gameObject.tag == "Player" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
         {
             float dam = 0;
             switch (PlayerSlash.instance.slashSt)//SUPONIENDO QUE PONDREMOS MÁS ESTADOS PARA OTROS POWERS
@@ -59,6 +77,6 @@ public class EnemyHP : MonoBehaviour {
             TakeDamage(dam);
             PlayerMovement.instance.BounceBack();
         }
-    }
+    }*/
 
 }

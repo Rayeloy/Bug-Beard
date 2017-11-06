@@ -10,8 +10,8 @@ public class HeavyAI : EnemyAI
     public float timeRecovering;
     private float attackTimeline;
     public EnemyHP eHP;
-    public EnemyAttackRange EARange;
-    public EnemyAttackRange EAHitBox;
+    public CheckHitBox EARange;
+    public CheckHitBox EAHitBox;
     private bool damaged;
     public GameObject garrote;
 
@@ -33,7 +33,7 @@ public class HeavyAI : EnemyAI
 
     public override void Attack()
     {
-        if (AState == AttackState.ready && EARange.thereIsPlayer)
+        if (AState == AttackState.ready && EARange.CheckFor("Player"))
         {
             attackTimeline = 0;
             AState = AttackState.preparing;
@@ -45,7 +45,7 @@ public class HeavyAI : EnemyAI
         {
             if (attackTimeline > timeToAttack && attackTimeline < timeToAttack + timeDamaging)//quito la condicion  && AState == AttackState.preparing, la pongo abajo vv
             {
-                if (!damaged && EAHitBox.thereIsPlayer)
+                if (!damaged && EAHitBox.CheckFor("Player"))
                 {
                     damaged = true;
                     PlayerHP.instance.TakeDamage(eHP.damage);

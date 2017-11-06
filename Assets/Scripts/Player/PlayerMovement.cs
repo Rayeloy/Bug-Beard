@@ -53,19 +53,28 @@ public class PlayerMovement : MonoBehaviour
     private bool IsGrounded;
 
     public float bounceForce;
-    private bool bouncing;
+    [HideInInspector]
+    public bool bouncing;
     private float bounceTime;
     public float MaxBounceTime;
 
     public enum jumpphase
     {
-        none,
-        normal,
-        rise,
-        stop,
-        fall
+        none,//no gravedad
+        normal,//gravedad normal
+        rise,//gravedad muy aumentada
+        stop,//parar en shorthops
+        fall//gravedad aumentada
     };
-
+    public bool startFacingRight;
+    public pmoveState pmState;
+    public enum pmoveState
+    {
+        stopRight,
+        stopLeft,
+        wRight,
+        wLeft
+    }
 
 
     // Use this for initialization
@@ -80,6 +89,14 @@ public class PlayerMovement : MonoBehaviour
         initialHeight = 0;
         bouncing = false;
         bounceTime = 0;
+        if (startFacingRight)
+        {
+            pmState = pmoveState.stopRight;
+        }
+        else
+        {
+            pmState = pmoveState.stopLeft;
+        }
     }
     private void Start()
     {
@@ -118,7 +135,8 @@ public class PlayerMovement : MonoBehaviour
         {
             v = Input.GetAxisRaw(axis);
             //Orientación del transform(sprite)
-            if (myRB.velocity.x > 0 && v > 0) spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
+            if (myRB.velocity.x > 0 && v > 0)
+                spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
             else
             {
                 if (myRB.velocity.x < 0 && v < 0) spriteTransf.rotation = Quaternion.identity;
@@ -182,7 +200,7 @@ public class PlayerMovement : MonoBehaviour
 
             else
             {
-                //this is to let the slash mechanic moves the character
+                //this is to let player stop de slash with movement or whehn hitting ground
                 if ((v != 0 && PlayerSlash.instance.stopOnMove && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing) ||
                     (PlayerSlash.instance.stopOnGround && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing && IsGrounded && PlayerSlash.instance.timeSlashing > 0.1))//if we detect some movement
                 {
@@ -190,7 +208,10 @@ public class PlayerMovement : MonoBehaviour
                 }
                 //--------------MOVER JUGADOR SEGUN CONTROLES---------------
                 if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
+                {
                     myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
+                    orientPlayer();
+                }
             }
         }
     }
@@ -329,6 +350,26 @@ public class PlayerMovement : MonoBehaviour
             bounceTime = 0;
             myRB.velocity = PlayerSlash.instance.lastSlashDir * -1 * bounceForce;
             instance.phase = jumpphase.fall;
+    }
+
+    private void orientPlayer()
+    {
+        if (v > 0)
+        {
+            pmState = pmoveState.wRight;
+        }
+        else if (v < 0)
+        {
+            pmState = pmoveState.wLeft;
+        }
+        else if (pmState==pmoveState.wRight)
+        {
+            pmState = pmoveState.stopRight;
+        }
+        else if (pmState == pmoveState.wLeft)
+        {
+            pmState = pmoveState.stopLeft;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D col)

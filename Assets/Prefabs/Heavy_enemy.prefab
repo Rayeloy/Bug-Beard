@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4801041638892476}
   - component: {fileID: 70362277185816546}
-  - component: {fileID: 114562527897176266}
+  - component: {fileID: 114308011837113060}
   m_Layer: 9
   m_Name: weakBox
   m_TagString: hitBox
@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 70318015354959604}
   - component: {fileID: 50942227369616298}
   - component: {fileID: 114270516277133522}
+  - component: {fileID: 114696784914070368}
   m_Layer: 9
   m_Name: Heavy_enemy
   m_TagString: enemy
@@ -557,8 +558,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 6.6407957, y: 10.33822}
+  m_Offset: {x: 0.30680656, y: 0}
+  m_Size: {x: 6.6407986, y: 10.33822}
   m_Direction: 0
 --- !u!70 &70362277185816546
 CapsuleCollider2D:
@@ -586,7 +587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92cda979df130d4daaab93548f8a120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thereIsPlayer: 0
 --- !u!114 &114270516277133522
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -617,7 +617,7 @@ MonoBehaviour:
   timeToAttack: 0.3
   timeDamaging: 0.5
   timeRecovering: 2.5
-  eHP: {fileID: 114562527897176266}
+  eHP: {fileID: 0}
   EARange: {fileID: 114112784354722682}
   EAHitBox: {fileID: 114980272178783116}
   garrote: {fileID: 1415746159248560}
@@ -634,7 +634,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soyDcha: 0
   eAI: {fileID: 114270516277133522}
---- !u!114 &114562527897176266
+--- !u!114 &114308011837113060
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -642,13 +642,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1008461118335572}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0e9a121c987ab74b90bb7e1e488b9b4, type: 3}
+  m_Script: {fileID: 11500000, guid: e92cda979df130d4daaab93548f8a120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 70
-  damage: 50
-  hitBox: {fileID: 70362277185816546}
-  wholeEnemy: {fileID: 1107072641297612}
 --- !u!114 &114623877197192380
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -674,6 +670,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyAI: {fileID: 114270516277133522}
+--- !u!114 &114696784914070368
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1107072641297612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0e9a121c987ab74b90bb7e1e488b9b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 70
+  damage: 50
+  hitBox:
+  - {fileID: 114308011837113060}
+  wholeEnemy: {fileID: 1107072641297612}
 --- !u!114 &114821551849659082
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -697,7 +709,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92cda979df130d4daaab93548f8a120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thereIsPlayer: 0
 --- !u!212 &212006078130101686
 SpriteRenderer:
   m_ObjectHideFlags: 1

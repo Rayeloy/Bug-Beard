@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 70059870329613756}
   - component: {fileID: 50002515632592824}
   - component: {fileID: 114338890920572834}
+  - component: {fileID: 114238170005254798}
   m_Layer: 9
   m_Name: mushroom_enemy
   m_TagString: enemy
@@ -105,7 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4053869232055520}
   - component: {fileID: 60916211998043522}
-  - component: {fileID: 114500399704447662}
+  - component: {fileID: 114562187531872888}
   m_Layer: 9
   m_Name: weakBox
   m_TagString: hitBox
@@ -338,6 +339,22 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 3.64, y: 4.0000005}
   m_Direction: 0
+--- !u!114 &114238170005254798
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1531178825739660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0e9a121c987ab74b90bb7e1e488b9b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 35
+  damage: 30
+  hitBox:
+  - {fileID: 114562187531872888}
+  wholeEnemy: {fileID: 1531178825739660}
 --- !u!114 &114338890920572834
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -364,6 +381,7 @@ MonoBehaviour:
   eState: 0
   currentDirection: 0
   AState: 0
+  olgura: 0
 --- !u!114 &114426788877595928
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -377,21 +395,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soyDcha: 0
   eAI: {fileID: 114338890920572834}
---- !u!114 &114500399704447662
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1919574835159370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0e9a121c987ab74b90bb7e1e488b9b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 35
-  damage: 30
-  hitBox: {fileID: 60916211998043522}
-  wholeEnemy: {fileID: 1531178825739660}
 --- !u!114 &114538299012132732
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -405,6 +408,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soyDcha: 1
   eAI: {fileID: 114338890920572834}
+--- !u!114 &114562187531872888
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1919574835159370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92cda979df130d4daaab93548f8a120, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212246463747378532
 SpriteRenderer:
   m_ObjectHideFlags: 1
