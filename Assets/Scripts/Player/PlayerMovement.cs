@@ -372,17 +372,23 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    public void attachToCrystal(GameObject crystal)
+    {
+        phase = jumpphase.none;
+        PlayerSlash.instance.slashSt = PlayerSlash.SlashState.crystal;
+        myRB.velocity = Vector2.zero;
+        GameObject crystalPos = GameController.instance.GetChild(crystal, "playerPos");
+        transform.position = crystalPos.transform.position;
+        Pointer.instance.attackHBnormal();
+    }
+
+    /*private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == "crystal" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
         {
-            phase = jumpphase.none;
-            PlayerSlash.instance.slashSt = PlayerSlash.SlashState.crystal;
-            myRB.velocity = Vector2.zero;
-            GameObject crystalPos = GameController.instance.GetChild(col.gameObject, "playerPos");
-            transform.position = crystalPos.transform.position;
+
         }
-    }
+    }*/
     private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == "ground")

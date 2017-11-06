@@ -14,16 +14,19 @@ public class CheckHitBox : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D col)
     {
         tags.Add(col.tag);
-        if (tag == "PlayerAttack")
+        if(tag=="PlayerAttack" && PlayerSlash.instance.slashSt==PlayerSlash.SlashState.slashing)
         {
-            Debug.Log("colisión con " + col.name+"; slashSt= "+PlayerSlash.instance.slashSt.ToString());
-        }
-        if(tag=="PlayerAttack" && col.tag == "hitBox" && PlayerSlash.instance.slashSt==PlayerSlash.SlashState.slashing)
-        {
-            Debug.Log("enemy " + transform.root.name + " recieves damage");
-            PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
-            PlayerMovement.instance.BounceBack();
-            col.transform.root.GetComponent<EnemyHP>().TakeDamage(PlayerSlash.instance.slashDamage);
+            if (col.tag == "hitBox")
+            {
+                Debug.Log("enemy " + transform.root.name + " recieves damage");
+                PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
+                PlayerMovement.instance.BounceBack();
+                col.transform.root.GetComponent<EnemyHP>().TakeDamage(PlayerSlash.instance.slashDamage);
+            }
+            else if (col.gameObject.tag == "crystal" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
+            {
+                PlayerMovement.instance.attachToCrystal(col.gameObject);
+            }
         }
 
     }
