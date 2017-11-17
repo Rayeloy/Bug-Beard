@@ -77,6 +77,8 @@ public class EnemyAI : MonoBehaviour
     public virtual void Update()
     {
         gravityFalls();
+        CheckFall();
+        //CheckCollisionFoward();
         HorizontalMovement();
     }
 
@@ -179,6 +181,76 @@ public class EnemyAI : MonoBehaviour
 
     }
 
+    RaycastHit2D hit;
+    Vector3 enemyCentre;
+    public Collider2D enemyCol;
+    public virtual void CheckFall()
+    {
+        enemyCentre = enemyCol.bounds.center;
+        Vector2 rayDir = Vector2.down;
+        if (eState == enemyState.wLeft)
+        {
+            rayDir = new Vector2(-0.5f, -1);
+        }
+        else if(eState == enemyState.wRight)
+        {
+            rayDir = new Vector2(0.5f, -1);
+        }
+        float dist = enemyCol.bounds.extents.y + enemyCol.bounds.extents.y / 3;
+        int layerMask = LayerMask.GetMask("Scenary");
+        hit = Physics2D.Raycast(enemyCentre,rayDir, dist,layerMask);
+        Debug.DrawRay(enemyCentre, rayDir * dist, Color.green);
+        if (!hit)
+        {
+            if (eState == enemyState.wLeft)
+            {
+                eState = enemyState.wRight;
+            }
+            else if (eState == enemyState.wRight)
+            {
+                eState = enemyState.wLeft;
+            }
+        }
+    }
+
+    public virtual void CheckCollisionFoward()//mejorar con que los raycasts tengan una distancia acorde al ancho en cada altura del collider
+    {
+        enemyCentre = enemyCol.bounds.center;
+        Vector2 rayDir = Vector2.down;
+        if (eState == enemyState.wLeft)
+        {
+            rayDir = Vector2.left;
+            enemyCentre = new Vector2(enemyCentre.x - enemyCol.bounds.extents.x - 0.01f,enemyCentre.y);
+        }
+        else if (eState == enemyState.wRight)
+        {
+            rayDir = Vector2.right;
+            enemyCentre = new Vector2(enemyCentre.x + enemyCol.bounds.extents.x + 0.01f, enemyCentre.y);
+        }
+        float dist = 0.19f;
+        int layerMask = LayerMask.GetMask("Scenary","Enemy");
+        for(float i=enemyCentre.y-enemyCol.bounds.extents.y/1.2f;i<= enemyCentre.y + enemyCol.bounds.extents.y; i += 0.5f)
+        {
+            Vector2 newCentre = new Vector2(enemyCentre.x, i);
+            hit = Physics2D.Raycast(newCentre, rayDir, dist, layerMask);
+            Debug.DrawRay(newCentre, rayDir * dist, Color.green);
+            Debug.Log(gameObject + " COLLISION WITH " + hit.collider.gameObject);
+            if (hit&&hit.collider.transform.root.gameObject!=gameObject)
+            {
+                if (eState == enemyState.wLeft)
+                {
+                    eState = enemyState.wRight;
+                }
+                else if (eState == enemyState.wRight)
+                {
+                    eState = enemyState.wLeft;
+                }
+                break;
+            }
+        }
+
+
+    }
     public virtual void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == "wall" || col.gameObject.tag == "enemy")

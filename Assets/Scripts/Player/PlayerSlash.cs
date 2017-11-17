@@ -89,7 +89,7 @@ public class PlayerSlash : MonoBehaviour
             //Debug.Log("SLASH!");
             slash();
         }
-        if (jumpOutOfCrystal && Input.GetButton("Jump") && slashSt == PlayerSlash.SlashState.crystal)
+        if (jumpOutOfCrystal && Input.GetButtonDown("Jump") && slashSt == PlayerSlash.SlashState.crystal)
         {
             ExitCrystal();
         }

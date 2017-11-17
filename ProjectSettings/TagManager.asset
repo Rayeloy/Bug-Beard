@@ -10,6 +10,7 @@ TagManager:
   - hitBox
   - wall
   - PlayerAttack
+  - platform
   layers:
   - Default
   - TransparentFX

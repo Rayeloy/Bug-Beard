@@ -225,15 +225,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\cameraCollider.cs" />
+    <Compile Include="Assets\PlayerCameraBox.cs" />
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
+    <Compile Include="Assets\Scripts\CheckHitBox.cs" />
     <Compile Include="Assets\Scripts\CheckPoint.cs" />
     <Compile Include="Assets\Scripts\DetectPlayer.cs" />
-    <Compile Include="Assets\Scripts\EnemyAI\EnemyAI.cs" />
-    <Compile Include="Assets\Scripts\EnemyAI\HeavyAI.cs" />
-    <Compile Include="Assets\Scripts\EnemyAI\MushroomAI.cs" />
-    <Compile Include="Assets\Scripts\EnemyAttackRange.cs" />
-    <Compile Include="Assets\Scripts\EnemyHP.cs" />
-    <Compile Include="Assets\Scripts\EnemySight.cs" />
+    <Compile Include="Assets\Scripts\EasingCurves.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyAI.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyHP.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemySight.cs" />
+    <Compile Include="Assets\Scripts\Enemy\HeavyAI.cs" />
+    <Compile Include="Assets\Scripts\Enemy\MushroomAI.cs" />
     <Compile Include="Assets\Scripts\fallCheck.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerBodyTrigger.cs" />

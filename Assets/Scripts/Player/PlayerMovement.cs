@@ -47,8 +47,6 @@ public class PlayerMovement : MonoBehaviour
     public float gtimesStop;
     private float initialHeight;
 
-    public Transform groundcheck1;
-    public Transform groundcheck2;
     public LayerMask whatIsGround;
     private bool IsGrounded;
 
@@ -81,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         instance = this;
+        playerCentre = transform.position;
         HorzSpeed = 0;
         deAccDir = 0;
         jumping = false;
@@ -97,6 +96,7 @@ public class PlayerMovement : MonoBehaviour
         {
             pmState = pmoveState.stopLeft;
         }
+        
     }
     private void Start()
     {
@@ -108,6 +108,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         HorizontalMovement();
+        CheckGrounded();
+        CheckCollisionHead();
         gravityFalls();
         if (!jumpWithHeight)
         {
@@ -382,46 +384,50 @@ public class PlayerMovement : MonoBehaviour
         Pointer.instance.attackHBnormal();
     }
 
-    /*private void OnTriggerEnter2D(Collider2D col)
+    private void CheckCollisionHead()
     {
-        if (col.gameObject.tag == "crystal" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
+        Vector3 playerCentre = playerCollider.bounds.center;
+        float maxDist = (playerCollider.bounds.extents.y + 0.05f);
+        int layerMask = LayerMask.GetMask("Scenary");
+        hit = Physics2D.Raycast(playerCollider.bounds.center, Vector2.up, maxDist, layerMask);
+        Vector3 up = Vector3.up * maxDist;
+        Debug.DrawRay(playerCollider.bounds.center, up, Color.red);
+        if (hit)
         {
-
-        }
-    }*/
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "ground")
-        {
-            if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop) &&
-                (groundcheck2.position.y <= col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y))
+            Debug.Log("Hit.Collider.gameObject.tag= " + hit.collider.gameObject.tag);
+            if (hit.collider.gameObject.tag == "ground" || hit.collider.gameObject.tag == "platform")
             {
-                jumping = false;
-                phase = jumpphase.fall;
-            }
-            if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
-            {
-                PlayerSlash.instance.StopSlash();
+                if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop))
+                {
+                    jumping = false;
+                    phase = jumpphase.fall;
+                }
+                if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
+                {
+                    PlayerSlash.instance.StopSlash();
+                }
             }
         }
     }
-    private void OnCollisionExit2D(Collision2D col)
+    RaycastHit2D hit;
+    float distToHit;
+    public Collider2D playerCollider;
+    Vector3 playerCentre;
+    private void CheckGrounded()
     {
-        if (col.gameObject.tag == "ground")
+        Vector3 playerCentre = playerCollider.bounds.center;
+        float maxDist = (playerCollider.bounds.extents.y + 0.05f);
+        int layerMask = LayerMask.GetMask("Scenary");
+        hit =Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, maxDist, layerMask);
+        Vector3 down = Vector3.down * maxDist;
+        Debug.DrawRay(playerCollider.bounds.center, down, Color.green);
+        if (hit)
+        {
+                IsGrounded = true;
+        }
+        else
         {
             IsGrounded = false;
-        }
-    }
-    private void OnCollisionStay2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "ground")
-        {
-            float top = (col.gameObject.transform.position.y + col.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y);
-            float feet = groundcheck1.position.y;//(transform.position.y - GetComponent<SpriteRenderer>().bounds.extents.y);
-            if (col.gameObject.tag == "ground" && top <= feet)
-            {
-                IsGrounded = true;
-            }
         }
     }
 }

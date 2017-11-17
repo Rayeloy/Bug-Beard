@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class fallCheck : MonoBehaviour
 {
-
+    
     public bool soyDcha;
     public EnemyAI eAI;
     private int stillInside;
@@ -17,7 +17,7 @@ public class fallCheck : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.gameObject.tag == "ground")
+        if (col.gameObject.tag == "ground" || col.gameObject.tag == "platform")
         {
             stillInside -= 1;
             if (stillInside == 0)
@@ -37,7 +37,7 @@ public class fallCheck : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.tag == "ground")
+        if (col.gameObject.tag == "ground" || col.gameObject.tag == "platform")
         {
             stillInside += 1;
         }
