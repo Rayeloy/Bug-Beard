@@ -225,8 +225,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\cameraCollider.cs" />
-    <Compile Include="Assets\PlayerCameraBox.cs" />
+    <Compile Include="Assets\Scripts\cameraCollider.cs" />
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
     <Compile Include="Assets\Scripts\CheckHitBox.cs" />
     <Compile Include="Assets\Scripts\CheckPoint.cs" />
@@ -237,13 +236,24 @@
     <Compile Include="Assets\Scripts\Enemy\EnemySight.cs" />
     <Compile Include="Assets\Scripts\Enemy\HeavyAI.cs" />
     <Compile Include="Assets\Scripts\Enemy\MushroomAI.cs" />
+    <Compile Include="Assets\Scripts\Event_Conversation.cs" />
+    <Compile Include="Assets\Scripts\Event_Conversation_Bob.cs" />
+    <Compile Include="Assets\Scripts\Event_Conversation_Bob2.cs" />
+    <Compile Include="Assets\Scripts\Event_Conversation_NoSoyBob.cs" />
     <Compile Include="Assets\Scripts\fallCheck.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\hotSpot.cs" />
+    <Compile Include="Assets\Scripts\HUDManager.cs" />
+    <Compile Include="Assets\Scripts\Mission.cs" />
+    <Compile Include="Assets\Scripts\Mission_SaveBob.cs" />
+    <Compile Include="Assets\Scripts\Objective.cs" />
+    <Compile Include="Assets\Scripts\Pit.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerBodyTrigger.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerHP.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerSlash.cs" />
     <Compile Include="Assets\Scripts\Player\Pointer.cs" />
+    <Compile Include="Assets\Scripts\PlayerCameraBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

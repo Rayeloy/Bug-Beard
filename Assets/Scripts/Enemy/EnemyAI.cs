@@ -20,8 +20,8 @@ public class EnemyAI : MonoBehaviour
     public bool weakBoxOrientation;
 
     private float fallSpeed;
-    [HideInInspector]
-    public bool stoppu;
+    protected bool stoppu;
+    public bool stopEnemy;
 
     [HideInInspector]
     public enemyState eState;
@@ -38,10 +38,10 @@ public class EnemyAI : MonoBehaviour
     }
     public enum AttackState
     {
-        ready,
-        preparing,
-        damaging,
-        recovering
+        ready=0,
+        preparing=1,
+        damaging=2,
+        recovering=3
     }
 
     public virtual void Awake()
@@ -49,7 +49,6 @@ public class EnemyAI : MonoBehaviour
         fallSpeed = 0;
         playerDetected = 0;
         playerGO = null;
-        stoppu = false;
         if (stopIfNoPlayerDetected)
         {
             eState = enemyState.stop;
@@ -58,14 +57,12 @@ public class EnemyAI : MonoBehaviour
         {
             if (StartFacingRight)
             {
-                sprite.flipX = false;
                 eState = enemyState.wRight;
                 currentDirection = enemyState.wRight;
 
             }
             else
             {
-                sprite.flipX = true;
                 eState = enemyState.wLeft;
                 currentDirection = enemyState.wLeft;
             }
@@ -77,9 +74,12 @@ public class EnemyAI : MonoBehaviour
     public virtual void Update()
     {
         gravityFalls();
-        CheckFall();
-        //CheckCollisionFoward();
-        HorizontalMovement();
+        if (!stopEnemy)
+        {
+            CheckFall();
+            CheckCollisionFoward();
+            HorizontalMovement();
+        }
     }
 
     void gravityFalls()
@@ -116,8 +116,6 @@ public class EnemyAI : MonoBehaviour
             case enemyState.wRight:
                 if (myRB.velocity.x != speed)
                 {
-                    if (sprite.flipX)
-                        sprite.flipX = false;
                     weakBoxOrient();
                     myRB.velocity = new Vector2(speed, myRB.velocity.y);
                 }
@@ -125,8 +123,6 @@ public class EnemyAI : MonoBehaviour
             case enemyState.wLeft:
                 if (myRB.velocity.x != -speed)
                 {
-                    if (!sprite.flipX)
-                        sprite.flipX = true;
                     weakBoxOrient();
                     myRB.velocity = new Vector2(-speed, myRB.velocity.y);
                 }
@@ -180,12 +176,11 @@ public class EnemyAI : MonoBehaviour
     {
 
     }
-
-    RaycastHit2D hit;
     Vector3 enemyCentre;
     public Collider2D enemyCol;
     public virtual void CheckFall()
     {
+        RaycastHit2D hit;
         enemyCentre = enemyCol.bounds.center;
         Vector2 rayDir = Vector2.down;
         if (eState == enemyState.wLeft)
@@ -215,6 +210,7 @@ public class EnemyAI : MonoBehaviour
 
     public virtual void CheckCollisionFoward()//mejorar con que los raycasts tengan una distancia acorde al ancho en cada altura del collider
     {
+        RaycastHit2D[] hit;
         enemyCentre = enemyCol.bounds.center;
         Vector2 rayDir = Vector2.down;
         if (eState == enemyState.wLeft)
@@ -232,10 +228,18 @@ public class EnemyAI : MonoBehaviour
         for(float i=enemyCentre.y-enemyCol.bounds.extents.y/1.2f;i<= enemyCentre.y + enemyCol.bounds.extents.y; i += 0.5f)
         {
             Vector2 newCentre = new Vector2(enemyCentre.x, i);
-            hit = Physics2D.Raycast(newCentre, rayDir, dist, layerMask);
+            hit = Physics2D.RaycastAll(newCentre, rayDir, dist, layerMask);
             Debug.DrawRay(newCentre, rayDir * dist, Color.green);
-            Debug.Log(gameObject + " COLLISION WITH " + hit.collider.gameObject);
-            if (hit&&hit.collider.transform.root.gameObject!=gameObject)
+            //Debug.Log(gameObject + " COLLISION WITH " + hit.collider.gameObject);
+            bool hitBool = false;
+            for(int k = 0; k < hit.Length; k++)
+            {
+                if(hit[k].collider.gameObject.tag=="wall" || hit[k].collider.gameObject.tag == "ground" || hit[k].collider.gameObject.tag == "platform")
+                {
+                    hitBool = true;
+                }
+            }
+            if (hitBool)
             {
                 if (eState == enemyState.wLeft)
                 {
@@ -248,10 +252,8 @@ public class EnemyAI : MonoBehaviour
                 break;
             }
         }
-
-
     }
-    public virtual void OnCollisionEnter2D(Collision2D col)
+    /*public virtual void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == "wall" || col.gameObject.tag == "enemy")
         {
@@ -267,22 +269,22 @@ public class EnemyAI : MonoBehaviour
                     break;
             }
         }
-    }
+    }*/
     void weakBoxOrient()
     {
         if (weakBoxOrientation)//facing right?
         {
             if (eState == enemyState.wRight)
-                weakBox.transform.parent.rotation = new Quaternion(0, 0, 0, 1);
+                weakBox.transform.parent.rotation = Quaternion.Euler(0, 0, 0);
             else if (eState == enemyState.wLeft)
-                weakBox.transform.parent.rotation = new Quaternion(0, 180, 0, 1);
+                weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
         }
         else//facing left?
         {
             if (eState == enemyState.wLeft)
-                weakBox.transform.parent.rotation = new Quaternion(0, 0, 0, 1);
+                weakBox.transform.parent.rotation = Quaternion.Euler(0, 0, 0);
             else if (eState == enemyState.wRight)
-                weakBox.transform.parent.rotation = new Quaternion(0, 180, 0, 1);
+                weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
         }
     }
 }

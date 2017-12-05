@@ -68,12 +68,15 @@ public class PlayerMovement : MonoBehaviour
     public pmoveState pmState;
     public enum pmoveState
     {
+
         stopRight,
         stopLeft,
         wRight,
         wLeft
     }
 
+    public bool stopPlayer;
+    bool playerStopped;
 
     // Use this for initialization
     void Awake()
@@ -88,6 +91,8 @@ public class PlayerMovement : MonoBehaviour
         initialHeight = 0;
         bouncing = false;
         bounceTime = 0;
+        stopPlayer = false;
+        playerStopped = false;
         if (startFacingRight)
         {
             pmState = pmoveState.stopRight;
@@ -96,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
         {
             pmState = pmoveState.stopLeft;
         }
-        
+
     }
     private void Start()
     {
@@ -107,18 +112,33 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HorizontalMovement();
-        CheckGrounded();
-        CheckCollisionHead();
-        gravityFalls();
-        if (!jumpWithHeight)
+        if (!stopPlayer)
         {
-            Jump();
+            if (playerStopped) playerStopped = false;
+            HorizontalMovement();
+            if (!jumpWithHeight)
+            {
+                Jump();
+            }
+            else
+            {
+                JumpWithHeight();
+            }
+            LookDownUp();
         }
         else
         {
-            JumpWithHeight();
+            if (!playerStopped)
+            {
+                playerStopped = true;
+                myRB.velocity = Vector3.zero;
+                phase = jumpphase.fall;
+            }
         }
+
+        CheckGrounded();
+        CheckCollisionHead();
+        gravityFalls();
         if (bouncing)//tiempo rebotando (perdemos el control del jugador)
         {
             bounceTime += Time.deltaTime;
@@ -143,7 +163,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (myRB.velocity.x < 0 && v < 0) spriteTransf.rotation = Quaternion.identity;
             }
-
             if (accVersionOn || (accOnAir && !IsGrounded))
             {
                 HorzSpeed = myRB.velocity.x;
@@ -199,13 +218,13 @@ public class PlayerMovement : MonoBehaviour
                 //finalmente actualizamos la velocidad
                 myRB.velocity = new Vector2(1 * HorzSpeed, myRB.velocity.y);
             }
-
             else
             {
-                //this is to let player stop de slash with movement or whehn hitting ground
+                //this is to let player stop de slash with movement or when hitting ground
                 if ((v != 0 && PlayerSlash.instance.stopOnMove && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing) ||
                     (PlayerSlash.instance.stopOnGround && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing && IsGrounded && PlayerSlash.instance.timeSlashing > 0.1))//if we detect some movement
                 {
+                    //Debug.Log("ISGROUNDED= " + IsGrounded);
                     PlayerSlash.instance.StopSlash();
                 }
                 //--------------MOVER JUGADOR SEGUN CONTROLES---------------
@@ -222,56 +241,56 @@ public class PlayerMovement : MonoBehaviour
 #if DEBUG_LOG
         Debug.Log("EN FASE " + phase.ToString());
 #endif
-        if (!IsGrounded)//------------------- LA GRAVEDAD NO PERDONA ---------------------------------
+        if (jumpWithHeight)
         {
-            if (jumpWithHeight)
+            switch (phase)
             {
-                switch (phase)
-                {
-                    case jumpphase.none:
-                        gravityAct = 0;
-                        break;
-                    case jumpphase.normal:
-                        gravityAct = gravity;
-                        break;
-                    case jumpphase.rise:
-                        gravityAct = gravity;
-                        break;
-                    case jumpphase.stop:
-                        gravityAct = gravity * gtimesStop;
-                        // if((transform.position.y - initialHeight < maxHeight/4))
-                        break;
-                    case jumpphase.fall:
-                        gravityAct = gravity * gtimesStop / 2;
-                        break;
-                }
+                case jumpphase.none:
+                    gravityAct = 0;
+                    break;
+                case jumpphase.normal:
+                    gravityAct = gravity;
+                    break;
+                case jumpphase.rise:
+                    gravityAct = gravity;
+                    break;
+                case jumpphase.stop:
+                    gravityAct = gravity * gtimesStop;
+                    // if((transform.position.y - initialHeight < maxHeight/4))
+                    break;
+                case jumpphase.fall:
+                    gravityAct = gravity * gtimesStop / 2;
+                    break;
             }
-            else
-            {
-                if (myRB.velocity.y >= 0) gravityAct = gravityUp;
-                else gravityAct = gravityDown;
-            }
-
-            //CONTROLAMOS QUE NO SUPERE EL MAX DE CAIDA
-            if (myRB.velocity.y > maxFallSpeed)
-            {
-                fallSpeed = myRB.velocity.y + (gravityAct * Time.deltaTime);
-            }
-            else
-            {
-                fallSpeed = maxFallSpeed;
-            }
-            if (shortHops && phase == jumpphase.stop && (transform.position.y - initialHeight < maxHeight / 2))//CASO ESPECIAL PARA DAR SHORT HOPS
-            {
+        }
+        else
+        {
+            if (myRB.velocity.y >= 0) gravityAct = gravityUp;
+            else gravityAct = gravityDown;
+        }
+        if (IsGrounded)
+        {
+            gravityAct = gravity;
+        }
+        //CONTROLAMOS QUE NO SUPERE EL MAX DE CAIDA
+        if (myRB.velocity.y > maxFallSpeed)
+        {
+            fallSpeed = myRB.velocity.y + (gravityAct * Time.deltaTime);
+        }
+        else
+        {
+            fallSpeed = maxFallSpeed;
+        }
+        if (shortHops && phase == jumpphase.stop && (transform.position.y - initialHeight < maxHeight / 2))//CASO ESPECIAL PARA DAR SHORT HOPS
+        {
 #if DEBUG_LOG
                 Debug.Log("CASO ESPECIAL SHORT HOPS");
 #endif
-                fallSpeed = 0;
-                phase = jumpphase.fall;
-            }
-            fallSpeed = Mathf.Clamp(fallSpeed, maxFallSpeed, maxJumpSpeed);//poner valores grandes que no opriman la parabola
-            myRB.velocity = new Vector2(myRB.velocity.x, fallSpeed);
+            fallSpeed = 0;
+            phase = jumpphase.fall;
         }
+        fallSpeed = Mathf.Clamp(fallSpeed, maxFallSpeed, maxJumpSpeed);//poner valores grandes que no opriman la parabola
+        myRB.velocity = new Vector2(myRB.velocity.x, fallSpeed);
     }
     void Jump()//Mecanica de salto antigua
     {
@@ -347,11 +366,11 @@ public class PlayerMovement : MonoBehaviour
     }
     public void BounceBack()
     {
-            Debug.Log("BOUNCE BACK!! dir= " + (PlayerSlash.instance.lastSlashDir * -1));
-            bouncing = true;
-            bounceTime = 0;
-            myRB.velocity = PlayerSlash.instance.lastSlashDir * -1 * bounceForce;
-            instance.phase = jumpphase.fall;
+        //Debug.Log("BOUNCE BACK!! dir= " + (PlayerSlash.instance.lastSlashDir * -1));
+        bouncing = true;
+        bounceTime = 0;
+        myRB.velocity = PlayerSlash.instance.lastSlashDir * -1 * bounceForce;
+        instance.phase = jumpphase.fall;
     }
 
     private void orientPlayer()
@@ -364,7 +383,7 @@ public class PlayerMovement : MonoBehaviour
         {
             pmState = pmoveState.wLeft;
         }
-        else if (pmState==pmoveState.wRight)
+        else if (pmState == pmoveState.wRight)
         {
             pmState = pmoveState.stopRight;
         }
@@ -394,8 +413,8 @@ public class PlayerMovement : MonoBehaviour
         Debug.DrawRay(playerCollider.bounds.center, up, Color.red);
         if (hit)
         {
-            Debug.Log("Hit.Collider.gameObject.tag= " + hit.collider.gameObject.tag);
-            if (hit.collider.gameObject.tag == "ground" || hit.collider.gameObject.tag == "platform")
+            //Debug.Log("Hit.Collider.gameObject.tag= " + hit.collider.gameObject.tag);
+            if (hit.collider.gameObject.tag == "ground" || hit.collider.gameObject.tag == "platform" || hit.collider.gameObject.tag == "wall")
             {
                 if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop))
                 {
@@ -416,18 +435,100 @@ public class PlayerMovement : MonoBehaviour
     private void CheckGrounded()
     {
         Vector3 playerCentre = playerCollider.bounds.center;
-        float maxDist = (playerCollider.bounds.extents.y + 0.05f);
+        float maxDist = (playerCollider.bounds.extents.y) + 1f;
         int layerMask = LayerMask.GetMask("Scenary");
-        hit =Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, maxDist, layerMask);
-        Vector3 down = Vector3.down * maxDist;
-        Debug.DrawRay(playerCollider.bounds.center, down, Color.green);
-        if (hit)
+        Vector3 down = Vector3.down;
+        bool hasHit = false;
+        for (float i = playerCentre.x - playerCollider.bounds.extents.x / 1.2f; i <= playerCentre.x + playerCollider.bounds.extents.x; i += 0.45f)
         {
-                IsGrounded = true;
+            Vector2 newCentre = new Vector2(i, playerCentre.y);
+            hit = Physics2D.Raycast(newCentre, down, maxDist, layerMask);
+            Debug.DrawRay(newCentre, down * maxDist, Color.green);
+            if (hit) hasHit = true;
+
+        }
+        if (hasHit)
+        {
+            IsGrounded = true;
         }
         else
         {
             IsGrounded = false;
         }
+    }
+    private void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "wall" || (col.gameObject.tag == "ground" && isAtRight(playerCollider, col)))
+        {
+            if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
+            {
+                PlayerSlash.instance.StopSlash();
+            }
+        }
+    }
+    [Tooltip("Time pressing w/up or s/down needed to look up of down (when not moving)")]
+    public float maxTimePressing2Look;
+    bool pressingUp = false, pressingDown=false;
+    float timePressingUp = 0, timePressingDown = 0;
+    void LookDownUp()
+    {
+        float h = Input.GetAxisRaw(axis);
+        float v = Input.GetAxisRaw("Vertical");
+        Vector2 velOlgura = new Vector2(0.1f, 0.1f);
+        //Debug.Log("VELOCITY=" + myRB.velocity);
+        if (h == 0 && ((myRB.velocity.x < velOlgura.x && myRB.velocity.y < velOlgura.y) && (myRB.velocity.x > -velOlgura.x && myRB.velocity.y > -4f)))
+        {
+            if (v>0)
+            {
+                //Debug.Log("PRESSING UP");
+                    pressingUp = true;
+                    timePressingUp += Time.deltaTime;
+                    if (timePressingUp >= maxTimePressing2Look)
+                    {
+                   // Debug.Log("LOOKING UP");
+                    CameraMovement.instance.LookUp = true;
+                    }
+            }else if (v<0)
+            {
+               // Debug.Log("PRESSING DOWN");
+                pressingDown = true;
+                    timePressingDown += Time.deltaTime;
+                    if (timePressingDown >= maxTimePressing2Look)
+                    {
+                   // Debug.Log("LOOKING DOWN");
+                    CameraMovement.instance.LookDown = true;
+                }
+            }
+            else
+            {
+                //Debug.Log("STOP LOOK UP/DOWN");
+                timePressingUp = 0;
+                timePressingDown = 0;
+                pressingUp = pressingDown = false;
+                CameraMovement.instance.LookUp = CameraMovement.instance.LookDown=false;
+            }
+        }
+        else if(pressingUp || pressingDown)
+        {
+            //Debug.Log("STOP LOOK UP/DOWN");
+            timePressingUp = 0;
+            timePressingDown = 0;
+            pressingUp = pressingDown = false;
+            CameraMovement.instance.LookUp = CameraMovement.instance.LookDown = false;
+        }
+
+    }
+
+    bool isAtRight(Collider2D player, Collider2D Obstacle)
+    {
+        bool res = false;
+        float limitXdcha = Obstacle.bounds.center.x + Obstacle.bounds.extents.x;
+        float limitXizda = Obstacle.bounds.center.x - Obstacle.bounds.extents.x;
+        float limitYtop= Obstacle.bounds.center.y + Obstacle.bounds.extents.y;
+        if ((player.bounds.center.x > limitXdcha || player.bounds.center.x < limitXizda) && player.bounds.center.y<limitYtop)
+        {
+            res = true;
+        }
+        return res;
     }
 }

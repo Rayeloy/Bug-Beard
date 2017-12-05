@@ -83,15 +83,25 @@ public class PlayerSlash : MonoBehaviour
 
     void Update()
     {
-        mousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z - camera.transform.position.z));
-        if (Input.GetButtonDown("Slash") && (slashSt == SlashState.ready || slashSt == SlashState.crystal))
+        if (!PlayerMovement.instance.stopPlayer)
         {
-            //Debug.Log("SLASH!");
-            slash();
+            mousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z - camera.transform.position.z));
+            if (Input.GetButtonDown("Slash") && (slashSt == SlashState.ready || slashSt == SlashState.crystal))
+            {
+                //Debug.Log("SLASH!");
+                slash();
+            }
+            if (jumpOutOfCrystal && Input.GetButtonDown("Jump") && slashSt == SlashState.crystal)
+            {
+                ExitCrystal();
+            }
         }
-        if (jumpOutOfCrystal && Input.GetButtonDown("Jump") && slashSt == PlayerSlash.SlashState.crystal)
+        else
         {
-            ExitCrystal();
+            if (slashSt == SlashState.slashing)
+            {
+                StopSlash();
+            }
         }
     }
 
@@ -114,6 +124,7 @@ public class PlayerSlash : MonoBehaviour
     }
     public void StopSlash()
     {
+        //Debug.Log("STOP SLASH");
         if (abruptEnd)
             myRB.velocity = Vector2.zero;
         slashSt = SlashState.cooldown;

@@ -8,17 +8,15 @@ public class GameController : MonoBehaviour
 
     public static GameController instance;
     public bool CheckPointOrder;
-    public Text HPText;
     public bool CheatsOn;
-    public GameObject rellenoProgressBar;
-    public RectTransform initialPosSlashBar;
-    public RectTransform finalPosSlashBar;
-    private float dRellenoPos;
 
     public static List<EnemyHP> enemyList;
     public CheckPoint lastCheckPoint;
     private List<CheckPoint> checkPoints;
 
+    public List<Mission> missionList;
+    //[HideInInspector]
+    public Mission currentMission;
 
     private void Awake()
     {
@@ -28,36 +26,59 @@ public class GameController : MonoBehaviour
         {
             enemyList = new List<EnemyHP>();
         }
-        setupHUD();
         checkPoints = new List<CheckPoint>();
         checkPoints.Add(lastCheckPoint);//añadimos el primer checkPoint (la salida)
+        currentMission = missionList[0];
     }
     // Update is called once per frame
+
+
+    private void Start()
+    {
+        currentMission.konoStart();
+        setupHUD();
+    }
 
     void Update()
     {
         Cheats();
-        updateHUD();
+        currentMission.konoUpdate();
 
     }
+
+    public void completeMission(Mission _mission=null)
+    {
+        if (_mission == null)
+        {
+            for (int i = 0; i < missionList.Count; i++)
+            {
+                if (missionList[i].missionCompleted)
+                {
+                    continue;
+                }
+                else
+                {
+                    currentMission = missionList[i];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            missionList.Remove(_mission);
+        }
+        
+        HUDManager.instance.cleanMission();
+        HUDManager.instance.setupMissionHUD(currentMission);
+    }
+
     void setupHUD()
     {
+        HUDManager.instance.setupMissionHUD(currentMission);
         //SlashCDBar.maxValue = PlayerSlash.instance.cdTime;
         //SlashCDBar.interactable = false;
     }
-    private float newRellenoProgressBarPos;
-    public void updateHUD()
-    {
-        dRellenoPos = finalPosSlashBar.localPosition.x - initialPosSlashBar.localPosition.x;
-        newRellenoProgressBarPos = initialPosSlashBar.localPosition.x + ((PlayerSlash.instance.cd * dRellenoPos) / PlayerSlash.instance.cdTime);
-        rellenoProgressBar.transform.localPosition = new Vector2(newRellenoProgressBarPos, rellenoProgressBar.transform.localPosition.y);
-    }
 
-    public void updateHUDHP()
-    {
-        HPText.text = PlayerHP.instance.HitPoints + " HP";
-        //SlashCDBar.value = PlayerSlash.instance.cd;
-    }
     /*public float getSlashCD()
     {
         return PlayerSlash.instance.cd;
@@ -68,7 +89,7 @@ public class GameController : MonoBehaviour
             player.transform.position = lastCheckPoint.spawnPos.position;
         else
         {
-            Debug.Log("checkPoints.Count== " + checkPoints.Count);
+            //Debug.Log("checkPoints.Count== " + checkPoints.Count);
             if (checkPoints.Count == 1)
             {
                 player.transform.position = checkPoints[0].spawnPos.position;
@@ -79,7 +100,7 @@ public class GameController : MonoBehaviour
             }
         }
         PlayerHP.instance.HitPoints = PlayerHP.instance.MaxHitPoints;
-        updateHUDHP();
+        HUDManager.instance.updateHUDHP();
         PlayerSlash.instance.cd = 2;
     }
     public void GameOver(GameObject player)
@@ -115,7 +136,7 @@ public class GameController : MonoBehaviour
         }
         for (int i = 0; i < checkPoints.Count; i++)
         {
-            Debug.Log("checkPoint " + i + "= " + checkPoints[i].ToString());
+            //Debug.Log("checkPoint " + i + "= " + checkPoints[i].ToString());
         }
     }
 

@@ -18,15 +18,16 @@ public class CameraMovement : MonoBehaviour
     private Vector3 cameraPosAct;
     private Vector3 cameraPosFinal;
     private Vector3 lastCameraPosFinal;
-    private Transform[] hotSpots;
 
     public float fowDist;
     public float runFowDist;
     //SpringCamMode1
+    [Header("Old Spring Camera Mode 1")]
     public float maxTime;
     private float actTime;
     private float progress;
 
+    [Header("Old Spring Camera Mode 2")]
     //SpringCamMode2
     public float camAcc;
     private float camDeacc;
@@ -37,12 +38,25 @@ public class CameraMovement : MonoBehaviour
     private float newPlayerTSpeed;
     private float playerTLastPosX;
 
-    private cameraMode camMode;
     private PlayerMovement.pmoveState lastPMState;
     private float speedTimer;
     public float speedFreq;
 
     Collider2D cameraLimits;
+
+    //------------------------------CAMERA FINAL VERSION----------------------------
+    private cameraMode camMode;
+    public Vector2 focusPosition;
+    hotSpot currentHotSpot;
+    private List<Transform> hsTargets;
+
+    float smoothVelocityX, smoothVelocityY;
+    public float verticalSmoothTime, horizontalSmoothTime;
+    float finalVSmoothT,finalHSmoothT;
+    [HideInInspector]
+    public bool LookDown = false, LookUp=false;
+    [Tooltip("Distancia que se mueve la camara al mirar hacia abajo o arriba pulsando s/down o w/up.")]
+    public float LookDownDist, LookUpDist;
 
     private void Awake()
     {
@@ -63,19 +77,18 @@ public class CameraMovement : MonoBehaviour
     {
         focusPlayer,
         focusPlayerBox,
-        focusHotSpot
+        focusHotSpot,
+        focusList,
     }
 
     void Start()
     {
-        //Debug.Log("pmState= " + PlayerMovement.instance.pmState.ToString());
         if (PlayerMovement.instance.pmState == PlayerMovement.pmoveState.stopRight)
         {
             PlayerT.localPosition = new Vector3(cameraPosOr.x + fowDist, cameraPosOr.y, cameraPosOr.z);
         }
         else if (PlayerMovement.instance.pmState == PlayerMovement.pmoveState.stopLeft)
         {
-            //Debug.Log("cameraTargetPos=" + Player.localPosition);
             PlayerT.localPosition = new Vector3(cameraPosOr.x - fowDist, cameraPosOr.y, cameraPosOr.z);
         }
         cameraPosFinal = PlayerT.localPosition;
@@ -83,8 +96,9 @@ public class CameraMovement : MonoBehaviour
     }
     void LateUpdate()
     {
-        //PlayerT.localPosition = new Vector3(PlayerT.localPosition.x, cameraPosOr.y, cameraPosOr.z);
         lastCameraPosFinal = cameraPosFinal;
+        finalVSmoothT = verticalSmoothTime;
+        finalHSmoothT = horizontalSmoothTime;
         switch (camMode)
         {
             case cameraMode.focusPlayer:
@@ -92,19 +106,29 @@ public class CameraMovement : MonoBehaviour
                 break;
             case cameraMode.focusPlayerBox:
                 PlayerCameraBox.instance.KonoUpdate();
+                focusPlayerBox();
                 break;
             case cameraMode.focusHotSpot:
+                PlayerCameraBox.instance.KonoUpdate();
+                focusPlayerBox();
                 focusHotSpot();
                 break;
+            case cameraMode.focusList:
+                break;
         }
-        /*if (speedTimer > speedFreq)
+        if (LookUp)
         {
-            playerTSpeed = (PlayerT.localPosition.x - playerTLastPosX) / Time.fixedDeltaTime;
-            playerTLastPosX = PlayerT.localPosition.x;
-            speedTimer = 0;
+            focusPosition.y += LookUpDist;
         }
-        speedTimer += Time.deltaTime;
-        camTrans.position = PlayerT.position;*/
+        else if(LookDown)
+        {
+            focusPosition.y -= LookDownDist;
+        }
+        //Debug.Log("PREFINAL CAMERA POS= " + transform.position);
+        focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
+        focusPosition.x = Mathf.SmoothDamp(transform.position.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
+        //Debug.Log("FINAL CAMERA POS= " + focusPosition);
+        transform.position = (Vector3)focusPosition + Vector3.forward * -10;
     }
 
     void focusPlayer()//sigue al jugador con camara muelle a la misma altura siempre
@@ -214,12 +238,75 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
+    public PlayerCameraBox pCamBox;
+    void focusPlayerBox()
+    {
+        if (instance.blockVer)
+        {
+            focusPosition.y = instance.minHeight;
+            if (Camera.main.transform.position.y > instance.minHeight + 0.05f || Camera.main.transform.position.y < instance.minHeight - 0.05f)
+            {
+                Debug.Log("blockVer= true!; moving towards minHeight");
+            }
+        }
+        focusPosition.x += pCamBox.currentLookAheadX;
+    }
+
+    public void setHotSpot(hotSpot _hotSpot)
+    {
+        currentHotSpot = _hotSpot;
+        hsTargets = currentHotSpot.targetList;
+        camMode = cameraMode.focusHotSpot;
+    }
+
+    public void stopHotSpot(hotSpot _hotSpot = null)
+    {
+        if (_hotSpot == null)
+        {
+            currentHotSpot = null;
+            hsTargets = null;
+            camMode = cameraMode.focusPlayerBox;
+        }
+    }
 
     void focusHotSpot()
     {
-
+        if (currentHotSpot.useCustomSmoothTime)
+        {
+            finalVSmoothT = currentHotSpot.SmoothTime;
+            finalHSmoothT = currentHotSpot.SmoothTime;
+        }
+        switch (currentHotSpot.hsMode)
+        {
+            case hotSpot.HotSpotMode.fixedPos:
+                focusPosition.x = currentHotSpot.FixedX;
+                focusPosition.y = currentHotSpot.FixedY;
+                break;
+            case hotSpot.HotSpotMode.fixedX:
+                focusPosition.x = currentHotSpot.FixedX;
+                break;
+            case hotSpot.HotSpotMode.fixedY:
+                focusPosition.y = currentHotSpot.FixedY;
+                break;
+            case hotSpot.HotSpotMode.listCentre:
+                List<Vector2> pointList = new List<Vector2>();
+                for (int i = 0; i < hsTargets.Count; i++)
+                {
+                        pointList.Add(hsTargets[i].position);
+                }
+                Vector2 centroid = new Vector2();
+                for(int i = 0; i < pointList.Count; i++)
+                {
+                    centroid += pointList[i];
+                }
+                centroid = centroid / pointList.Count;
+                focusPosition.x = centroid.x;
+                focusPosition.y = centroid.y;
+                break;
+        }
+        //Debug.Log("focusPosition= " + focusPosition+"; cameraPosition= "+transform.position);
     }
-
+    //BLOQUEO VERTICAL Y HORIZONTAL
     public struct Ground
     {
         public GameObject ownGObject;

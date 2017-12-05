@@ -1,0 +1,372 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1314090923595368}
+  m_IsPrefabParent: 1
+--- !u!1 &1020180136486780
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4018164970505486}
+  - component: {fileID: 114966620312230958}
+  m_Layer: 0
+  m_Name: Objetivo2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1296941977714492
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4910714216067262}
+  - component: {fileID: 114634439857432678}
+  m_Layer: 0
+  m_Name: Objetivo1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1314090923595368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4447727257248714}
+  - component: {fileID: 114892079268965674}
+  m_Layer: 0
+  m_Name: GameController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1472320912441516
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4178824621448962}
+  - component: {fileID: 114616913389605494}
+  m_Layer: 0
+  m_Name: MissionSalvarABob
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1565563083277578
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4184880373548154}
+  - component: {fileID: 114105192116219960}
+  m_Layer: 0
+  m_Name: Objetivo4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1761632633623786
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4429662306368940}
+  - component: {fileID: 114426489218305778}
+  m_Layer: 0
+  m_Name: Objetivo3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1989591546989174
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4046970997568012}
+  - component: {fileID: 114288953189599904}
+  m_Layer: 0
+  m_Name: Objetivo5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4018164970505486
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1020180136486780}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 682.4, y: 260.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4178824621448962}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4046970997568012
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1989591546989174}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 773.7, y: 206.60004, z: 0}
+  m_LocalScale: {x: 0.999993, y: 0.999999, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4178824621448962}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4178824621448962
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1472320912441516}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4910714216067262}
+  - {fileID: 4018164970505486}
+  - {fileID: 4429662306368940}
+  - {fileID: 4184880373548154}
+  - {fileID: 4046970997568012}
+  m_Father: {fileID: 4447727257248714}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4184880373548154
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1565563083277578}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 773.7, y: 206.60002, z: 0}
+  m_LocalScale: {x: 0.999993, y: 0.999999, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4178824621448962}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4429662306368940
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1761632633623786}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 773.7, y: 206.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4178824621448962}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4447727257248714
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1314090923595368}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 17.52, y: -2.51, z: 0}
+  m_LocalScale: {x: 0.49346343, y: 0.5458306, z: 1}
+  m_Children:
+  - {fileID: 4178824621448962}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4910714216067262
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1296941977714492}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 22.879099, y: 23.285616, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4178824621448962}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114105192116219960
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1565563083277578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e1c701e17892247b5122bc02aaeed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectiveName: Derrota al golem
+  description: "Esto no ser\xE1 tan sencillo..."
+  oType: 2
+  enemiesToKill:
+  - {fileID: 0}
+  totalEnemies: 0
+  enemiesKilled: 0
+  interacted: 0
+  reached: 0
+  completed: 0
+  active: 0
+--- !u!114 &114288953189599904
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1989591546989174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e1c701e17892247b5122bc02aaeed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectiveName: Habla con Bob
+  description: obvio
+  oType: 0
+  enemiesToKill: []
+  totalEnemies: 0
+  enemiesKilled: 0
+  interacted: 0
+  reached: 0
+  completed: 0
+  active: 0
+--- !u!114 &114426489218305778
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1761632633623786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e1c701e17892247b5122bc02aaeed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectiveName: Derrota a los demiperros
+  description: Obvio
+  oType: 2
+  enemiesToKill:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  totalEnemies: 0
+  enemiesKilled: 0
+  interacted: 0
+  reached: 0
+  completed: 0
+  active: 0
+--- !u!114 &114616913389605494
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1472320912441516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d75ccf9e394c8c540868df3aee274f79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missionName: Salvar a Bob
+  mType: 0
+  currentObjective: {fileID: 0}
+  objectives:
+  - {fileID: 114634439857432678}
+  - {fileID: 114966620312230958}
+  - {fileID: 114426489218305778}
+  - {fileID: 114105192116219960}
+  - {fileID: 114288953189599904}
+  missionCompleted: 0
+  breakableWall: {fileID: 0}
+  golem: {fileID: 0}
+--- !u!114 &114634439857432678
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1296941977714492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e1c701e17892247b5122bc02aaeed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectiveName: Habla con NoSoyBob
+  description: Obvio
+  oType: 0
+  enemiesToKill: []
+  totalEnemies: 0
+  enemiesKilled: 0
+  interacted: 0
+  reached: 0
+  completed: 0
+  active: 0
+--- !u!114 &114892079268965674
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1314090923595368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3922f71c8698984896b4193f6a0e105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CheckPointOrder: 1
+  CheatsOn: 1
+  lastCheckPoint: {fileID: 0}
+  missionList:
+  - {fileID: 114616913389605494}
+  currentMission: {fileID: 0}
+--- !u!114 &114966620312230958
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1020180136486780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e1c701e17892247b5122bc02aaeed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectiveName: Encuentra a Bob
+  description: Obvio
+  oType: 1
+  enemiesToKill: []
+  totalEnemies: 0
+  enemiesKilled: 0
+  interacted: 0
+  reached: 0
+  completed: 0
+  active: 0

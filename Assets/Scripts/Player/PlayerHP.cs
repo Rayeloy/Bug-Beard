@@ -46,7 +46,7 @@ public class PlayerHP : MonoBehaviour
         if (!Inmune)
         {
             HitPoints -= damage;
-            GameController.instance.updateHUDHP();
+            HUDManager.instance.updateHUDHP();
 #if DEBUG_LOG
             Debug.Log("HP= " + HitPoints);
 #endif 

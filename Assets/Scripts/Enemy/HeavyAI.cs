@@ -27,7 +27,10 @@ public class HeavyAI : EnemyAI
     public override void Update()
     {
         base.Update();
-        Attack();
+        if (!stopEnemy)
+        {
+            Attack();
+        }
     }
 
 
