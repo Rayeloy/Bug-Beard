@@ -42,20 +42,20 @@ public class Mission_SaveBob : Mission {
     public override void konoUpdate()
     {
         base.konoUpdate();
-        Debug.Log("mission update: timerGolemCinematic="+ timerGolemCinematic+"; golemCinemStarted= "+ golemCinemStarted);
+        //Debug.Log("mission update: timerGolemCinematic="+ timerGolemCinematic+"; golemCinemStarted= "+ golemCinemStarted);
         if (golemCinemStarted)
         {
             timerGolemCinematic += Time.deltaTime;
-            Debug.Log("GOLEM CINEMATIC PROGRESS: timerGolemCinematic=" + timerGolemCinematic);
+            //Debug.Log("GOLEM CINEMATIC PROGRESS: timerGolemCinematic=" + timerGolemCinematic);
             if (timerGolemCinematic >= maxTimerGolemCinematic / 2)
             {
                 //activateHeavyEnemy
                 golem.stopEnemy = false;
             }
-            Debug.Log("maxTimerGolemCinematic= " + maxTimerGolemCinematic);
+           // Debug.Log("maxTimerGolemCinematic= " + maxTimerGolemCinematic);
             if (timerGolemCinematic >= maxTimerGolemCinematic)
             {
-                Debug.Log("STOP GOLEM CINEMATIC");
+              //  Debug.Log("STOP GOLEM CINEMATIC");
                 CameraMovement.instance.stopHotSpot();
                 golemCinemStarted = false;
             }

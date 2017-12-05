@@ -301,7 +301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missionName: Salvar a Bob
   mType: 0
-  currentObjective: {fileID: 0}
+  currentObjective: {fileID: 114105192116219960}
   objectives:
   - {fileID: 114634439857432678}
   - {fileID: 114966620312230958}

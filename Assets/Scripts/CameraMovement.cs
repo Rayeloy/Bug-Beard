@@ -127,6 +127,8 @@ public class CameraMovement : MonoBehaviour
         //Debug.Log("PREFINAL CAMERA POS= " + transform.position);
         focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
         focusPosition.x = Mathf.SmoothDamp(transform.position.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
+        //focusPosition.y = Mathf.Lerp(transform.position.y, focusPosition.y, Time.deltaTime*4);
+        //focusPosition.x = Mathf.Lerp(transform.position.x, focusPosition.x, Time.deltaTime*4);
         //Debug.Log("FINAL CAMERA POS= " + focusPosition);
         transform.position = (Vector3)focusPosition + Vector3.forward * -10;
     }

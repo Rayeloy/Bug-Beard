@@ -185,8 +185,10 @@ MonoBehaviour:
   focusPosition: {x: 0, y: 0}
   verticalSmoothTime: 0.3
   horizontalSmoothTime: 0.3
-  LookDownDist: 2
-  LookUpDist: 2
+  LookDown: 0
+  LookUp: 0
+  LookDownDist: 12
+  LookUpDist: 7
   pCamBox: {fileID: 114042595972877064}
   camCol: {fileID: 114747669979254778}
   minHeight: 0

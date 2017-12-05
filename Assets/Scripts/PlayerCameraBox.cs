@@ -93,9 +93,9 @@ public class PlayerCameraBox : MonoBehaviour {
             {
                 shiftX = targetBounds.max.x - right;
             }
-            left = Mathf.SmoothDamp(left, left + shiftX,ref boxSmoothX1,0.01f);
-            right = Mathf.SmoothDamp(right, right + shiftX, ref boxSmoothX2, 0.01f);
-            // left + shiftX;right += shiftX;
+            //left = Mathf.SmoothDamp(left, left + shiftX,ref boxSmoothX1,0.01f);
+            //right = Mathf.SmoothDamp(right, right + shiftX, ref boxSmoothX2, 0.01f);
+            left += shiftX;right += shiftX;
 
             float shiftY = 0;
             if (targetBounds.min.y < bottom)
@@ -106,9 +106,9 @@ public class PlayerCameraBox : MonoBehaviour {
             {
                 shiftY = targetBounds.max.y - top;
             }
-            top = Mathf.SmoothDamp(top, top + shiftY, ref boxSmoothY1, 0.01f);
-            bottom = Mathf.SmoothDamp(bottom, bottom + shiftY, ref boxSmoothY2, 0.01f);
-            //top += shiftY;bottom += shiftY;
+            //top = Mathf.SmoothDamp(top, top + shiftY, ref boxSmoothY1, 0.01f);
+            //bottom = Mathf.SmoothDamp(bottom, bottom + shiftY, ref boxSmoothY2, 0.01f);
+            top += shiftY;bottom += shiftY;
             centre = new Vector2((left + right) / 2, (top + bottom) / 2);
             velocity = new Vector2(shiftX, shiftY);
         }
