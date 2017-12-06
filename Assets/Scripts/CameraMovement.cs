@@ -45,9 +45,10 @@ public class CameraMovement : MonoBehaviour
     Collider2D cameraLimits;
 
     //------------------------------CAMERA FINAL VERSION----------------------------
+    [Header("CAMERA FINAL VERSION")]
     private cameraMode camMode;
     public Vector2 focusPosition;
-    hotSpot currentHotSpot;
+    hotSpotData currentHotSpot;
     private List<Transform> hsTargets;
 
     float smoothVelocityX, smoothVelocityY;
@@ -254,9 +255,9 @@ public class CameraMovement : MonoBehaviour
         focusPosition.x += pCamBox.currentLookAheadX;
     }
 
-    public void setHotSpot(hotSpot _hotSpot)
+    public void setHotSpot(hotSpotData _hotSpotData)
     {
-        currentHotSpot = _hotSpot;
+        currentHotSpot = _hotSpotData;
         hsTargets = currentHotSpot.targetList;
         camMode = cameraMode.focusHotSpot;
     }
@@ -280,17 +281,17 @@ public class CameraMovement : MonoBehaviour
         }
         switch (currentHotSpot.hsMode)
         {
-            case hotSpot.HotSpotMode.fixedPos:
+            case hotSpotData.HotSpotMode.fixedPos:
                 focusPosition.x = currentHotSpot.FixedX;
                 focusPosition.y = currentHotSpot.FixedY;
                 break;
-            case hotSpot.HotSpotMode.fixedX:
+            case hotSpotData.HotSpotMode.fixedX:
                 focusPosition.x = currentHotSpot.FixedX;
                 break;
-            case hotSpot.HotSpotMode.fixedY:
+            case hotSpotData.HotSpotMode.fixedY:
                 focusPosition.y = currentHotSpot.FixedY;
                 break;
-            case hotSpot.HotSpotMode.listCentre:
+            case hotSpotData.HotSpotMode.listCentre:
                 List<Vector2> pointList = new List<Vector2>();
                 for (int i = 0; i < hsTargets.Count; i++)
                 {

@@ -24,7 +24,7 @@ public class Event_Conversation : MonoBehaviour
     [Tooltip("List of enemies that activate after event ends.")]
     public EnemyAI[] enemigos;
 
-    hotSpot myHotSpot;
+    hotSpotData myHotSpot;
 
     public enum EventTrigger
     {
@@ -44,7 +44,7 @@ public class Event_Conversation : MonoBehaviour
             List<Transform> targetList = new List<Transform>();
             targetList.Add(PlayerMovement.instance.gameObject.transform);
             targetList.Add(focusTarget);
-            myHotSpot = new hotSpot(hotSpot.HotSpotMode.listCentre,targetList);
+            myHotSpot = new hotSpotData(hotSpotData.HotSpotMode.listCentre,targetList);
         }
 
         //revisión de errores
