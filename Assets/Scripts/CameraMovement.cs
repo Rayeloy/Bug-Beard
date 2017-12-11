@@ -10,7 +10,6 @@ public class CameraMovement : MonoBehaviour
     public bool SpringCameraNewMode;
 
     public EasingCurves EC;
-    private Transform camTrans;
     public Transform PlayerT;//Camera Target en el player
     public Transform Player;
     private Rigidbody2D playerTRB;//Rigid Body del Camera Target en el Player
@@ -50,18 +49,20 @@ public class CameraMovement : MonoBehaviour
     public Vector2 focusPosition;
     hotSpotData currentHotSpot;
     private List<Transform> hsTargets;
+    private Vector3 cameraTarget;
 
     float smoothVelocityX, smoothVelocityY;
     public float verticalSmoothTime, horizontalSmoothTime;
-    float finalVSmoothT,finalHSmoothT;
+    float finalVSmoothT, finalHSmoothT;
     [HideInInspector]
-    public bool LookDown = false, LookUp=false;
+    public bool LookDown = false, LookUp = false;
     [Tooltip("Distancia que se mueve la camara al mirar hacia abajo o arriba pulsando s/down o w/up.")]
     public float LookDownDist, LookUpDist;
+    Vector3 cameraLastPos;
 
     private void Awake()
     {
-        camTrans = transform;
+        myRB = GetComponent<Rigidbody2D>();
         progress = 1.5f;
         playerTRB = PlayerT.GetComponent<Rigidbody2D>();
         actTime = maxTime + 1;//empezar apagado
@@ -79,7 +80,7 @@ public class CameraMovement : MonoBehaviour
         focusPlayer,
         focusPlayerBox,
         focusHotSpot,
-        focusList,
+        focusPlayerBoxSpeed
     }
 
     void Start()
@@ -94,6 +95,8 @@ public class CameraMovement : MonoBehaviour
         }
         cameraPosFinal = PlayerT.localPosition;
         lastPMState = PlayerMovement.instance.pmState;
+        cameraLastPos = transform.position;
+        cameraTarget = Player.position;//no es correcto pero por no liarla con la focusBox
     }
     void LateUpdate()
     {
@@ -114,24 +117,39 @@ public class CameraMovement : MonoBehaviour
                 focusPlayerBox();
                 focusHotSpot();
                 break;
-            case cameraMode.focusList:
+            case cameraMode.focusPlayerBoxSpeed:
+                focusPlayerBoxSpeed();
                 break;
         }
         if (LookUp)
         {
             focusPosition.y += LookUpDist;
         }
-        else if(LookDown)
+        else if (LookDown)
         {
             focusPosition.y -= LookDownDist;
         }
-        //Debug.Log("PREFINAL CAMERA POS= " + transform.position);
-        focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
-        focusPosition.x = Mathf.SmoothDamp(transform.position.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
-        //focusPosition.y = Mathf.Lerp(transform.position.y, focusPosition.y, Time.deltaTime*4);
-        //focusPosition.x = Mathf.Lerp(transform.position.x, focusPosition.x, Time.deltaTime*4);
-        //Debug.Log("FINAL CAMERA POS= " + focusPosition);
-        transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+
+        //focusPosition.y = Mathf.SmoothDamp(cameraTarget.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
+        if (camMode != cameraMode.focusPlayerBoxSpeed)
+        {
+            //focusPosition.x = Mathf.SmoothDamp(cameraTarget.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
+            focusPosition = SuperSmoothLerp(cameraLastPos,cameraTarget,focusPosition,Time.deltaTime,17f);
+            //Debug.Log("FINAL CAMERA POS= " + focusPosition);
+            cameraTarget = (Vector3)focusPosition + Vector3.forward * -10;
+            ShakeCamera();
+            transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+            cameraLastPos = transform.position;
+
+        }
+        else
+        {
+            Vector3 aux = (Vector3)focusPosition + Vector3.forward * -10;
+            if (!frenando)
+                transform.position = new Vector3(transform.position.x, aux.y, aux.z);
+            else
+                transform.position= (Vector3)focusPosition + Vector3.forward * -10;
+        }
     }
 
     void focusPlayer()//sigue al jugador con camara muelle a la misma altura siempre
@@ -252,7 +270,59 @@ public class CameraMovement : MonoBehaviour
                 Debug.Log("blockVer= true!; moving towards minHeight");
             }
         }
-        focusPosition.x += pCamBox.currentLookAheadX;
+        focusPosition += Vector2.right * pCamBox.currentLookAheadX;
+
+    }
+    [Header("focusPlayerBoxSpeed")]
+    public float acc, maxSpeed;
+    public Rigidbody2D playerRB;//Rigid Body del Camera Target en el Player
+    private Rigidbody2D myRB;
+    private float dir;
+    bool frenando;
+    float timeFrenando;
+    public float MaxTimeFrenando;
+    void focusPlayerBoxSpeed()
+    {
+        pCamBox.konoUpdate2();
+        if (pCamBox.realTargetLookAhead - transform.position.x != 0)
+        {
+            if (playerRB.velocity.x != 0)
+            {
+                frenando = false;
+                dir = Mathf.Sign(pCamBox.realTargetLookAhead - transform.position.x);
+                if (Mathf.Abs(myRB.velocity.x) < maxSpeed)
+                    myRB.velocity = new Vector2(myRB.velocity.x + ((acc * Time.deltaTime) * dir), myRB.velocity.y);
+                else
+                {
+                    myRB.velocity = new Vector2(maxSpeed * dir, myRB.velocity.y);
+                }
+            }
+            else//frena
+            {
+                if (!frenando)
+                {
+                    myRB.velocity = new Vector2(0, myRB.velocity.y);
+                    frenando = true;
+                    timeFrenando = 0;
+                }
+                if (timeFrenando <= MaxTimeFrenando)
+                {
+                    //probar a lerpear la velocidad
+                    float prog = timeFrenando / MaxTimeFrenando;
+                    focusPosition.x = Mathf.Lerp(transform.position.x, pCamBox.realTargetLookAhead, prog);
+                    Debug.Log("FRENANDO: posActual=" + transform.position.x + "posSiguiente= " + focusPosition.x);
+                    timeFrenando += Time.deltaTime;
+                }
+                else
+                {
+                    frenando = false;
+                    focusPosition.x = pCamBox.realTargetLookAhead;
+                }
+
+            }
+        }
+
+
     }
 
     public void setHotSpot(hotSpotData _hotSpotData)
@@ -262,13 +332,80 @@ public class CameraMovement : MonoBehaviour
         camMode = cameraMode.focusHotSpot;
     }
 
-    public void stopHotSpot(hotSpot _hotSpot = null)
+    public void stopHotSpot(hotSpotData _hotSpot = null)
     {
         if (_hotSpot == null)
         {
             currentHotSpot = null;
             hsTargets = null;
             camMode = cameraMode.focusPlayerBox;
+        }
+    }
+
+    bool shaking, smoothShakeStart_End;
+    float TimeShaking;
+    float MaxTimeShaking;
+    float ShakingSize;
+    float NextShakeTime;
+    float MaxNextShakeTime;
+    Vector2 shakedPos;
+    public void shakeCameraTrial(float time)
+    {
+        StartShakeCamera(time,0.5f,0.08f,true);
+    }
+    public void StartShakeCamera(float time, float size = 0.5f,float shakeFreq=0.08f, bool _smoothShakeStart_End = false)
+    {
+        shaking = true;
+        smoothShakeStart_End = _smoothShakeStart_End;
+        shakedPos = Vector2.zero;
+        TimeShaking = 0;
+        MaxTimeShaking = time;
+        ShakingSize = size;
+        NextShakeTime = MaxNextShakeTime + 1;
+    }
+    void ShakeCamera()
+    {
+        if (shaking)
+        {
+            Debug.Log("SHAKING CAMERA");
+            if (TimeShaking >= MaxTimeShaking)
+            {
+                shaking = false;
+            }
+            float actShakingSize = ShakingSize;
+            //smoothShake
+            if (smoothShakeStart_End)
+            {
+                if (TimeShaking < MaxTimeShaking / 5)//beggining
+                {
+                    float prog = TimeShaking / (MaxTimeShaking / 5);
+                    actShakingSize = Mathf.Lerp(0, ShakingSize, prog);
+                }
+                else if (TimeShaking >= (MaxTimeShaking / 5) && TimeShaking <= (MaxTimeShaking-(MaxTimeShaking / 5)))
+                {
+                    actShakingSize = ShakingSize;
+                }else if (TimeShaking > (MaxTimeShaking - (MaxTimeShaking / 5)))
+                {
+                    float timeStartEnd = (MaxTimeShaking - (MaxTimeShaking / 5));
+                    float prog = (TimeShaking- timeStartEnd) / (MaxTimeShaking- timeStartEnd);
+                    actShakingSize = Mathf.Lerp(ShakingSize, 0, prog);
+                }
+            }
+            else
+            {
+                actShakingSize = ShakingSize;
+            }
+
+            if (NextShakeTime >= MaxNextShakeTime)
+            {
+                NextShakeTime = 0;
+                float shakedX = Random.Range(-actShakingSize, actShakingSize);
+                float shakedY = Random.Range(-actShakingSize, actShakingSize);
+                shakedPos = new Vector2(shakedX, shakedY);
+            }
+            focusPosition = new Vector2(cameraTarget.x + shakedPos.x, cameraTarget.y + shakedPos.y);
+            TimeShaking += Time.deltaTime;
+            NextShakeTime += Time.deltaTime;
         }
     }
 
@@ -309,6 +446,15 @@ public class CameraMovement : MonoBehaviour
         }
         //Debug.Log("focusPosition= " + focusPosition+"; cameraPosition= "+transform.position);
     }
+
+
+    Vector3 SuperSmoothLerp(Vector3 x0, Vector3 y0, Vector3 yt, float t, float k)
+    {
+        Vector3 f = x0 - y0 + (yt - y0) / (k * t);
+        return yt - (yt - y0) / (k * t) + f * Mathf.Exp(-k * t);
+    }
+
+
     //BLOQUEO VERTICAL Y HORIZONTAL
     public struct Ground
     {

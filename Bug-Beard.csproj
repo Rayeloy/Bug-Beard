@@ -235,6 +235,7 @@
     <Compile Include="Assets\Scripts\Enemy\EnemyHP.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySight.cs" />
     <Compile Include="Assets\Scripts\Enemy\HeavyAI.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Keeper\Keeper_Phase1.cs" />
     <Compile Include="Assets\Scripts\Enemy\MushroomAI.cs" />
     <Compile Include="Assets\Scripts\Event_Conversation.cs" />
     <Compile Include="Assets\Scripts\Event_Conversation_Bob.cs" />
@@ -243,8 +244,10 @@
     <Compile Include="Assets\Scripts\fallCheck.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\hotSpot.cs" />
+    <Compile Include="Assets\Scripts\hotSpotData.cs" />
     <Compile Include="Assets\Scripts\HUDManager.cs" />
     <Compile Include="Assets\Scripts\Mission.cs" />
+    <Compile Include="Assets\Scripts\Mission_Boss_Keeper.cs" />
     <Compile Include="Assets\Scripts\Mission_SaveBob.cs" />
     <Compile Include="Assets\Scripts\Objective.cs" />
     <Compile Include="Assets\Scripts\Pit.cs" />

@@ -435,7 +435,7 @@ public class PlayerMovement : MonoBehaviour
     private void CheckGrounded()
     {
         Vector3 playerCentre = playerCollider.bounds.center;
-        float maxDist = (playerCollider.bounds.extents.y) + 1f;
+        float maxDist = (playerCollider.bounds.extents.y) + 0.75f;
         int layerMask = LayerMask.GetMask("Scenary");
         Vector3 down = Vector3.down;
         bool hasHit = false;

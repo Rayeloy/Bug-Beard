@@ -195,7 +195,7 @@ public class Event_Conversation : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("eventFinished=" + eventFinished + "; hasEnterEvTrigger=" + hasEnterEvTrigger + "; allObjTriggered=" + allObjTriggered);
+        //Debug.Log("eventFinished=" + eventFinished + "; hasEnterEvTrigger=" + hasEnterEvTrigger + "; allObjTriggered=" + allObjTriggered);
         if (!eventFinished && hasEnterEvTrigger && allObjTriggered)
         {
             if (col.name == "Player")

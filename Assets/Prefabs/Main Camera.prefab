@@ -25,7 +25,6 @@ GameObject:
   - component: {fileID: 81468105567615922}
   - component: {fileID: 114549265554511260}
   - component: {fileID: 114042595972877064}
-  - component: {fileID: 50307902720034262}
   - component: {fileID: 61193956260780090}
   - component: {fileID: 114747669979254778}
   m_Layer: 0
@@ -83,26 +82,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!50 &50307902720034262
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1522722424647558}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 1
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!61 &61193956260780090
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -155,11 +134,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   verticalOffset: 1
-  lookAheadDstX: 4
-  lookSmoothTimeX: 0.4
-  focusAreaSize: {x: 8, y: 10}
+  lookAheadDstX: 7
+  lookSmoothTimeX: 0.3
+  focusAreaSize: {x: 7, y: 10}
   currentLookAheadX: 0
   smoothLookVelocityX: 0
+  targetLookAheadX: 0
+  lookAheadDirX: 0
+  anclado: 0
+  realCurrentLookAhead: 0
+  realTargetLookAhead: 0
 --- !u!114 &114549265554511260
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -190,6 +174,10 @@ MonoBehaviour:
   LookDownDist: 12
   LookUpDist: 7
   pCamBox: {fileID: 114042595972877064}
+  acc: 0
+  maxSpeed: 0
+  playerRB: {fileID: 0}
+  MaxTimeFrenando: 0
   camCol: {fileID: 114747669979254778}
   minHeight: 0
 --- !u!114 &114747669979254778

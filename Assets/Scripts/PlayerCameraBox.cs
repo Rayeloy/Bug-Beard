@@ -14,10 +14,7 @@ public class PlayerCameraBox : MonoBehaviour {
 
     FocusArea focusArea;
     [HideInInspector]
-    public float currentLookAheadX, smoothLookVelocityX;
-    float targetLookAheadX;
-    float lookAheadDirX;
-
+    public float currentLookAheadX, smoothLookVelocityX, targetLookAheadX, lookAheadDirX;
 
     bool lookAheadStopped;
 
@@ -27,7 +24,9 @@ public class PlayerCameraBox : MonoBehaviour {
         focusArea = new FocusArea(target.bounds, focusAreaSize);
 
     }
-
+    [HideInInspector]
+    public bool anclado;
+    PlayerMovement.pmoveState lastPMState;
     public void KonoUpdate()
     {
         focusArea.Update(target.bounds);
@@ -47,12 +46,47 @@ public class PlayerCameraBox : MonoBehaviour {
                 if (!lookAheadStopped)
                 {
                     lookAheadStopped = true;
+                    //float realLookAheadDst = lookAheadDstX - (lookAheadDstX / 6);
+                    //float realCurrentLookAhead = transform.position.x - focusArea.centre.x;
+                    //Debug.Log("Stopped, targetLookAheadX=" + targetLookAheadX+ "; realCurrentLookAhead ="+ realCurrentLookAhead);
                     targetLookAheadX = currentLookAheadX + (lookAheadDirX * lookAheadDstX - currentLookAheadX) / 4f;
+                    //Debug.Log("Stopped, NEW targetLookAheadX=" + targetLookAheadX);
                 }
             }
         }
-
+        //Debug.Log("TargetLookAheadX= " + targetLookAheadX + "; last CurrentLookAheadX= " + currentLookAheadX);
         currentLookAheadX = Mathf.SmoothDamp(currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTimeX);
+    }
+    [HideInInspector]
+    public float realCurrentLookAhead, realTargetLookAhead;
+    public void konoUpdate2()
+    {
+        focusArea.Update(target.bounds);
+        CameraMovement.instance.focusPosition = focusArea.centre + Vector2.up * verticalOffset;
+        realCurrentLookAhead = transform.position.x;
+        if (focusArea.velocity.x != 0)
+        {
+            lookAheadDirX = Mathf.Sign(focusArea.velocity.x);
+            if ((PlayerMovement.instance.pmState == PlayerMovement.pmoveState.wLeft && focusArea.velocity.x < 0)
+                || (PlayerMovement.instance.pmState == PlayerMovement.pmoveState.wRight && focusArea.velocity.x > 0))
+            {
+                lookAheadStopped = false;
+                realTargetLookAhead = focusArea.centre.x+ lookAheadDirX * lookAheadDstX;
+            }
+            else
+            {
+                if (!lookAheadStopped)
+                {
+                    lookAheadStopped = true;
+                    //float realLookAheadDst = lookAheadDstX - (lookAheadDstX / 6);
+                    Debug.Log("Stopped, targetLookAheadX=" + realTargetLookAhead + "; realCurrentLookAhead =" + realCurrentLookAhead);
+                    realTargetLookAhead = realCurrentLookAhead + (lookAheadDirX * lookAheadDstX - realCurrentLookAhead) / 4f;
+                    Debug.Log("Stopped, NEW targetLookAheadX=" + realTargetLookAhead);
+                }
+            }
+        }
+        realTargetLookAhead = focusArea.centre.x + targetLookAheadX;
+        Debug.Log("TargetLookAheadX= " + realTargetLookAhead + "; last CurrentLookAheadX= " + realCurrentLookAhead);
     }
 
     void OnDrawGizmos()

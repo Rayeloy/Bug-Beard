@@ -28,8 +28,7 @@ public class Mission_SaveBob : Mission {
                 CameraMovement.instance.setHotSpot(myHS);
                 //animacion break
                 //shakeCamera
-                //destroy wall
-                Destroy(breakableWall);
+                CameraMovement.instance.StartShakeCamera(3f, 0.5f, 0.08f, true);
                 timerGolemCinematic = 0;
                 maxTimerGolemCinematic = 3f;
                 golemCinemStarted = true;
@@ -39,6 +38,7 @@ public class Mission_SaveBob : Mission {
     float maxTimerGolemCinematic=3f;
     float timerGolemCinematic = 0;
     bool golemCinemStarted = false;
+    bool wallDestroyed = false;
     public override void konoUpdate()
     {
         base.konoUpdate();
@@ -46,6 +46,12 @@ public class Mission_SaveBob : Mission {
         if (golemCinemStarted)
         {
             timerGolemCinematic += Time.deltaTime;
+            if ((timerGolemCinematic >= maxTimerGolemCinematic / 4) && !wallDestroyed)
+            {
+                //destroy wall
+                Destroy(breakableWall);
+                wallDestroyed = true;
+            }
             //Debug.Log("GOLEM CINEMATIC PROGRESS: timerGolemCinematic=" + timerGolemCinematic);
             if (timerGolemCinematic >= maxTimerGolemCinematic / 2)
             {

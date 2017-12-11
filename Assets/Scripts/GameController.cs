@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 300;
         DontDestroyOnLoad(this);
         instance = this;
         if (enemyList == null)
@@ -28,13 +29,16 @@ public class GameController : MonoBehaviour
         }
         checkPoints = new List<CheckPoint>();
         checkPoints.Add(lastCheckPoint);//añadimos el primer checkPoint (la salida)
-        currentMission = missionList[0];
+        if (missionList.Count > 0)
+            currentMission = missionList[0];
+        else currentMission = null;
     }
     // Update is called once per frame
 
 
     private void Start()
     {
+        if(currentMission!=null)
         currentMission.konoStart();
         setupHUD();
     }
@@ -42,6 +46,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         Cheats();
+        if(currentMission!=null)
         currentMission.konoUpdate();
 
     }
@@ -74,7 +79,11 @@ public class GameController : MonoBehaviour
 
     void setupHUD()
     {
-        HUDManager.instance.setupMissionHUD(currentMission);
+        if (currentMission != null)
+        {
+            HUDManager.instance.setupMissionHUD(currentMission);
+        }
+
         //SlashCDBar.maxValue = PlayerSlash.instance.cdTime;
         //SlashCDBar.interactable = false;
     }
