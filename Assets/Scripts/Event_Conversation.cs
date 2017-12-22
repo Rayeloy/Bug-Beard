@@ -3,34 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Event_Conversation : MonoBehaviour
+public class Event_Conversation : Event
 {
     [Tooltip("Text for the conversation.")]
     public Text textoBob;
-    protected bool eventFinished;
-    protected bool startEvent;
     protected int converStep;
     protected bool startConver;
-    [Tooltip("List of triggers that must be completed so the event can begin.")]
-    public EventTrigger[] eventTriggers;
-    [Tooltip("List of objectives that correspond to every EventTrigger of type objectiveCompletion.")]
-    public Objective[] triggerObjectives;
-    [Tooltip("Toggle if the camera moves to focus on both the player and the target.")]
-    public bool doFocusTarget;
-    [Tooltip("The target of the camera focus")]
-    public Transform focusTarget;
-    [Tooltip("Objective that is completed when the event ends.")]
-    public Objective targetObjective;
-    [Tooltip("List of enemies that activate after event ends.")]
-    public EnemyAI[] enemigos;
 
     hotSpotData myHotSpot;
-
-    public enum EventTrigger
-    {
-        enter = 0,
-        objectiveCompleted = 1
-    }
 
     private void Awake()
     {
@@ -74,8 +54,9 @@ public class Event_Conversation : MonoBehaviour
 
     }
 
-    protected virtual void ProceedEvent()
+    protected override void ProceedEvent()
     {
+        base.ProceedEvent();
         if (startConver)
         {
             //timerConversation += Time.deltaTime;
@@ -90,123 +71,7 @@ public class Event_Conversation : MonoBehaviour
             giveControlBack();
         }
     }
-    bool EventTriggered//si se cumplen todos los triggers
-    {
-        set { }
-        get
-        {
-            bool res = true;
-            for (int i = 0; i < eventTriggers.Length; i++)
-            {
-                switch (eventTriggers[i])
-                {
-                    case EventTrigger.enter:
-                        if (!playerEntered) res = false;
-                        break;
-                    case EventTrigger.objectiveCompleted:
-                        if (!triggerObjectives[indexTrig2Obj(i)].completed) res = false;
-                        break;
-                }
-            }
-            return res;
-        }
-    }
-
-    bool allObjTriggered
-    {
-        set { }
-        get
-        {
-                bool res = true;
-                for (int i = 0; i < eventTriggers.Length; i++)
-                {
-                    if (eventTriggers[i] == EventTrigger.objectiveCompleted)
-                    {
-                        if (!triggerObjectives[indexTrig2Obj(i)].completed) res = false;
-                        break;
-                    }
-                }
-                return res;      
-        }
-    }
-    int indexTrig2Obj(int indexTrigger)
-    {
-        int res = -1;
-        for(int i = 0; i <= indexTrigger; i++)
-        {
-            if (eventTriggers[i] == EventTrigger.objectiveCompleted)
-            {
-                res++;
-            }
-        }
-        return res;
-    }
-    bool playerEntered = false;
-    bool hasEnterEvTrigger
-    {
-        set { }
-        get
-        {
-            bool res = false;
-            for(int i = 0; i < eventTriggers.Length; i++)
-            {
-                if (eventTriggers[i] == EventTrigger.enter)
-                {
-                    res = true;
-                    break;
-                }
-            }
-            return res;
-        }
-    }
-    bool hasObjEvTrigger
-    {
-        set { }
-        get
-        {
-            bool res = false;
-            for (int i = 0; i < eventTriggers.Length; i++)
-            {
-                if (eventTriggers[i] == EventTrigger.objectiveCompleted)
-                {
-                    res = true;
-                    break;
-                }
-            }
-            return res;
-        }
-    }
-    int numObjEvTrigger
-    {
-        set { }
-        get
-        {
-            int res = 0;
-            for (int i = 0; i < eventTriggers.Length; i++)
-            {
-                if (eventTriggers[i] == EventTrigger.objectiveCompleted)
-                {
-                    res++;
-                    break;
-                }
-            }
-            return res;
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        //Debug.Log("eventFinished=" + eventFinished + "; hasEnterEvTrigger=" + hasEnterEvTrigger + "; allObjTriggered=" + allObjTriggered);
-        if (!eventFinished && hasEnterEvTrigger && allObjTriggered)
-        {
-            if (col.name == "Player")
-            {
-                playerEntered = true;
-                StartEvent();
-            }
-        }
-    }
-
-    void StartEvent()
+    protected override void StartEvent()
     {
         if (!startEvent)
         {
@@ -249,26 +114,6 @@ public class Event_Conversation : MonoBehaviour
                 startConver = false;
                 break;
         }
-    }
-    protected virtual void giveControlBack()
-    {
-        PlayerMovement.instance.stopPlayer = false;
-        startEvent = false;
-        for (int i = 0; i < enemigos.Length; i++)
-        {
-            enemigos[i].stopEnemy = false;
-        }
-        if (targetObjective != null)
-        {
-            targetObjective.Complete();
-        }
-        //move camera a Player
-        if (doFocusTarget)
-        {
-            CameraMovement.instance.stopHotSpot();
-        }
-        eventFinished = true;
-
     }
 
 }

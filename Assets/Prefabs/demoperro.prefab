@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61097931565151920}
   m_Layer: 9
   m_Name: bodyCollider
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,8 +100,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1687036258551750}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 290.17, y: 41.09, z: 12.675}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 632.99896, y: 45.372913, z: 1.0004997}
   m_LocalScale: {x: 0.6826459, y: 0.7550896, z: 1.3833771}
   m_Children:
   - {fileID: 4766995165628024}
@@ -115,7 +115,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1920460336448952}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.33, y: 0.11, z: 0}
   m_LocalScale: {x: 0.595724, y: 0.595724, z: 0.59572405}
   m_Children: []
   m_Father: {fileID: 4766995165628024}
@@ -195,7 +195,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.6375885, y: -0.66392803}
+  m_Offset: {x: 0.6375885, y: -0.71347713}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -206,7 +206,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 7.052904, y: 2.3278565}
+  m_Size: {x: 7.052904, y: 2.4269552}
   m_EdgeRadius: 0
 --- !u!70 &70395805053031106
 CapsuleCollider2D:
@@ -220,8 +220,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.072968096, y: 0.000002794975}
-  m_Size: {x: 1.579784, y: 3.10323}
+  m_Offset: {x: 0.22161719, y: -0.15223855}
+  m_Size: {x: 1.7008984, y: 2.8718145}
   m_Direction: 0
 --- !u!114 &114179790826849724
 MonoBehaviour:
@@ -234,18 +234,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8827129737205d04b81c0fbfa622e3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartFacingRight: 1
+  StartFacingRight: 0
   stopIfNoPlayerDetected: 0
   doesPursue: 0
   playerDetected: 0
   speed: 5
   maxFallSpeed: -40
-  gravity: -62.5
   myRB: {fileID: 50039990470310650}
   sprite: {fileID: 212499259751842714}
   weakBox: {fileID: 1753896408538644}
   weakBoxOrientation: 0
-  stoppu: 0
+  stopEnemy: 1
   eState: 0
   currentDirection: 0
   AState: 0
@@ -312,12 +311,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300002, guid: 53a034ceeeb03fe40916033c85d2791b, type: 3}
+  m_Sprite: {fileID: 21300002, guid: ce2663082f214ca4399bf442ef91e316, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3.64, y: 4}
+  m_Size: {x: 14.11, y: 6.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

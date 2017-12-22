@@ -13,7 +13,7 @@ public class EnemyAI : MonoBehaviour
     private GameObject playerGO;
     public float speed;
     public float maxFallSpeed;
-    public float gravity;
+    private float gravity;
     public Rigidbody2D myRB;
     public SpriteRenderer sprite;
     public GameObject weakBox;
@@ -22,6 +22,11 @@ public class EnemyAI : MonoBehaviour
     private float fallSpeed;
     protected bool stoppu;
     public bool stopEnemy;
+
+    private float bounceForce;
+    private float maxBounceTime;
+    private float timeBouncing;
+    private bool bouncing = false;
 
     [HideInInspector]
     public enemyState eState;
@@ -41,7 +46,8 @@ public class EnemyAI : MonoBehaviour
         ready=0,
         preparing=1,
         damaging=2,
-        recovering=3
+        recovering=3,
+        vulnerable=4
     }
 
     public virtual void Awake()
@@ -69,17 +75,26 @@ public class EnemyAI : MonoBehaviour
         }
 
     }
+    private void Start()
+    {
+        bounceForce = PlayerMovement.instance.bounceForce / 2f;
+        maxBounceTime = PlayerMovement.instance.MaxBounceTime;
+        gravity = PlayerMovement.instance.gravity;
+    }
 
     // Update is called once per frame
     public virtual void Update()
     {
         gravityFalls();
+        CheckGrounded();
+        BouncingBack();
         if (!stopEnemy)
         {
             CheckFall();
             CheckCollisionFoward();
             HorizontalMovement();
         }
+
     }
 
     void gravityFalls()
@@ -93,7 +108,7 @@ public class EnemyAI : MonoBehaviour
         {
             fallSpeed = maxFallSpeed;
         }
-        fallSpeed = Mathf.Clamp(fallSpeed, maxFallSpeed, 10000);//poner valores grandes que no opriman la parabola
+        fallSpeed = Mathf.Clamp(fallSpeed, maxFallSpeed, float.MaxValue);//poner valores grandes que no opriman la parabola
         myRB.velocity = new Vector2(myRB.velocity.x, fallSpeed);
     }
 
@@ -130,6 +145,44 @@ public class EnemyAI : MonoBehaviour
             case enemyState.stop:
                 myRB.velocity = new Vector2(0, myRB.velocity.y); ;
                 break;
+        }
+    }
+    bool lastStopEnemy;
+    public void BounceBack(Vector2 player)
+    {
+        Vector2 dir = Vector2.zero;
+        bouncing = true;
+        timeBouncing = 0;
+        lastStopEnemy = stopEnemy;
+        stopEnemy = true;
+        if (IsGrounded)
+        {
+            dir = (Vector2)transform.position - player;
+            if (transform.position.x > player.x)
+            {
+                dir = new Vector2(-dir.y, dir.x);//normal vector
+            }
+            else
+            {
+                dir = new Vector2(dir.y, -dir.x);//normal vector
+            }
+        }
+        else
+        {
+            dir = (Vector2)transform.position - player;
+        }
+        myRB.velocity = dir * bounceForce;
+    }
+    void BouncingBack()
+    {
+        if (bouncing)
+        {
+            timeBouncing += Time.deltaTime;
+            if (timeBouncing >= maxBounceTime)
+            {
+                bouncing = false;
+                stopEnemy = lastStopEnemy;
+            }
         }
     }
     public float olgura;
@@ -178,32 +231,61 @@ public class EnemyAI : MonoBehaviour
     }
     Vector3 enemyCentre;
     public Collider2D enemyCol;
-    public virtual void CheckFall()
+    bool IsGrounded = true;
+    private void CheckGrounded()
     {
         RaycastHit2D hit;
-        enemyCentre = enemyCol.bounds.center;
-        Vector2 rayDir = Vector2.down;
-        if (eState == enemyState.wLeft)
-        {
-            rayDir = new Vector2(-0.5f, -1);
-        }
-        else if(eState == enemyState.wRight)
-        {
-            rayDir = new Vector2(0.5f, -1);
-        }
-        float dist = enemyCol.bounds.extents.y + enemyCol.bounds.extents.y / 3;
+        Vector3 playerCentre = enemyCol.bounds.center;
+        float maxDist = (enemyCol.bounds.extents.y) + 0.05f;
         int layerMask = LayerMask.GetMask("Scenary");
-        hit = Physics2D.Raycast(enemyCentre,rayDir, dist,layerMask);
-        Debug.DrawRay(enemyCentre, rayDir * dist, Color.green);
-        if (!hit)
+        Vector3 down = Vector3.down;
+        bool hasHit = false;
+        for (float i = playerCentre.x - enemyCol.bounds.extents.x / 1.2f; i <= playerCentre.x + enemyCol.bounds.extents.x; i += 0.45f)
         {
+            Vector2 newCentre = new Vector2(i, playerCentre.y);
+            hit = Physics2D.Raycast(newCentre, down, maxDist, layerMask);
+            Debug.DrawRay(newCentre, down * maxDist, Color.green);
+            if (hit) hasHit = true;
+
+        }
+        if (hasHit)
+        {
+            IsGrounded = true;
+        }
+        else
+        {
+            IsGrounded = false;
+        }
+    }
+    public virtual void CheckFall()
+    {
+        if (IsGrounded)
+        {
+            RaycastHit2D hit;
+            enemyCentre = enemyCol.bounds.center;
+            Vector2 rayDir = Vector2.down;
             if (eState == enemyState.wLeft)
             {
-                eState = enemyState.wRight;
+                rayDir = new Vector2(-0.5f, -1);
             }
             else if (eState == enemyState.wRight)
             {
-                eState = enemyState.wLeft;
+                rayDir = new Vector2(0.5f, -1);
+            }
+            float dist = enemyCol.bounds.extents.y + enemyCol.bounds.extents.y / 3;
+            int layerMask = LayerMask.GetMask("Scenary");
+            hit = Physics2D.Raycast(enemyCentre, rayDir, dist, layerMask);
+            Debug.DrawRay(enemyCentre, rayDir * dist, Color.green);
+            if (!hit)
+            {
+                if (eState == enemyState.wLeft)
+                {
+                    eState = enemyState.wRight;
+                }
+                else if (eState == enemyState.wRight)
+                {
+                    eState = enemyState.wLeft;
+                }
             }
         }
     }

@@ -98,7 +98,7 @@ public class PlayerSlash : MonoBehaviour
         }
         else
         {
-            if (slashSt == SlashState.slashing)
+            if (slashSt == SlashState.slashing)//para parar un slash al llegar a un event
             {
                 StopSlash();
             }

@@ -11,6 +11,7 @@ public class Mission_SaveBob : Mission {
 
     public GameObject breakableWall;
     public EnemyAI golem;
+    hotSpotData myHS;
 
     public override void completeObjective(Objective _objective)
     {
@@ -24,7 +25,7 @@ public class Mission_SaveBob : Mission {
                 List<Transform> tList = new List<Transform>();
                 tList.Add(PlayerMovement.instance.gameObject.transform);
                 tList.Add(golem.gameObject.transform);
-                hotSpotData myHS=new hotSpotData(hotSpotData.HotSpotMode.listCentre,tList,true,0.5f);
+                myHS=new hotSpotData(hotSpotData.HotSpotMode.listCentre,tList,true,0.5f);
                 CameraMovement.instance.setHotSpot(myHS);
                 //animacion break
                 //shakeCamera
@@ -62,7 +63,7 @@ public class Mission_SaveBob : Mission {
             if (timerGolemCinematic >= maxTimerGolemCinematic)
             {
               //  Debug.Log("STOP GOLEM CINEMATIC");
-                CameraMovement.instance.stopHotSpot();
+                CameraMovement.instance.stopHotSpot(myHS);
                 golemCinemStarted = false;
             }
         }

@@ -59,9 +59,14 @@ public class CameraMovement : MonoBehaviour
     [Tooltip("Distancia que se mueve la camara al mirar hacia abajo o arriba pulsando s/down o w/up.")]
     public float LookDownDist, LookUpDist;
     Vector3 cameraLastPos;
+    [HideInInspector]
+    public static float camSize;
+    [HideInInspector]
+    public List<hotSpotData> hotSpots;
 
     private void Awake()
     {
+        camSize = GetComponent<Camera>().orthographicSize;
         myRB = GetComponent<Rigidbody2D>();
         progress = 1.5f;
         playerTRB = PlayerT.GetComponent<Rigidbody2D>();
@@ -73,6 +78,7 @@ public class CameraMovement : MonoBehaviour
         speedTimer = 0;
         cameraLimits = GetComponent<Collider2D>();
         playerCol = Player.GetComponent<Collider2D>();
+        hotSpots = new List<hotSpotData>();
     }
 
     public enum cameraMode
@@ -121,17 +127,33 @@ public class CameraMovement : MonoBehaviour
                 focusPlayerBoxSpeed();
                 break;
         }
-        if (LookUp)
+        if(LookUp || LookDown)
         {
-            focusPosition.y += LookUpDist;
-        }
-        else if (LookDown)
-        {
-            focusPosition.y -= LookDownDist;
-        }
+            finalVSmoothT = verticalSmoothTime;
+            finalHSmoothT = horizontalSmoothTime;
+            if (LookUp)
+            {
 
-        //focusPosition.y = Mathf.SmoothDamp(cameraTarget.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
-        if (camMode != cameraMode.focusPlayerBoxSpeed)
+                focusPosition.y += LookUpDist;
+            }
+            else if (LookDown)
+            {
+                focusPosition.y -= LookDownDist;
+            }
+        }
+        
+
+        if (camMode != cameraMode.focusPlayerBox || LookUp || LookDown)
+        {
+            focusPosition.y = Mathf.SmoothDamp(cameraTarget.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
+            focusPosition.x = Mathf.SmoothDamp(cameraTarget.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
+            //Debug.Log("FINAL CAMERA POS= " + focusPosition);
+            cameraTarget = (Vector3)focusPosition + Vector3.forward * -10;
+            ShakeCamera();
+            transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+            cameraLastPos = transform.position;
+        }
+        else 
         {
             //focusPosition.x = Mathf.SmoothDamp(cameraTarget.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
             focusPosition = SuperSmoothLerp(cameraLastPos,cameraTarget,focusPosition,Time.deltaTime,17f);
@@ -142,14 +164,7 @@ public class CameraMovement : MonoBehaviour
             cameraLastPos = transform.position;
 
         }
-        else
-        {
-            Vector3 aux = (Vector3)focusPosition + Vector3.forward * -10;
-            if (!frenando)
-                transform.position = new Vector3(transform.position.x, aux.y, aux.z);
-            else
-                transform.position= (Vector3)focusPosition + Vector3.forward * -10;
-        }
+
     }
 
     void focusPlayer()//sigue al jugador con camara muelle a la misma altura siempre
@@ -327,18 +342,44 @@ public class CameraMovement : MonoBehaviour
 
     public void setHotSpot(hotSpotData _hotSpotData)
     {
+        Debug.Log("SET HOTSPOT: mode:" + _hotSpotData.hsMode+ "hotspots= " + hotSpots.Count);
         currentHotSpot = _hotSpotData;
+        if (!hotSpots.Contains(_hotSpotData))
+        {
+            hotSpots.Add(_hotSpotData);
+        }
         hsTargets = currentHotSpot.targetList;
         camMode = cameraMode.focusHotSpot;
     }
 
     public void stopHotSpot(hotSpotData _hotSpot = null)
     {
+        Debug.Log("STOP HOTSPOT: mode:" + _hotSpot.hsMode);
         if (_hotSpot == null)
         {
             currentHotSpot = null;
             hsTargets = null;
             camMode = cameraMode.focusPlayerBox;
+        }
+        else
+        {
+            Debug.Log("HOTSPOT= " + hotSpots.Count);
+            hotSpots.Remove(_hotSpot);
+            Debug.Log("HOTSPOT= " + hotSpots.Count);
+            if (_hotSpot.hsMode == hotSpotData.HotSpotMode.listCentre)
+            {
+                hsTargets = null;
+            }
+            if (hotSpots.Count > 0)
+            {
+                setHotSpot(hotSpots[hotSpots.Count - 1]);
+            }
+            else
+            {
+                currentHotSpot = null;
+                hsTargets = null;
+                camMode = cameraMode.focusPlayerBox;
+            }
         }
     }
 
@@ -353,7 +394,7 @@ public class CameraMovement : MonoBehaviour
     {
         StartShakeCamera(time,0.5f,0.08f,true);
     }
-    public void StartShakeCamera(float time, float size = 0.5f,float shakeFreq=0.08f, bool _smoothShakeStart_End = false)
+    public void StartShakeCamera(float time, float size = 0.3f,float shakeFreq=0.2f, bool _smoothShakeStart_End = true)
     {
         shaking = true;
         smoothShakeStart_End = _smoothShakeStart_End;
@@ -367,7 +408,7 @@ public class CameraMovement : MonoBehaviour
     {
         if (shaking)
         {
-            Debug.Log("SHAKING CAMERA");
+            //Debug.Log("SHAKING CAMERA");
             if (TimeShaking >= MaxTimeShaking)
             {
                 shaking = false;
@@ -432,7 +473,11 @@ public class CameraMovement : MonoBehaviour
                 List<Vector2> pointList = new List<Vector2>();
                 for (int i = 0; i < hsTargets.Count; i++)
                 {
-                        pointList.Add(hsTargets[i].position);
+                    if (hsTargets[i] == null)
+                    {
+                        hsTargets.Remove(hsTargets[i]);
+                    }
+                    pointList.Add(hsTargets[i].position);
                 }
                 Vector2 centroid = new Vector2();
                 for(int i = 0; i < pointList.Count; i++)

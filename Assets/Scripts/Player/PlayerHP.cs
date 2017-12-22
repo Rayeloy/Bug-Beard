@@ -58,14 +58,10 @@ public class PlayerHP : MonoBehaviour
     {
         if (col.gameObject.tag == "enemy")
         {
-            if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
-            {
-                PlayerSlash.instance.StopSlash();
-                PlayerMovement.instance.BounceBack();
-            }
-            else if(!PlayerMovement.instance.bouncing)//recibir daño
+            if(!PlayerMovement.instance.bouncing && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)//recibir daño
             {
                 TakeDamage(col.gameObject.GetComponent<EnemyHP>().damage);
+                PlayerMovement.instance.BounceBack(col.transform.position);
             }
         }
     }

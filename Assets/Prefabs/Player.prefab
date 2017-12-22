@@ -86,8 +86,8 @@ GameObject:
   - component: {fileID: 114111340313332842}
   - component: {fileID: 114473014263933748}
   - component: {fileID: 114598144317762952}
-  - component: {fileID: 212261313723557140}
   - component: {fileID: 61430828161637034}
+  - component: {fileID: 212787239188167776}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -197,8 +197,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1194134835235840}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.034, y: 0, z: 0}
-  m_LocalScale: {x: 0.17838293, y: 0.17838293, z: 0.17838293}
+  m_LocalPosition: {x: 0.109, y: -0.012, z: 0}
+  m_LocalScale: {x: 0.090408795, y: 0.090408795, z: 0.090408795}
   m_Children: []
   m_Father: {fileID: 4655120214670008}
   m_RootOrder: 1
@@ -275,7 +275,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1318990619047536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 257.7, y: 147.7, z: 10}
+  m_LocalPosition: {x: 825.1, y: 89.8, z: 0}
   m_LocalScale: {x: 2.7212582, y: 2.7212582, z: 2.7212582}
   m_Children:
   - {fileID: 4437459639733436}
@@ -399,11 +399,11 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.06384246, y: 0.0067628757}
-  m_Size: {x: 0.9077961, y: 1.6044245}
+  m_Offset: {x: 0.036229264, y: 0}
+  m_Size: {x: 0.68712795, y: 1.6044245}
   m_Direction: 0
 --- !u!114 &114097875644524566
 MonoBehaviour:
@@ -429,6 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteTransf: {fileID: 4267900683797960}
   myRB: {fileID: 50310238054895654}
+  playerCollider: {fileID: 61430828161637034}
   accVersionOn: 0
   accOnAir: 0
   stopJumpOnCollision: 1
@@ -436,28 +437,23 @@ MonoBehaviour:
   acceleration: 70
   deacceleration: 90
   MaxHorizontalSpeed: 18
-  gravityUp: 200
-  gravityDown: 200
-  jumpForce: 30
-  maxJumpSpeed: 40
   maxFallSpeed: -40
-  maxTimeJumping: 0.3
-  jumpWithHeight: 1
+  maxJumpSpeed: 40
   shortHops: 1
   maxHeight: 7
   timeToReach: 0.4
+  gravity: 0
   phase: 0
   gtimesStop: 1.4
   whatIsGround:
     serializedVersion: 2
     m_Bits: 4294967039
-  bounceForce: 25
+  bounceForce: 7
   bouncing: 0
   MaxBounceTime: 0.4
   startFacingRight: 0
   pmState: 0
   stopPlayer: 0
-  playerCollider: {fileID: 61430828161637034}
   maxTimePressing2Look: 1
 --- !u!114 &114473014263933748
 MonoBehaviour:
@@ -475,7 +471,7 @@ MonoBehaviour:
   stopOnMove: 0
   abruptEnd: 1
   jumpOutOfCrystal: 1
-  InitialSpeed: 70
+  InitialSpeed: 64
   cdTime: 2
   cd: 0
   MaxDistSlash: 18
@@ -530,7 +526,7 @@ SpriteRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1208022107688178}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -574,7 +570,7 @@ SpriteRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1789320945658850}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -612,7 +608,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!212 &212261313723557140
+--- !u!212 &212787239188167776
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -778,7 +774,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 7ad694e402f27ee4d8cb80ca9c923239, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0ec4024724d86404db49a8ce49f16bbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0

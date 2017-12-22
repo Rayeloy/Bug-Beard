@@ -6,9 +6,9 @@ public class Pit : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.tag == "Player")
+        if (col.name == "PlayerBodyTrigger")
         {
-            GameController.instance.GameOver(col.gameObject);
+            GameController.instance.GameOver(col.transform.root.gameObject);
         }
     }
 }

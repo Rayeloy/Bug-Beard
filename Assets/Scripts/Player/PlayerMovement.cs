@@ -9,14 +9,15 @@ public class PlayerMovement : MonoBehaviour
 
     public Transform spriteTransf;
     public Rigidbody2D myRB;
-
+    public Collider2D playerCollider;//collider para movimiento solo
     public bool accVersionOn;
     public bool accOnAir;
     public bool stopJumpOnCollision;
     public bool jumpWithAcc;
-
+    [Header("Movement with acceleration")]
     public float acceleration;
     public float deacceleration;
+    [Header("Horizontal speed")]
     public float MaxHorizontalSpeed;
     float finalAcc;
 
@@ -26,26 +27,30 @@ public class PlayerMovement : MonoBehaviour
     private float HorzSpeed;
     private int deAccDir;
 
-    public float gravityUp;
-    public float gravityDown;
+    //public float gravityUp;
+    //public float gravityDown;
     private float gravityAct;
+    public float maxFallSpeed;
+    private float ActMaxFallSpeed;
+    public float maxJumpSpeed;
+    private float ActMaxJumpSpeed;
+    /*[Header("Old jump")]
     public float jumpForce;
     private float distToGround;
     private bool jumping;
-    private float fallSpeed;
-    public float maxJumpSpeed;
-    public float maxFallSpeed;
-    private float jumpingTime;
-    public float maxTimeJumping;
-
-    public bool jumpWithHeight;
+    public float maxTimeJumping;*/
+    [Header("New jump")]
+    //public bool jumpWithHeight;
     public bool shortHops;
     public float maxHeight;//hay que darlo
     public float timeToReach;//hay que darlo
-    private float gravity;//se calcula solo
+    [HideInInspector]
+    public float gravity;//se calcula solo
     public jumpphase phase;
     public float gtimesStop;
     private float initialHeight;
+    private float fallSpeed;
+    private float jumpingTime;
 
     public LayerMask whatIsGround;
     private bool IsGrounded;
@@ -62,7 +67,8 @@ public class PlayerMovement : MonoBehaviour
         normal,//gravedad normal
         rise,//gravedad muy aumentada
         stop,//parar en shorthops
-        fall//gravedad aumentada
+        fall,//gravedad aumentada
+        wind//gravedad positiva, menor movimiento lateral
     };
     public bool startFacingRight;
     public pmoveState pmState;
@@ -83,9 +89,10 @@ public class PlayerMovement : MonoBehaviour
     {
         instance = this;
         playerCentre = transform.position;
-        HorzSpeed = 0;
+        HorzSpeed = MaxHorizontalSpeed;
+        ActMaxFallSpeed = maxFallSpeed;
+        ActMaxJumpSpeed = maxJumpSpeed;
         deAccDir = 0;
-        jumping = false;
         phase = jumpphase.normal;
         gravity = (-2 * maxHeight) / Mathf.Pow(timeToReach, 2); Debug.Log("la gravedad es de " + gravity);
         initialHeight = 0;
@@ -105,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Start()
     {
-        if (jumpWithHeight) jumpWithAcc = false;
+        jumpWithAcc = false;
         if (accVersionOn) accOnAir = false;
     }
 
@@ -116,14 +123,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (playerStopped) playerStopped = false;
             HorizontalMovement();
-            if (!jumpWithHeight)
-            {
-                Jump();
-            }
-            else
-            {
-                JumpWithHeight();
-            }
+            JumpWithHeight();
             LookDownUp();
         }
         else
@@ -145,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
             if (bounceTime > MaxBounceTime)
             {
                 bouncing = false;
+                phase = jumpphase.normal;
             }
         }
     }
@@ -230,7 +231,7 @@ public class PlayerMovement : MonoBehaviour
                 //--------------MOVER JUGADOR SEGUN CONTROLES---------------
                 if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
                 {
-                    myRB.velocity = new Vector2(1 * MaxHorizontalSpeed * v, myRB.velocity.y);
+                    myRB.velocity = new Vector2(1 * HorzSpeed * v, myRB.velocity.y);
                     orientPlayer();
                 }
             }
@@ -238,11 +239,8 @@ public class PlayerMovement : MonoBehaviour
     }
     void gravityFalls()
     {
-#if DEBUG_LOG
-        Debug.Log("EN FASE " + phase.ToString());
-#endif
-        if (jumpWithHeight)
-        {
+        //Debug.Log("EN FASE " + phase.ToString());
+
             switch (phase)
             {
                 case jumpphase.none:
@@ -261,14 +259,12 @@ public class PlayerMovement : MonoBehaviour
                 case jumpphase.fall:
                     gravityAct = gravity * gtimesStop / 2;
                     break;
+                case jumpphase.wind:
+                    gravityAct = 0;
+                    break;
+
             }
-        }
-        else
-        {
-            if (myRB.velocity.y >= 0) gravityAct = gravityUp;
-            else gravityAct = gravityDown;
-        }
-        if (IsGrounded)
+        if (IsGrounded && phase!= jumpphase.wind)
         {
             gravityAct = gravity;
         }
@@ -289,49 +285,8 @@ public class PlayerMovement : MonoBehaviour
             fallSpeed = 0;
             phase = jumpphase.fall;
         }
-        fallSpeed = Mathf.Clamp(fallSpeed, maxFallSpeed, maxJumpSpeed);//poner valores grandes que no opriman la parabola
+        fallSpeed = Mathf.Clamp(fallSpeed, ActMaxFallSpeed, ActMaxJumpSpeed);//poner valores grandes que no opriman la parabola
         myRB.velocity = new Vector2(myRB.velocity.x, fallSpeed);
-    }
-    void Jump()//Mecanica de salto antigua
-    {
-#if DEBUG_LOG
-        Debug.Log("isGrounded= " + IsGrounded);
-#endif
-        if (Input.GetButtonDown("Jump") && IsGrounded)//Nos abre las puertas para saltar
-        {
-            jumping = true;
-            jumpingTime = 0;
-#if DEBUG_LOG
-            Debug.Log("comenzamos salto; jumping= " + jumping);
-#endif
-        }
-        if (Input.GetButton("Jump") && jumping)//saltando
-        {
-            //contador de tiempo limite de manterner jump  
-            Vector2 jumpingSpeed;
-            if (jumpWithAcc)
-            {
-                jumpingSpeed = new Vector2(myRB.velocity.x, Mathf.Clamp(jumpForce * 1 * Time.deltaTime, maxFallSpeed, maxJumpSpeed));
-            }
-            else
-            {
-                jumpingSpeed = new Vector2(myRB.velocity.x, maxJumpSpeed);
-            }
-            myRB.velocity = jumpingSpeed;
-            jumpingTime += Time.deltaTime;
-            if (jumpingTime >= maxTimeJumping)
-                jumping = false;
-#if DEBUG_LOG
-            Debug.Log("saltando...; jumping= " + jumping);
-#endif
-        }
-        if (Input.GetButtonUp("Jump") && jumping)//no podemos seguir aumentando el salto al soltar el boton
-        {
-            jumping = false;
-#if DEBUG_LOG
-            Debug.Log("salto terminado; jumping= " + jumping);
-#endif
-        }
     }
     void JumpWithHeight()//Mecanica de salto chachi piruli
     {
@@ -364,13 +319,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-    public void BounceBack()
+    public void BounceBack(Vector2 enemy)
     {
         //Debug.Log("BOUNCE BACK!! dir= " + (PlayerSlash.instance.lastSlashDir * -1));
         bouncing = true;
         bounceTime = 0;
-        myRB.velocity = PlayerSlash.instance.lastSlashDir * -1 * bounceForce;
-        instance.phase = jumpphase.fall;
+        Vector2 dir = (Vector2)transform.position - enemy;
+        float finalBounceForce = PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing ? bounceForce : bounceForce / 1.5f;
+        instance.phase = jumpphase.normal;
+        myRB.velocity = dir * finalBounceForce;
     }
 
     private void orientPlayer()
@@ -414,11 +371,10 @@ public class PlayerMovement : MonoBehaviour
         if (hit)
         {
             //Debug.Log("Hit.Collider.gameObject.tag= " + hit.collider.gameObject.tag);
-            if (hit.collider.gameObject.tag == "ground" || hit.collider.gameObject.tag == "platform" || hit.collider.gameObject.tag == "wall")
+            if (hit.collider.gameObject.tag == "ground" || hit.collider.gameObject.tag == "platform" || hit.collider.gameObject.tag == "wall"|| hit.collider.gameObject.tag == "destructible")
             {
-                if (stopJumpOnCollision && (jumping || phase == jumpphase.rise || phase == jumpphase.stop))
+                if (stopJumpOnCollision && (phase == jumpphase.rise || phase == jumpphase.stop))
                 {
-                    jumping = false;
                     phase = jumpphase.fall;
                 }
                 if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
@@ -430,7 +386,6 @@ public class PlayerMovement : MonoBehaviour
     }
     RaycastHit2D hit;
     float distToHit;
-    public Collider2D playerCollider;
     Vector3 playerCentre;
     private void CheckGrounded()
     {
@@ -458,12 +413,47 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D col)
     {
-        if (col.gameObject.tag == "wall" || (col.gameObject.tag == "ground" && isAtRight(playerCollider, col)))
+        if (col.gameObject.tag == "wall" || col.gameObject.tag == "destructible" || (col.gameObject.tag == "ground" && isAtRight(playerCollider, col)))
         {
             if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
             {
                 PlayerSlash.instance.StopSlash();
             }
+        }
+        else if (col.tag == "wind")
+        {
+            if(playerCollider.bounds.min.y> (col.bounds.max.y - 0.5f))
+            {
+                Debug.Log("STOP WIND");
+                myRB.velocity = new Vector2(myRB.velocity.x, 0);
+            }
+            else
+            {
+                phase = jumpphase.none;
+                HorzSpeed = MaxHorizontalSpeed / 2;
+                myRB.velocity = new Vector2(myRB.velocity.x, col.GetComponent<Wind>().Yspeed);
+            }
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag == "wind")
+        {
+            phase = jumpphase.none;
+            HorzSpeed = MaxHorizontalSpeed / 2;
+            myRB.velocity = new Vector2(myRB.velocity.x, col.GetComponent<Wind>().Yspeed);
+            //ActMaxJumpSpeed = maxJumpSpeed / 2;
+            //ActMaxFallSpeed = maxFallSpeed / 2;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.tag == "wind")
+        {
+            phase = jumpphase.normal;
+            HorzSpeed = MaxHorizontalSpeed;
+            //ActMaxJumpSpeed = maxJumpSpeed;
+            //ActMaxFallSpeed = maxFallSpeed;
         }
     }
     [Tooltip("Time pressing w/up or s/down needed to look up of down (when not moving)")]

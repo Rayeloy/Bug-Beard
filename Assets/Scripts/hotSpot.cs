@@ -125,7 +125,8 @@ public class hotSpot : MonoBehaviour
             if (myHSData.hasZoomBack)
             {
                 zoomingStart = true;
-                zoomOriginal = zoomAct = myHSData.mainCamera.orthographicSize;
+                zoomOriginal = CameraMovement.camSize;
+                zoomAct = myHSData.mainCamera.orthographicSize;
                 zoomFinal = zoomBack;
             }
             if (hsMode != hotSpotData.HotSpotMode.none)
@@ -138,6 +139,7 @@ public class hotSpot : MonoBehaviour
     {
         if (col.tag == "Player")
         {
+            Debug.Log("SALE DEL HOTSPOT con mode=" + hsMode);
             if (myHSData.hasZoomBack)
             {
                 zoomingStart = false;
@@ -145,7 +147,7 @@ public class hotSpot : MonoBehaviour
                 zoomFinal = zoomOriginal;
                 zoomAct = mainCamera.orthographicSize;
             }
-            CameraMovement.instance.stopHotSpot();
+            CameraMovement.instance.stopHotSpot(myHSData);
         }
     }
 }

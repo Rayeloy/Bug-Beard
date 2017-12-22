@@ -10,6 +10,7 @@ public class EnemyHP : MonoBehaviour
     public CheckHitBox[] hitBox;
     public GameObject wholeEnemy;
 
+
     private void Start()
     {
         GameController.enemyList.Add(this);
@@ -39,7 +40,6 @@ public class EnemyHP : MonoBehaviour
         }
         HP -= damage;
     }
-
     /*public void CheckTakeDamage()
     {
         if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)

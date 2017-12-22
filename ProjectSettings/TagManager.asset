@@ -12,6 +12,8 @@ TagManager:
   - PlayerAttack
   - platform
   - hotSpot
+  - wind
+  - destructible
   layers:
   - Default
   - TransparentFX
@@ -46,6 +48,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 3280776981
+    locked: 0
   - name: Stage
     uniqueID: 2070550741
     locked: 0

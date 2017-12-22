@@ -178,4 +178,21 @@ public class GameController : MonoBehaviour
 
         return null;
     }
+    /*public static GameObject GetFatherWithComponent(GameObject child, Component fatherComponent)//Busca recursivamente un hijo con nombre childName
+    {
+        GameObject findResult;
+        Component comp = child.GetComponent<fatherComponent>();
+        for (int i = 0; i < padre.transform.childCount; i++)
+        {
+            if (padre.transform.GetChild(i).name == childName)
+            {
+                return padre.transform.GetChild(i).gameObject;
+            }
+            findResult = GetChild(padre.transform.GetChild(i).gameObject, childName);
+            if (findResult != null)//Recursivo
+                return findResult;
+        }
+
+        return null;
+    }*/
 }
