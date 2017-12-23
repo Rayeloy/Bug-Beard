@@ -6,28 +6,16 @@ public class CheckHitBox : MonoBehaviour
 {
 
     protected List<GameObject> tags;
-    AttachedCrystal atCrystal;
-    struct AttachedCrystal
-    {
-        public GameObject Crystal;
-        public bool attachReady;
-        public AttachedCrystal(GameObject _Crystal, bool _attachReady = false)
-        {
-            Crystal = _Crystal;
-            attachReady = _attachReady;
-        }
-    }
+
 
     private void Awake()
     {
-        atCrystal = new AttachedCrystal(null,true);
         tags = new List<GameObject>();
-
     }
     protected virtual void OnTriggerEnter2D(Collider2D col)
     {
         tags.Add(col.gameObject);
-        if(tag=="PlayerAttack" && PlayerSlash.instance.slashSt==PlayerSlash.SlashState.slashing)//COLLISION DE HITBOX DE ATAQUE DEL JUGADOR Y HACIENDO SLASH
+        if(tag=="PlayerAttack" && PlayerSlash.instance.slashSt==PlayerSlash.SlashState.slashing)//COLLaISION DE HITBOX DE ATAQUE DEL JUGADOR Y HACIENDO SLASH
         {
             if (col.tag == "hitBox")
             {
@@ -45,8 +33,7 @@ public class CheckHitBox : MonoBehaviour
             }
             else if (col.gameObject.tag == "crystal")
             {
-                PlayerMovement.instance.attachToCrystal(col.gameObject);
-                atCrystal = new AttachedCrystal(col.gameObject);
+                PlayerSlash.instance.EnterCrystal(col.gameObject);
             }
             else if (col.tag == "destructible")
             {
@@ -60,10 +47,10 @@ public class CheckHitBox : MonoBehaviour
     {
         if (tag == "PlayerAttack" && PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
         {
-            if (col.gameObject.tag == "crystal" && PlayerSlash.instance.slashSt!=PlayerSlash.SlashState.crystal && atCrystal.attachReady)
+            if (col.gameObject.tag == "crystal" && PlayerSlash.instance.slashSt!=PlayerSlash.SlashState.crystal && PlayerSlash.instance.atCrystal.attachReady)
             {
                 PlayerMovement.instance.attachToCrystal(col.gameObject);
-                atCrystal = new AttachedCrystal(col.gameObject);
+                PlayerSlash.instance.atCrystal = new PlayerSlash.AttachedCrystal(col.gameObject);
             }
         }
     }
@@ -72,11 +59,7 @@ public class CheckHitBox : MonoBehaviour
         if (tags.Contains(col.gameObject))
         {
             tags.Remove(col.gameObject);
-            if (col == atCrystal.Crystal)
-            {
-                atCrystal.Crystal = null;
-                atCrystal.attachReady = true;
-            }
+            PlayerSlash.instance.ExitCrystal(col.gameObject);
         }
     }
     public bool CheckFor(string _tag)

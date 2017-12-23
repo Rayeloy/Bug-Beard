@@ -358,6 +358,10 @@ public class PlayerMovement : MonoBehaviour
         GameObject crystalPos = GameController.instance.GetChild(crystal, "playerPos");
         transform.position = crystalPos.transform.position;
         Pointer.instance.attackHBnormal();
+        if (!gameObject.isStatic)
+        {
+            gameObject.isStatic = true;
+        }
     }
 
     private void CheckCollisionHead()
@@ -411,6 +415,12 @@ public class PlayerMovement : MonoBehaviour
             IsGrounded = false;
         }
     }
+    private void MoveWithWind(GameObject wind)
+    {
+        phase = jumpphase.none;
+        HorzSpeed = MaxHorizontalSpeed / 2;
+        myRB.velocity = new Vector2(myRB.velocity.x, wind.GetComponent<Wind>().Yspeed);
+    }
     private void OnTriggerStay2D(Collider2D col)
     {
         if (col.gameObject.tag == "wall" || col.gameObject.tag == "destructible" || (col.gameObject.tag == "ground" && isAtRight(playerCollider, col)))
@@ -422,38 +432,41 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (col.tag == "wind")
         {
-            if(playerCollider.bounds.min.y> (col.bounds.max.y - 0.5f))
+            if(PlayerSlash.instance.slashSt!=PlayerSlash.SlashState.crystal && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
             {
-                Debug.Log("STOP WIND");
-                myRB.velocity = new Vector2(myRB.velocity.x, 0);
-            }
-            else
-            {
-                phase = jumpphase.none;
-                HorzSpeed = MaxHorizontalSpeed / 2;
-                myRB.velocity = new Vector2(myRB.velocity.x, col.GetComponent<Wind>().Yspeed);
-            }
+                if (playerCollider.bounds.min.y > (col.bounds.max.y - 0.5f))
+                {
+                    Debug.Log("STOP WIND");
+                    myRB.velocity = new Vector2(myRB.velocity.x, 0);
+                }
+                else
+                {
+                    MoveWithWind(col.gameObject);
+                }
+            }    
         }
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.tag == "wind")
         {
-            phase = jumpphase.none;
-            HorzSpeed = MaxHorizontalSpeed / 2;
-            myRB.velocity = new Vector2(myRB.velocity.x, col.GetComponent<Wind>().Yspeed);
-            //ActMaxJumpSpeed = maxJumpSpeed / 2;
-            //ActMaxFallSpeed = maxFallSpeed / 2;
+            if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.crystal && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
+            {
+                MoveWithWind(col.gameObject);
+            }
         }
     }
     private void OnTriggerExit2D(Collider2D col)
     {
         if (col.tag == "wind")
         {
-            phase = jumpphase.normal;
-            HorzSpeed = MaxHorizontalSpeed;
-            //ActMaxJumpSpeed = maxJumpSpeed;
-            //ActMaxFallSpeed = maxFallSpeed;
+            if (PlayerSlash.instance.slashSt != PlayerSlash.SlashState.crystal && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
+            {
+                phase = jumpphase.normal;
+            }
+                HorzSpeed = MaxHorizontalSpeed;
+                //ActMaxJumpSpeed = maxJumpSpeed;
+                //ActMaxFallSpeed = maxFallSpeed;
         }
     }
     [Tooltip("Time pressing w/up or s/down needed to look up of down (when not moving)")]

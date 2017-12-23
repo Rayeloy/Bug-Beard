@@ -40,10 +40,23 @@ public class PlayerSlash : MonoBehaviour
         cooldown,
         crystal
     }
+    [HideInInspector]
+    public AttachedCrystal atCrystal;
+    public struct AttachedCrystal
+    {
+        public GameObject Crystal;
+        public bool attachReady;
+        public AttachedCrystal(GameObject _Crystal, bool _attachReady = false)
+        {
+            Crystal = _Crystal;
+            attachReady = _attachReady;
+        }
+    }
 
     private void Awake()
     {
         instance = this;
+        atCrystal = new AttachedCrystal(null, true);
         slashSt = SlashState.ready;
         slashDist = 0;
         timeSlashing = 0;
@@ -93,7 +106,7 @@ public class PlayerSlash : MonoBehaviour
             }
             if (jumpOutOfCrystal && Input.GetButtonDown("Jump") && slashSt == SlashState.crystal)
             {
-                ExitCrystal();
+                ExitJumpCrystal();
             }
         }
         else
@@ -107,6 +120,10 @@ public class PlayerSlash : MonoBehaviour
 
     void slash()
     {
+        if (gameObject.isStatic)
+        {
+            gameObject.isStatic = false;
+        }
         if (gravityOn)
             playerM.phase = PlayerMovement.jumpphase.normal;
         else
@@ -138,8 +155,26 @@ public class PlayerSlash : MonoBehaviour
 #endif
     }
 
-    public void ExitCrystal()
+    public void EnterCrystal(GameObject crystal)
     {
+        PlayerMovement.instance.attachToCrystal(crystal);
+        atCrystal = new AttachedCrystal(crystal);
+    }
+    public void ExitCrystal(GameObject crystal)
+    {
+        if (crystal == instance.atCrystal.Crystal)
+        {
+            instance.atCrystal.Crystal = null;
+            instance.atCrystal.attachReady = true;
+        }
+    }
+
+    public void ExitJumpCrystal()
+    {
+        if (gameObject.isStatic)
+        {
+            gameObject.isStatic = false;
+        }
         playerM.phase = PlayerMovement.jumpphase.normal;
         slashSt = PlayerSlash.SlashState.ready;
     }
