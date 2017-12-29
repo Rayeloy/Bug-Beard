@@ -157,7 +157,7 @@ public class PlayerSlash : MonoBehaviour
     
     public void ResetSlash()
     {
-        cd = 0;
+        cd = cdTime;
         timeSlashing = 0;
         slashSt = SlashState.ready;
     }

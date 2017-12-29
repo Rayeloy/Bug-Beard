@@ -28,9 +28,9 @@ TagManager:
   - Inmune
   - Scenary
   - Background
-  - 
-  - 
-  - 
+  - GhostEnemy
+  - PlayerAttackHB
+  - PlayerBody
   - 
   - 
   - 

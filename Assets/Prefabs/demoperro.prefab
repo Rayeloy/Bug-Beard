@@ -220,8 +220,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.22161719, y: -0.15223855}
-  m_Size: {x: 1.7008984, y: 2.8718145}
+  m_Offset: {x: 0.22161719, y: 0.048652835}
+  m_Size: {x: 1.7008908, y: 3.6519356}
   m_Direction: 0
 --- !u!114 &114179790826849724
 MonoBehaviour:
@@ -244,7 +244,7 @@ MonoBehaviour:
   sprite: {fileID: 212499259751842714}
   weakBox: {fileID: 1753896408538644}
   weakBoxOrientation: 0
-  stopEnemy: 1
+  stopEnemy: 0
   eState: 0
   currentDirection: 0
   AState: 0
@@ -262,7 +262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 35
-  damage: 30
+  damage: 25
   hitBox:
   - {fileID: 114782751090132622}
   wholeEnemy: {fileID: 1687036258551750}

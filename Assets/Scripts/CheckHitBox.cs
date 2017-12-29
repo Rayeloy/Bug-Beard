@@ -29,7 +29,7 @@ public class CheckHitBox : MonoBehaviour
                 {
                     PlayerMovement.instance.BounceBack(col.transform.position);
                 }
-
+                PlayerSlash.instance.ResetSlash();
                 (col.transform.GetComponentInParent(typeof(EnemyAI)) as EnemyAI).BounceBack(PlayerMovement.instance.transform.position);
                 (col.transform.GetComponentInParent(typeof(EnemyHP)) as EnemyHP).TakeDamage(PlayerSlash.instance.slashDamage);
             }
@@ -37,7 +37,6 @@ public class CheckHitBox : MonoBehaviour
             {
                 PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack(col.transform.position);
-                //PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
                 (col.transform.GetComponentInParent(typeof(EnemyAI)) as EnemyAI).BounceBack(PlayerMovement.instance.transform.position);
             }
             else if (col.gameObject.tag == "crystal")
@@ -46,6 +45,7 @@ public class CheckHitBox : MonoBehaviour
             }
             else if (col.tag == "destructible")
             {
+                PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack(col.transform.position);
                 PlayerSlash.instance.ResetSlash();
                 col.gameObject.GetComponent<Destructible>().TakeDamage(PlayerSlash.instance.slashDamage);

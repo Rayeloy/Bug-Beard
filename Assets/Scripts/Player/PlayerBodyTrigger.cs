@@ -11,7 +11,7 @@ public class PlayerBodyTrigger : MonoBehaviour {
             if (!PlayerMovement.instance.bouncing && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)//recibir daño
             {
                 PlayerMovement.instance.BounceBack(col.transform.position);
-                transform.GetComponentInParent<PlayerHP>().TakeDamage(col.gameObject.GetComponent<EnemyHP>().damage);            
+                PlayerHP.instance.TakeDamage(col.transform.GetComponentInParent<EnemyHP>().damage);            
             }
         }
     }

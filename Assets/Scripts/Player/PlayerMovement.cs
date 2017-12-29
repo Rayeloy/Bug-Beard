@@ -324,6 +324,10 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log("BOUNCE BACK!! dir= " + (PlayerSlash.instance.lastSlashDir * -1));
         if(!PlayerHP.instance.Inmune)
         {
+            if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.crystal)
+            {
+                PlayerSlash.instance.ExitJumpCrystal();
+            }
             bouncing = true;
             bounceTime = 0;
             Vector2 dir;
