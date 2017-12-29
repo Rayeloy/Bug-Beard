@@ -319,15 +319,43 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-    public void BounceBack(Vector2 enemy)
+    public void BounceBack(Vector2 enemy, float _BounceForce=-1)
     {
         //Debug.Log("BOUNCE BACK!! dir= " + (PlayerSlash.instance.lastSlashDir * -1));
-        bouncing = true;
-        bounceTime = 0;
-        Vector2 dir = (Vector2)transform.position - enemy;
-        float finalBounceForce = PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing ? bounceForce : bounceForce / 1.5f;
-        instance.phase = jumpphase.normal;
-        myRB.velocity = dir * finalBounceForce;
+        if(!PlayerHP.instance.Inmune)
+        {
+            bouncing = true;
+            bounceTime = 0;
+            Vector2 dir;
+            float finalBounceForce;
+            if (_BounceForce == -1)
+            {
+                finalBounceForce = PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing ? bounceForce : bounceForce / 1.5f;
+            }
+            else
+            {
+                finalBounceForce = _BounceForce;
+            }
+            if (IsGrounded)
+            {
+                //finalBounceForce = finalBounceForce / 2f;
+                dir = (Vector2)transform.position - enemy;
+                if (transform.position.x > enemy.x)
+                {
+                    dir = new Vector2(-dir.y, dir.x);//normal vector
+                }
+                else
+                {
+                    dir = new Vector2(dir.y, -dir.x);//normal vector
+                }
+            }
+            else
+            {
+                dir = (Vector2)transform.position - enemy;
+            }
+            instance.phase = jumpphase.normal;
+            myRB.velocity = dir * finalBounceForce;
+        }
     }
 
     private void orientPlayer()

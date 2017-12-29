@@ -10,7 +10,7 @@ public class EnemyAI : MonoBehaviour
     public bool doesPursue;
     [HideInInspector]
     public int playerDetected;
-    private GameObject playerGO;
+    protected GameObject playerGO;
     public float speed;
     public float maxFallSpeed;
     private float gravity;
@@ -97,7 +97,7 @@ public class EnemyAI : MonoBehaviour
 
     }
 
-    void gravityFalls()
+    protected virtual void gravityFalls()
     {
 
         if (myRB.velocity.y > maxFallSpeed)
@@ -173,7 +173,7 @@ public class EnemyAI : MonoBehaviour
         }
         myRB.velocity = dir * bounceForce;
     }
-    void BouncingBack()
+    protected void BouncingBack()
     {
         if (bouncing)
         {
@@ -352,7 +352,7 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }*/
-    void weakBoxOrient()
+    protected virtual void weakBoxOrient()
     {
         if (weakBoxOrientation)//facing right?
         {

@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class PlayerBodyTrigger : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "enemy" && !PlayerHP.instance.Inmune)
+        {
+            if (!PlayerMovement.instance.bouncing && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)//recibir daño
+            {
+                PlayerMovement.instance.BounceBack(col.transform.position);
+                transform.GetComponentInParent<PlayerHP>().TakeDamage(col.gameObject.GetComponent<EnemyHP>().damage);            
+            }
+        }
+    }
 }

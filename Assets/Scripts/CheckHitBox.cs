@@ -15,20 +15,29 @@ public class CheckHitBox : MonoBehaviour
     protected virtual void OnTriggerEnter2D(Collider2D col)
     {
         tags.Add(col.gameObject);
-        if(tag=="PlayerAttack" && PlayerSlash.instance.slashSt==PlayerSlash.SlashState.slashing)//COLLaISION DE HITBOX DE ATAQUE DEL JUGADOR Y HACIENDO SLASH
+        if(tag=="PlayerAttack" && PlayerSlash.instance.slashSt==PlayerSlash.SlashState.slashing)//COLLISION DE HITBOX DE ATAQUE DEL JUGADOR Y HACIENDO SLASH
         {
             if (col.tag == "hitBox")
             {
-                Debug.Log("enemy " + transform.root.name + " recieves damage");
-                PlayerMovement.instance.BounceBack(col.transform.position);
-                PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
-                (col.transform.GetComponentInParent(typeof(EnemyHP)) as EnemyHP).TakeDamage(PlayerSlash.instance.slashDamage);
+                PlayerSlash.instance.StopSlash();
+                //Debug.Log("enemy " + transform.root.name + " recieves damage");
+                if (col.transform.GetComponentInParent<EnemyHP>().gameObject.name.Contains("Ghost"))//menor bounce con fantasmas
+                {
+                    PlayerMovement.instance.BounceBack(col.transform.position, PlayerMovement.instance.bounceForce / 1.5f);
+                }
+                else
+                {
+                    PlayerMovement.instance.BounceBack(col.transform.position);
+                }
+
                 (col.transform.GetComponentInParent(typeof(EnemyAI)) as EnemyAI).BounceBack(PlayerMovement.instance.transform.position);
+                (col.transform.GetComponentInParent(typeof(EnemyHP)) as EnemyHP).TakeDamage(PlayerSlash.instance.slashDamage);
             }
             else if (col.tag == "enemy")
             {
+                PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack(col.transform.position);
-                PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
+                //PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
                 (col.transform.GetComponentInParent(typeof(EnemyAI)) as EnemyAI).BounceBack(PlayerMovement.instance.transform.position);
             }
             else if (col.gameObject.tag == "crystal")
@@ -38,7 +47,7 @@ public class CheckHitBox : MonoBehaviour
             else if (col.tag == "destructible")
             {
                 PlayerMovement.instance.BounceBack(col.transform.position);
-                PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
+                PlayerSlash.instance.ResetSlash();
                 col.gameObject.GetComponent<Destructible>().TakeDamage(PlayerSlash.instance.slashDamage);
             }
         }

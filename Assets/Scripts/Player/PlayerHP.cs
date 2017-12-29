@@ -11,7 +11,8 @@ public class PlayerHP : MonoBehaviour
     public float HitPoints;
     public float MaxInmunityTime;
     private float InmTime;
-    private bool Inmune;
+    [HideInInspector]
+    public bool Inmune;
 
 
     private void Awake()
@@ -28,10 +29,11 @@ public class PlayerHP : MonoBehaviour
         if (InmTime < MaxInmunityTime && Inmune)
         {
             InmTime += Time.deltaTime;
+            InmuneAnim();
             if (InmTime >= MaxInmunityTime)
             {
                 Inmune = false;
-                gameObject.layer = 8;
+                //gameObject.layer = 8;
             }
         }
         //DEATH CONTROL
@@ -54,22 +56,15 @@ public class PlayerHP : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "enemy")
-        {
-            if(!PlayerMovement.instance.bouncing && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)//recibir daño
-            {
-                TakeDamage(col.gameObject.GetComponent<EnemyHP>().damage);
-                PlayerMovement.instance.BounceBack(col.transform.position);
-            }
-        }
-    }
     void Inmunidad()
     {
         Inmune = true;
         //animacion inmune por t
         InmTime = 0;
-        gameObject.layer = 10;//Inmune
+        //gameObject.layer = 10;//Inmune
+    }
+    void InmuneAnim()
+    {
+
     }
 }

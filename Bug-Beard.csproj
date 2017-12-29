@@ -296,6 +296,7 @@
   <ItemGroup>
     <Compile Include="Assets\Destructible.cs" />
     <Compile Include="Assets\Event.cs" />
+    <Compile Include="Assets\Ghost_AI.cs" />
     <Compile Include="Assets\Scripts\cameraCollider.cs" />
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
     <Compile Include="Assets\Scripts\CheckHitBox.cs" />

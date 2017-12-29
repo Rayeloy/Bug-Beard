@@ -154,6 +154,13 @@ public class PlayerSlash : MonoBehaviour
         Debug.Log("STOP SLASH");
 #endif
     }
+    
+    public void ResetSlash()
+    {
+        cd = 0;
+        timeSlashing = 0;
+        slashSt = SlashState.ready;
+    }
 
     public void EnterCrystal(GameObject crystal)
     {
