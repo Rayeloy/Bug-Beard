@@ -103,7 +103,7 @@ public class hotSpot : MonoBehaviour
 
     private void Update()
     {
-        if (zoomingStart || zoomingReturn)
+        /*if (zoomingStart || zoomingReturn)
         {
             zoomAct = Mathf.SmoothDamp(zoomAct, zoomFinal, ref zoomSmoothSpeed, myHSData.zoomSmoothTime);
             myHSData.mainCamera.orthographicSize = zoomAct;
@@ -115,38 +115,35 @@ public class hotSpot : MonoBehaviour
                     zoomingReturn = false;
                 }
             }
-        }
+        }*/
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.tag == "Player")
         {
-            if (myHSData.hasZoomBack)
+            /*if (myHSData.hasZoomBack)
             {
                 zoomingStart = true;
                 zoomOriginal = CameraMovement.camSize;
                 zoomAct = myHSData.mainCamera.orthographicSize;
                 zoomFinal = zoomBack;
-            }
-            if (hsMode != hotSpotData.HotSpotMode.none)
-            {
+            }*/
                 CameraMovement.instance.setHotSpot(myHSData);
-            }
         }
     }
     private void OnTriggerExit2D(Collider2D col)
     {
         if (col.tag == "Player")
         {
-            Debug.Log("SALE DEL HOTSPOT con mode=" + hsMode);
+            /*Debug.Log("SALE DEL HOTSPOT con mode=" + hsMode);
             if (myHSData.hasZoomBack)
             {
                 zoomingStart = false;
                 zoomingReturn = true;
                 zoomFinal = zoomOriginal;
                 zoomAct = mainCamera.orthographicSize;
-            }
+            }*/
             CameraMovement.instance.stopHotSpot(myHSData);
         }
     }

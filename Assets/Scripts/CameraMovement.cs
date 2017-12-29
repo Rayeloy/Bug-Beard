@@ -45,6 +45,8 @@ public class CameraMovement : MonoBehaviour
 
     //------------------------------CAMERA FINAL VERSION----------------------------
     [Header("CAMERA FINAL VERSION")]
+    Camera myCamera;
+
     private cameraMode camMode;
     public Vector2 focusPosition;
     hotSpotData currentHotSpot;
@@ -54,6 +56,9 @@ public class CameraMovement : MonoBehaviour
     float smoothVelocityX, smoothVelocityY;
     public float verticalSmoothTime, horizontalSmoothTime;
     float finalVSmoothT, finalHSmoothT;
+
+    float CurrentK, TargetK, OriginalK, KSmoothSpeed, KSmoothTime;
+
     [HideInInspector]
     public bool LookDown = false, LookUp = false;
     [Tooltip("Distancia que se mueve la camara al mirar hacia abajo o arriba pulsando s/down o w/up.")]
@@ -64,9 +69,16 @@ public class CameraMovement : MonoBehaviour
     [HideInInspector]
     public List<hotSpotData> hotSpots;
 
+    float currentZoom, targetZoom;
+    float zoomSmoothTime, zoomSmoothSpeed;
+
+    bool ExitingHS = false;
+    float ExitingHSMaxTime, ExitingHSTime;
+
     private void Awake()
     {
-        camSize = GetComponent<Camera>().orthographicSize;
+        myCamera = GetComponent<Camera>();
+        currentZoom = targetZoom=camSize = myCamera.orthographicSize;
         myRB = GetComponent<Rigidbody2D>();
         progress = 1.5f;
         playerTRB = PlayerT.GetComponent<Rigidbody2D>();
@@ -79,6 +91,7 @@ public class CameraMovement : MonoBehaviour
         cameraLimits = GetComponent<Collider2D>();
         playerCol = Player.GetComponent<Collider2D>();
         hotSpots = new List<hotSpotData>();
+        CurrentK = TargetK = OriginalK = 17f;
     }
 
     public enum cameraMode
@@ -103,12 +116,24 @@ public class CameraMovement : MonoBehaviour
         lastPMState = PlayerMovement.instance.pmState;
         cameraLastPos = transform.position;
         cameraTarget = Player.position;//no es correcto pero por no liarla con la focusBox
+        finalVSmoothT = verticalSmoothTime;
+        finalHSmoothT = horizontalSmoothTime;
     }
     void LateUpdate()
     {
         lastCameraPosFinal = cameraPosFinal;
-        finalVSmoothT = verticalSmoothTime;
-        finalHSmoothT = horizontalSmoothTime;
+        if (ExitingHS)
+        {
+            ExitingHSTime += Time.deltaTime;
+            if (ExitingHSTime >= ExitingHSMaxTime)
+            {
+                ExitingHS = false;
+                finalVSmoothT = verticalSmoothTime;
+                finalHSmoothT = horizontalSmoothTime;
+                CurrentK = OriginalK;
+            }
+        }
+
         switch (camMode)
         {
             case cameraMode.focusPlayer:
@@ -141,8 +166,9 @@ public class CameraMovement : MonoBehaviour
                 focusPosition.y -= LookDownDist;
             }
         }
-        
-
+        currentZoom = Mathf.SmoothDamp(currentZoom, targetZoom, ref zoomSmoothSpeed, zoomSmoothTime);
+        myCamera.orthographicSize = currentZoom;
+        Debug.Log("finalVSmoothT= " + finalVSmoothT);
         if (camMode != cameraMode.focusPlayerBox || LookUp || LookDown)
         {
             focusPosition.y = Mathf.SmoothDamp(cameraTarget.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
@@ -156,7 +182,9 @@ public class CameraMovement : MonoBehaviour
         else 
         {
             //focusPosition.x = Mathf.SmoothDamp(cameraTarget.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
-            focusPosition = SuperSmoothLerp(cameraLastPos,cameraTarget,focusPosition,Time.deltaTime,17f);
+                CurrentK = Mathf.SmoothDamp(CurrentK, TargetK, ref KSmoothSpeed, KSmoothTime);
+            Debug.Log("CurrentK =" + CurrentK);
+            focusPosition = SuperSmoothLerp(cameraLastPos,cameraTarget,focusPosition,Time.deltaTime,CurrentK);//17
             //Debug.Log("FINAL CAMERA POS= " + focusPosition);
             cameraTarget = (Vector3)focusPosition + Vector3.forward * -10;
             ShakeCamera();
@@ -348,6 +376,39 @@ public class CameraMovement : MonoBehaviour
         {
             hotSpots.Add(_hotSpotData);
         }
+        if (currentHotSpot.hasZoomBack)
+        {
+            zoomSmoothTime = currentHotSpot.zoomSmoothTime;
+            targetZoom = currentHotSpot.zoomBack;
+        }
+        else
+        {
+            hotSpotData otherHS = null;
+            foreach(hotSpotData hs in hotSpots)
+            {
+                if (hs.hasZoomBack)
+                {
+                    otherHS = hs;
+                    break;
+                }
+            }
+            if (otherHS!=null)
+            {
+                zoomSmoothTime = otherHS.zoomSmoothTime;
+                targetZoom = otherHS.zoomBack;
+            }
+            else
+            {
+                zoomSmoothTime = 0.4f;//default ZoomSmoothTime
+                targetZoom = camSize;
+            }
+        }
+
+        ExitingHS = false;
+        if (currentHotSpot.useCustomSmoothTime)
+        {
+            finalVSmoothT = finalHSmoothT = currentHotSpot.SmoothTime;
+        }
         hsTargets = currentHotSpot.targetList;
         camMode = cameraMode.focusHotSpot;
     }
@@ -376,8 +437,19 @@ public class CameraMovement : MonoBehaviour
             }
             else
             {
+                if (currentHotSpot.useCustomSmoothTime)
+                {
+                    ExitingHS = true;
+                    ExitingHSMaxTime = KSmoothTime = currentHotSpot.SmoothTime;
+                    ExitingHSTime = 0;
+                    CurrentK = OriginalK /3;
+                    TargetK = OriginalK;
+                    //finalHSmoothT = finalVSmoothT = currentHotSpot.SmoothTime;
+                }
                 currentHotSpot = null;
                 hsTargets = null;
+                zoomSmoothTime = 0.4f;//default ZoomSmoothTime
+                targetZoom = camSize;
                 camMode = cameraMode.focusPlayerBox;
             }
         }
@@ -452,11 +524,6 @@ public class CameraMovement : MonoBehaviour
 
     void focusHotSpot()
     {
-        if (currentHotSpot.useCustomSmoothTime)
-        {
-            finalVSmoothT = currentHotSpot.SmoothTime;
-            finalHSmoothT = currentHotSpot.SmoothTime;
-        }
         switch (currentHotSpot.hsMode)
         {
             case hotSpotData.HotSpotMode.fixedPos:
