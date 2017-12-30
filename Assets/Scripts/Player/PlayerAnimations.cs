@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour {
     public static PlayerAnimations instance;
-    [Tooltip("Sprites are in a prefixed order. Do not change it if you are not sure about it")]
     public SpriteRenderer SpriteRend;
+    [Tooltip("Sprites are in a prefixed order. Do not change it if you are not sure about it. 0=Standing; 1=Runing; 2=Jumping; 3=Slashing; 4=Damaged; 5=Sliding")]
     public Sprite[] PlayerSprites;
+    [Tooltip("Sprites are in a prefixed order. Do not change it if you are not sure about it. 0=Standing; 1=Runing; 2=Jumping; 3=Slashing; 4=Damaged; 5=Sliding")]
     public Vector2[] Proportions;
+    [Tooltip("Sprites are in a prefixed order. Do not change it if you are not sure about it. 0=Standing; 1=Runing; 2=Jumping; 3=Slashing; 4=Damaged; 5=Sliding")]
     public Vector2[] Offsets;
     Vector2 StandingProportions;
     Vector2 StandingPosition;
@@ -89,18 +91,22 @@ public class PlayerAnimations : MonoBehaviour {
             case PlayerAnims.Standing:
                 SpriteRend.sprite = PlayerSprites[0];
                 SpriteRend.transform.localScale = new Vector2(StandingProportions.x * Proportions[0].x, StandingProportions.y * Proportions[0].y);
+                SpriteRend.transform.localPosition= new Vector2(StandingPosition.x + Offsets[0].x, StandingPosition.y + Offsets[0].y);
                 break;
             case PlayerAnims.Runing:
                 SpriteRend.sprite = PlayerSprites[1];
                 SpriteRend.transform.localScale = new Vector2(StandingProportions.x * Proportions[1].x, StandingProportions.y * Proportions[1].y);
+                SpriteRend.transform.localPosition = new Vector2(StandingPosition.x + Offsets[1].x, StandingPosition.y + Offsets[1].y);
                 break;
             case PlayerAnims.Jumping:
                 SpriteRend.sprite = PlayerSprites[2];
                 SpriteRend.transform.localScale = new Vector2(StandingProportions.x * Proportions[2].x, StandingProportions.y * Proportions[2].y);
+                SpriteRend.transform.localPosition = new Vector2(StandingPosition.x + Offsets[2].x, StandingPosition.y + Offsets[2].y);
                 break;
             case PlayerAnims.Slashing:
                 SpriteRend.sprite = PlayerSprites[3];
                 SpriteRend.transform.localScale = new Vector2(StandingProportions.x * Proportions[3].x, StandingProportions.y * Proportions[3].y);
+                SpriteRend.transform.localPosition = new Vector2(StandingPosition.x + Offsets[3].x, StandingPosition.y + Offsets[3].y);
                 float angle=AngleBetweenVectors(Vector2.left, PlayerSlash.instance.lastSlashDir);
                 if (PlayerSlash.instance.lastSlashDir.x >= 0)
                 {
@@ -115,10 +121,12 @@ public class PlayerAnimations : MonoBehaviour {
             case PlayerAnims.Damaged:
                 SpriteRend.sprite = PlayerSprites[4];
                 SpriteRend.transform.localScale = new Vector2(StandingProportions.x * Proportions[4].x, StandingProportions.y * Proportions[4].y);
+                SpriteRend.transform.localPosition = new Vector2(StandingPosition.x + Offsets[4].x, StandingPosition.y + Offsets[4].y);
                 break;
             case PlayerAnims.Sliding:
                 SpriteRend.sprite = PlayerSprites[5];
                 SpriteRend.transform.localScale = new Vector2(StandingProportions.x * Proportions[5].x, StandingProportions.y * Proportions[5].y);
+                SpriteRend.transform.localPosition = new Vector2(StandingPosition.x + Offsets[5].x, StandingPosition.y + Offsets[5].y);
                 break;
         }
     }

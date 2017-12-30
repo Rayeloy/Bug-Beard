@@ -133,8 +133,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1052378341294208}
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: 386.18555, y: -5.8678236, z: 10}
+  m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
+  m_LocalPosition: {x: 384.9745, y: -4.852911, z: -1.9375}
   m_LocalScale: {x: 0.6826459, y: 0.7550896, z: 1.3833771}
   m_Children:
   - {fileID: 4721387778367888}
@@ -189,7 +189,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1768508423423414}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 1.61, y: 0.69, z: 0}
+  m_LocalPosition: {x: 1.25, y: 0.67, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4721387778367888}
@@ -271,9 +271,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -1.0214492, y: -0.43263093}
+  m_Offset: {x: -0.87706083, y: -0.37937772}
   serializedVersion: 2
-  m_Radius: 1.6083275
+  m_Radius: 1.8008597
 --- !u!60 &60055872595481556
 PolygonCollider2D:
   m_ObjectHideFlags: 1

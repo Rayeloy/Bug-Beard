@@ -135,6 +135,7 @@ public class PlayerSlash : MonoBehaviour
         //Vector2 vel = DecomposeSpeed(InitialSpeed, mousePosition, myPos);
         lastSlashDir = new Vector2((mousePosition.x - myPos.x), (mousePosition.y - myPos.y)).normalized;
         myRB.velocity = new Vector2(lastSlashDir.x * InitialSpeed, lastSlashDir.y * InitialSpeed);
+        PlayerMovement.instance.pmState = lastSlashDir.x >= 0 ? PlayerMovement.pmoveState.stopRight : PlayerMovement.pmoveState.stopLeft;
         Pointer.instance.attackHBslash();
         //myRB.velocity = new Vector2(80f, 20f);
         //Debug.Log("mouse pos=" + mousePosition.x + ", " + mousePosition.y + "; vx=" + vel.x + ";vy=" + vel.y);
