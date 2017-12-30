@@ -168,7 +168,7 @@ public class CameraMovement : MonoBehaviour
         }
         currentZoom = Mathf.SmoothDamp(currentZoom, targetZoom, ref zoomSmoothSpeed, zoomSmoothTime);
         myCamera.orthographicSize = currentZoom;
-        Debug.Log("finalVSmoothT= " + finalVSmoothT);
+        //Debug.Log("finalVSmoothT= " + finalVSmoothT);
         if (camMode != cameraMode.focusPlayerBox || LookUp || LookDown)
         {
             focusPosition.y = Mathf.SmoothDamp(cameraTarget.y, focusPosition.y, ref smoothVelocityY, finalVSmoothT);
@@ -183,7 +183,7 @@ public class CameraMovement : MonoBehaviour
         {
             //focusPosition.x = Mathf.SmoothDamp(cameraTarget.x, focusPosition.x, ref smoothVelocityX, finalHSmoothT);
                 CurrentK = Mathf.SmoothDamp(CurrentK, TargetK, ref KSmoothSpeed, KSmoothTime);
-            Debug.Log("CurrentK =" + CurrentK);
+            //Debug.Log("CurrentK =" + CurrentK);
             focusPosition = SuperSmoothLerp(cameraLastPos,cameraTarget,focusPosition,Time.deltaTime,CurrentK);//17
             //Debug.Log("FINAL CAMERA POS= " + focusPosition);
             cameraTarget = (Vector3)focusPosition + Vector3.forward * -10;

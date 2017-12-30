@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4929072876330154}
   - component: {fileID: 212971057563596614}
   - component: {fileID: 114828302389401356}
-  - component: {fileID: 61240191542281124}
+  - component: {fileID: 61126864806564350}
   m_Layer: 0
   m_Name: airCurrent
   m_TagString: wind
@@ -35,14 +35,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1585842036238844}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -22.24, y: 2.59, z: 0}
-  m_LocalScale: {x: 3.80353, y: 6.0978494, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1138.87, y: -47.03, z: -11.9375}
+  m_LocalScale: {x: 1.1777, y: 2.0376945, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
---- !u!61 &61240191542281124
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &61126864806564350
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -58,14 +58,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 5.11, y: 3.13}
+    oldSize: {x: 23.210001, y: 26.570002}
     newSize: {x: 5.11, y: 3.13}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 5.11, y: 3.13}
+  m_Size: {x: 23.210001, y: 26.570002}
   m_EdgeRadius: 0
 --- !u!114 &114828302389401356
 MonoBehaviour:
@@ -113,7 +113,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: fc7e66ef6266c11499fcb511f0cda58c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ac36cf5baeaee3545a780aa2c207d2ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

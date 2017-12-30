@@ -53,6 +53,7 @@ public class PlayerHP : MonoBehaviour
             Debug.Log("HP= " + HitPoints);
 #endif 
             Inmunidad();
+            PlayerAnimations.instance.StartDamaged();
         }
     }
 

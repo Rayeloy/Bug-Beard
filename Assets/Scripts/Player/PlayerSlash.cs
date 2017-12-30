@@ -150,6 +150,9 @@ public class PlayerSlash : MonoBehaviour
         playerM.phase = PlayerMovement.jumpphase.normal;
         cd = 0;
         Pointer.instance.attackHBnormal();
+        PlayerAnimations.instance.ResetSpriteRotation();
+        PlayerAnimations.instance.PAnim = PlayerAnimations.PlayerAnims.Jumping;
+        PlayerAnimations.instance.SetPose();
 #if DEBUG_LOG
         Debug.Log("STOP SLASH");
 #endif

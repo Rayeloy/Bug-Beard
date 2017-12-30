@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 114111340313332842}
   - component: {fileID: 114473014263933748}
   - component: {fileID: 114598144317762952}
+  - component: {fileID: 114271460794885260}
   - component: {fileID: 61430828161637034}
   - component: {fileID: 212787239188167776}
   m_Layer: 8
@@ -123,7 +124,7 @@ GameObject:
   - component: {fileID: 114725011849290940}
   m_Layer: 15
   m_Name: PlayerBodyTrigger
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -275,7 +276,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1318990619047536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2173.9, y: 129.2, z: 10}
+  m_LocalPosition: {x: 1826.1, y: 24.5, z: 10}
   m_LocalScale: {x: 2.7212582, y: 2.7212582, z: 2.7212582}
   m_Children:
   - {fileID: 4437459639733436}
@@ -448,6 +449,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 4294967039
+  IsGrounded: 0
   bounceForce: 8
   bouncing: 0
   MaxBounceTime: 0.2
@@ -455,6 +457,38 @@ MonoBehaviour:
   pmState: 0
   stopPlayer: 0
   maxTimePressing2Look: 1
+--- !u!114 &114271460794885260
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1318990619047536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71ca93c7a302c53419607410877e03e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpriteRend: {fileID: 212935320664920784}
+  PlayerSprites:
+  - {fileID: 21300000, guid: 0ec4024724d86404db49a8ce49f16bbf, type: 3}
+  - {fileID: 21300000, guid: 4e4703e8b7bea8f44a88c69b3ba3def6, type: 3}
+  - {fileID: 21300000, guid: 23aea82c9f9d1f246a79d893d5c0abf7, type: 3}
+  - {fileID: 21300000, guid: 2fe87c4e3ccb2d2448460bd052b2e7e1, type: 3}
+  - {fileID: 21300000, guid: 74ad3f3494589fc4b8d16304de6dfcfc, type: 3}
+  Proportions:
+  - {x: 1, y: 1}
+  - {x: 1.315301, y: 1.315301}
+  - {x: 1.514785, y: 1.514785}
+  - {x: 1.456067, y: 1.456067}
+  - {x: 1.325319, y: 1.325319}
+  Offsets:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  MaxTimeDamagedAnim: 0.5
+  PAnim: 0
 --- !u!114 &114473014263933748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -471,7 +505,7 @@ MonoBehaviour:
   stopOnMove: 0
   abruptEnd: 1
   jumpOutOfCrystal: 1
-  InitialSpeed: 64
+  InitialSpeed: 75
   cdTime: 2
   cd: 0
   MaxDistSlash: 18

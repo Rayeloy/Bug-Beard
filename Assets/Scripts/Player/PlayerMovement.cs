@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[RequireComponent(typeof(PlayerHP))]
+[RequireComponent(typeof(PlayerSlash))]
+[RequireComponent(typeof(PlayerAnimations))]
 public class PlayerMovement : MonoBehaviour
 {
     [HideInInspector]
@@ -53,7 +55,8 @@ public class PlayerMovement : MonoBehaviour
     private float jumpingTime;
 
     public LayerMask whatIsGround;
-    private bool IsGrounded;
+    [HideInInspector]
+    public bool IsGrounded;
 
     public float bounceForce;
     [HideInInspector]
@@ -134,6 +137,14 @@ public class PlayerMovement : MonoBehaviour
                 myRB.velocity = Vector3.zero;
                 phase = jumpphase.fall;
             }
+            if (pmState == pmoveState.wLeft)
+            {
+                pmState = pmoveState.stopLeft;
+            }
+            else
+            {
+                pmState = pmoveState.stopRight;
+            }
         }
 
         CheckGrounded();
@@ -158,12 +169,18 @@ public class PlayerMovement : MonoBehaviour
         {
             v = Input.GetAxisRaw(axis);
             //Orientación del transform(sprite)
-            if (myRB.velocity.x > 0 && v > 0)
-                spriteTransf.rotation = new Quaternion(0, 180, 0, 1);
-            else
+            if(PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)
             {
-                if (myRB.velocity.x < 0 && v < 0) spriteTransf.rotation = Quaternion.identity;
+                if (myRB.velocity.x > 0 && v > 0)
+                {
+                    spriteTransf.rotation = Quaternion.Euler(0, 180, 0);
+                }
+                else if (myRB.velocity.x < 0 && v < 0)
+                {
+                    spriteTransf.rotation = Quaternion.identity;
+                }
             }
+            
             if (accVersionOn || (accOnAir && !IsGrounded))
             {
                 HorzSpeed = myRB.velocity.x;

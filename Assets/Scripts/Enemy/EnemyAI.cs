@@ -193,20 +193,39 @@ public class EnemyAI : MonoBehaviour
             if (playerDetected == 0 && stopIfNoPlayerDetected)
             {
                 eState = enemyState.stop;
+                if (WillFall)
+                {
+                    WillFall = false;
+                }
+            }
+            else if(playerDetected == 0)//to recover the correct direction after waiting at the edge for pursue
+            {
+                if (WillFall)
+                {
+                    eState = SafeDir;
+                    WillFall = false;
+                }
             }
             else if (playerDetected > 0)
             {
-                if (playerGO.transform.position.x < transform.position.x + olgura && playerGO.transform.position.x > transform.position.x - olgura)
+                if (WillFall)//to avoid fallin from edges if pursuing
                 {
-                    eState = enemyState.stop;
+                        eState = enemyState.stop;
                 }
-                else if (playerGO.transform.position.x > transform.position.x)
+                else
                 {
-                    eState = enemyState.wRight;
-                }
-                else if (playerGO.transform.position.x < transform.position.x)
-                {
-                    eState = enemyState.wLeft;
+                    if (playerGO.transform.position.x < transform.position.x + olgura && playerGO.transform.position.x > transform.position.x - olgura)
+                    {
+                        eState = enemyState.stop;
+                    }
+                    else if (playerGO.transform.position.x > transform.position.x)
+                    {
+                        eState = enemyState.wRight;
+                    }
+                    else if (playerGO.transform.position.x < transform.position.x)
+                    {
+                        eState = enemyState.wLeft;
+                    }
                 }
             }
         }
@@ -257,37 +276,44 @@ public class EnemyAI : MonoBehaviour
             IsGrounded = false;
         }
     }
+
+    bool WillFall = false;
+    enemyState SafeDir;
     public virtual void CheckFall()
     {
-        if (IsGrounded)
+        if (!WillFall)
         {
-            RaycastHit2D hit;
-            enemyCentre = enemyCol.bounds.center;
-            Vector2 rayDir = Vector2.down;
-            if (eState == enemyState.wLeft)
+            if (IsGrounded)
             {
-                rayDir = new Vector2(-0.5f, -1);
-            }
-            else if (eState == enemyState.wRight)
-            {
-                rayDir = new Vector2(0.5f, -1);
-            }
-            float dist = enemyCol.bounds.extents.y + enemyCol.bounds.extents.y / 3;
-            int layerMask = LayerMask.GetMask("Scenary");
-            hit = Physics2D.Raycast(enemyCentre, rayDir, dist, layerMask);
-            Debug.DrawRay(enemyCentre, rayDir * dist, Color.green);
-            if (!hit)
-            {
+                RaycastHit2D hit;
+                enemyCentre = enemyCol.bounds.center;
+                Vector2 rayDir = Vector2.down;
                 if (eState == enemyState.wLeft)
                 {
-                    eState = enemyState.wRight;
+                    rayDir = new Vector2(-0.5f, -1);
                 }
                 else if (eState == enemyState.wRight)
                 {
-                    eState = enemyState.wLeft;
+                    rayDir = new Vector2(0.5f, -1);
+                }
+                float dist = enemyCol.bounds.extents.y + enemyCol.bounds.extents.y / 3;
+                int layerMask = LayerMask.GetMask("Scenary");
+                hit = Physics2D.Raycast(enemyCentre, rayDir, dist, layerMask);
+                Debug.DrawRay(enemyCentre, rayDir * dist, Color.green);
+                if (!hit)
+                {
+                    WillFall = true;
+                    if (eState == enemyState.wLeft)
+                    {
+                        eState = SafeDir = enemyState.wRight;
+                    }
+                    else if (eState == enemyState.wRight)
+                    {
+                        eState = SafeDir = enemyState.wLeft;
+                    }
                 }
             }
-        }
+        }  
     }
 
     public virtual void CheckCollisionFoward()//mejorar con que los raycasts tengan una distancia acorde al ancho en cada altura del collider
