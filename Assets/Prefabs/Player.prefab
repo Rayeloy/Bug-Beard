@@ -276,7 +276,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1318990619047536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1826.1, y: 24.5, z: 10}
+  m_LocalPosition: {x: 2987, y: 135, z: 10}
   m_LocalScale: {x: 2.7212582, y: 2.7212582, z: 2.7212582}
   m_Children:
   - {fileID: 4437459639733436}
@@ -328,9 +328,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 10
+  m_Mass: 0.0001
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 1
@@ -483,10 +483,10 @@ MonoBehaviour:
   - {x: 1.325319, y: 1.325319}
   Offsets:
   - {x: 0, y: 0}
+  - {x: 0, y: 0.08}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
+  - {x: 0, y: 0.1}
   MaxTimeDamagedAnim: 0.5
   PAnim: 0
 --- !u!114 &114473014263933748
@@ -531,6 +531,7 @@ MonoBehaviour:
   HitPoints: 100
   MaxInmunityTime: 3
   Inmune: 0
+  spriteRend: {fileID: 212935320664920784}
 --- !u!114 &114725011849290940
 MonoBehaviour:
   m_ObjectHideFlags: 1

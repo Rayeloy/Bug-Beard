@@ -89,12 +89,12 @@ public class PlayerCameraBox : MonoBehaviour {
         Debug.Log("TargetLookAheadX= " + realTargetLookAhead + "; last CurrentLookAheadX= " + realCurrentLookAhead);
     }
 
-    void OnDrawGizmos()
+    /*void OnDrawGizmos()
     {
         Gizmos.color = new Color(1, 0, 0, .5f);
         Gizmos.DrawCube(focusArea.centre, focusAreaSize);
         //Debug.Log("DRAW GIZMOS");
-    }
+    }*/
     struct FocusArea
     {
         public Vector2 centre;

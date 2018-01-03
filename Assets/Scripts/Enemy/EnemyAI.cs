@@ -251,12 +251,13 @@ public class EnemyAI : MonoBehaviour
     Vector3 enemyCentre;
     public Collider2D enemyCol;
     bool IsGrounded = true;
-    private void CheckGrounded()
+    protected void CheckGrounded()
     {
         RaycastHit2D hit;
         Vector3 playerCentre = enemyCol.bounds.center;
         float maxDist = (enemyCol.bounds.extents.y) + 0.05f;
-        int layerMask = LayerMask.GetMask("Scenary");
+        string[] layers = { "Ground", "Platform" };
+        int layerMask = LayerMask.GetMask(layers);
         Vector3 down = Vector3.down;
         bool hasHit = false;
         for (float i = playerCentre.x - enemyCol.bounds.extents.x / 1.2f; i <= playerCentre.x + enemyCol.bounds.extents.x; i += 0.45f)
@@ -297,7 +298,8 @@ public class EnemyAI : MonoBehaviour
                     rayDir = new Vector2(0.5f, -1);
                 }
                 float dist = enemyCol.bounds.extents.y + enemyCol.bounds.extents.y / 3;
-                int layerMask = LayerMask.GetMask("Scenary");
+                string[] layers = { "Ground", "Platform" };
+                int layerMask = LayerMask.GetMask(layers);
                 hit = Physics2D.Raycast(enemyCentre, rayDir, dist, layerMask);
                 Debug.DrawRay(enemyCentre, rayDir * dist, Color.green);
                 if (!hit)
@@ -332,7 +334,8 @@ public class EnemyAI : MonoBehaviour
             enemyCentre = new Vector2(enemyCentre.x + enemyCol.bounds.extents.x + 0.01f, enemyCentre.y);
         }
         float dist = 0.19f;
-        int layerMask = LayerMask.GetMask("Scenary","Enemy");
+        string[] layers = { "Ground", "Platform","Enemy"};
+        int layerMask = LayerMask.GetMask(layers);
         for(float i=enemyCentre.y-enemyCol.bounds.extents.y/1.2f;i<= enemyCentre.y + enemyCol.bounds.extents.y; i += 0.5f)
         {
             Vector2 newCentre = new Vector2(enemyCentre.x, i);

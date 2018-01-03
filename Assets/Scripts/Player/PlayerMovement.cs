@@ -417,7 +417,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 playerCentre = playerCollider.bounds.center;
         float maxDist = (playerCollider.bounds.extents.y + 0.05f);
-        int layerMask = LayerMask.GetMask("Scenary");
+        string[] layers = { "Ground", "Platform"};
+        int layerMask = LayerMask.GetMask(layers);
         hit = Physics2D.Raycast(playerCollider.bounds.center, Vector2.up, maxDist, layerMask);
         Vector3 up = Vector3.up * maxDist;
         Debug.DrawRay(playerCollider.bounds.center, up, Color.red);
@@ -444,7 +445,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 playerCentre = playerCollider.bounds.center;
         float maxDist = (playerCollider.bounds.extents.y) + 0.75f;
-        int layerMask = LayerMask.GetMask("Scenary");
+        string[] layers = { "Ground", "Platform" };
+        int layerMask = LayerMask.GetMask(layers);
         Vector3 down = Vector3.down;
         bool hasHit = false;
         for (float i = playerCentre.x - playerCollider.bounds.extents.x / 1.2f; i <= playerCentre.x + playerCollider.bounds.extents.x; i += 0.45f)
@@ -472,7 +474,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D col)
     {
-        if (col.gameObject.tag == "wall" || col.gameObject.tag == "destructible" || (col.gameObject.tag == "ground" && isAtRight(playerCollider, col)))
+        if (col.gameObject.tag == "wall" || col.gameObject.tag == "destructible" || (col.gameObject.tag == "ground" || col.gameObject.tag == "platform" && isAtRight(playerCollider, col)))
         {
             if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)
             {

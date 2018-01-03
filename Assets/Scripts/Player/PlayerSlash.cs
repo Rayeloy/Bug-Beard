@@ -38,7 +38,8 @@ public class PlayerSlash : MonoBehaviour
         ready,
         slashing,
         cooldown,
-        crystal
+        crystal,
+        sliding
     }
     [HideInInspector]
     public AttachedCrystal atCrystal;
@@ -70,6 +71,21 @@ public class PlayerSlash : MonoBehaviour
         {
             case SlashState.slashing:
                 slashDist = new Vector2(transform.position.x - myPos.x, transform.position.y - myPos.y).magnitude;
+                lastSlashDir = new Vector2((mousePosition.x - myPos.x), (mousePosition.y - myPos.y)).normalized;
+                myRB.velocity = lastSlashDir * InitialSpeed;
+                timeSlashing += Time.deltaTime;
+                if (slashDist >= MaxDistSlash)
+                {
+                    StopSlash();
+                }
+                //myRB.velocity = myRB.velocity.normalized * InitialSpeed;
+                /*if (timeSlashing >= MaxTimeSlashing)
+                {
+                    StopSlash();
+                }*/
+                break;
+            case SlashState.sliding:
+                slashDist = slashDist + new Vector2(transform.position.x - slideStartPos.x, transform.position.y - slideStartPos.y).magnitude; ;
                 if (slashDist >= MaxDistSlash)
                 {
                     StopSlash();
@@ -98,7 +114,7 @@ public class PlayerSlash : MonoBehaviour
     {
         if (!PlayerMovement.instance.stopPlayer)
         {
-            mousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z - camera.transform.position.z));
+            
             if (Input.GetButtonDown("Slash") && (slashSt == SlashState.ready || slashSt == SlashState.crystal))
             {
                 //Debug.Log("SLASH!");
@@ -129,12 +145,16 @@ public class PlayerSlash : MonoBehaviour
         else
             playerM.phase = PlayerMovement.jumpphase.none;
         slashSt = SlashState.slashing;
+        slashDist = 0;
         timeSlashing = 0;
         myPos = transform.position;
         //Debug.Log("myPos=" + myPos.x + ", " + myPos.y);
         //Vector2 vel = DecomposeSpeed(InitialSpeed, mousePosition, myPos);
+        mousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z - camera.transform.position.z));
         lastSlashDir = new Vector2((mousePosition.x - myPos.x), (mousePosition.y - myPos.y)).normalized;
-        myRB.velocity = new Vector2(lastSlashDir.x * InitialSpeed, lastSlashDir.y * InitialSpeed);
+        //Debug.DrawLine(transform.position,mousePosition,Color.green,4f);
+        //Debug.Log("MousePos= " + mousePosition+"; lastSlashDir= "+lastSlashDir);
+        myRB.velocity = lastSlashDir * InitialSpeed;
         PlayerMovement.instance.pmState = lastSlashDir.x >= 0 ? PlayerMovement.pmoveState.stopRight : PlayerMovement.pmoveState.stopLeft;
         Pointer.instance.attackHBslash();
         //myRB.velocity = new Vector2(80f, 20f);
@@ -188,6 +208,20 @@ public class PlayerSlash : MonoBehaviour
         }
         playerM.phase = PlayerMovement.jumpphase.normal;
         slashSt = PlayerSlash.SlashState.ready;
+    }
+
+    Vector2 slideStartPos;
+    public void Slide(Collider2D Obstacle)
+    {
+        if (slashSt == SlashState.slashing)
+        {
+            slashSt = SlashState.sliding;
+            slideStartPos = transform.position;
+            //Vector2 newSlashDir =;
+            //myRB.velocity = newSlashDir * InitialSpeed;
+
+
+        }
     }
 
     private Vector2 DecomposeSpeed(float speed, Vector3 posB, Vector3 posA)

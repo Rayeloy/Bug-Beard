@@ -28,6 +28,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1069586984401452
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4988127038264556}
+  - component: {fileID: 60424901205594048}
+  m_Layer: 9
+  m_Name: BodyCollider
+  m_TagString: enemy
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1146582112089216
 GameObject:
   m_ObjectHideFlags: 1
@@ -135,7 +151,6 @@ GameObject:
   - component: {fileID: 50786078074758656}
   - component: {fileID: 114869340626693994}
   - component: {fileID: 114705707951951502}
-  - component: {fileID: 61503509363338066}
   m_Layer: 9
   m_Name: Keeper_P1
   m_TagString: enemy
@@ -208,6 +223,7 @@ Transform:
   - {fileID: 4721768028082950}
   - {fileID: 4791053593033522}
   - {fileID: 4326995233298208}
+  - {fileID: 4988127038264556}
   m_Father: {fileID: 4233071532513928}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -217,14 +233,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701678392267440}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.02, y: -1.83, z: 10}
-  m_LocalScale: {x: 0.6826459, y: 1.2553357, z: 1.3833771}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 3041.67, y: 136.66, z: 10}
+  m_LocalScale: {x: 1.2981256, y: 1.2981254, z: 1.2981254}
   m_Children:
   - {fileID: 4180068931129070}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!4 &4300923183708658
 Transform:
   m_ObjectHideFlags: 1
@@ -317,6 +333,19 @@ Transform:
   m_Father: {fileID: 4180068931129070}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!4 &4988127038264556
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1069586984401452}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4180068931129070}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50786078074758656
 Rigidbody2D:
   serializedVersion: 4
@@ -337,19 +366,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &61503509363338066
-BoxCollider2D:
+--- !u!60 &60424901205594048
+PolygonCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1701678392267440}
+  m_GameObject: {fileID: 1069586984401452}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.31074238, y: -0.28077865}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -359,9 +388,25 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 9.541132, y: 11.248848}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: 5.1225076, y: 5.4706173}
+      - {x: 1.9561334, y: 7.5990124}
+      - {x: -3.2974603, y: 4.3430805}
+      - {x: -9.616104, y: -5.982172}
+      - {x: -10.217369, y: -9.249553}
+      - {x: -4.1200857, y: -9.249553}
+      - {x: -3.5806963, y: -6.3920507}
+      - {x: -2.039261, y: -4.494678}
+      - {x: -2.6606498, y: -1.2103705}
+      - {x: 3.6730394, y: -6.0984354}
+      - {x: 12.915069, y: -7.7140064}
+      - {x: 13.45427, y: -4.719294}
+      - {x: 4.670007, y: -3.42053}
+      - {x: 4.1304297, y: -0.4594591}
+      - {x: 3.0277658, y: 2.3521888}
+      - {x: 4.222961, y: 1.4433444}
+      - {x: 6.9770823, y: 2.9960406}
 --- !u!61 &61760325038930270
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -399,7 +444,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.8667767, y: 0.651001}
+  m_Offset: {x: 0.8374326, y: 1.02981}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -410,7 +455,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 7.3741336, y: 10.017633}
+  m_Size: {x: 12.839275, y: 19.542034}
   m_EdgeRadius: 0
 --- !u!61 &61837782348028554
 BoxCollider2D:
@@ -424,7 +469,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 1.068105, y: 0.39918137}
+  m_Offset: {x: 3.7375393, y: 2.9553013}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -435,7 +480,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 9.711937, y: 10.521273}
+  m_Size: {x: 16.062218, y: 25.215431}
   m_EdgeRadius: 0
 --- !u!70 &70258317060720054
 CapsuleCollider2D:
@@ -526,7 +571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 70
-  damage: 50
+  damage: 25
   hitBox:
   - {fileID: 0}
   wholeEnemy: {fileID: 1701678392267440}
@@ -553,32 +598,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartFacingRight: 0
-  stopIfNoPlayerDetected: 0
-  doesPursue: 1
-  playerDetected: 0
-  speed: 4.5
+  stopIfNoPlayerDetected: 1
+  doesPursue: 0
+  playerDetected: 1
+  speed: 10
   maxFallSpeed: -40
-  gravity: -62.5
   myRB: {fileID: 50786078074758656}
   sprite: {fileID: 212415849534446034}
   weakBox: {fileID: 1607122915578466}
   weakBoxOrientation: 1
   stopEnemy: 0
-  eState: 0
+  eState: 1
   currentDirection: 0
   AState: 0
   olgura: 0.3
-  enemyCol: {fileID: 61503509363338066}
-  timeToAttack: 1.5
-  timeDamaging: 0.5
+  enemyCol: {fileID: 60424901205594048}
+  spriteRend: {fileID: 212415849534446034}
+  keeperSprites: []
+  standBySpritePos: {x: 0, y: 0}
+  standBySpriteProp: {x: 1, y: 1}
+  spritesOffsets: []
+  spritesProportions: []
+  espadazoMaxTime: 20
+  espadazoPos: {fileID: 0}
+  timeToAttack: 3
+  timeDamaging: 1
   timeRecovering: 2
+  maxTimeVulnerable: 5
+  excaliburMaxTime: 8
+  excaliburPos: {fileID: 0}
+  timeBetweenSpikes: 0.15
+  spikesSpeed: 35
+  spike: {fileID: 1720063025790610, guid: fc385cf4633147543a85a16db6fd6edc, type: 2}
+  ceiling: {fileID: 0}
+  spikes: {fileID: 0}
+  lostSoulsMaxWaves: 3
+  lostSoulsTimeWaves: 8
+  nightmareMaxAttacks: 3
+  nightmareTimeAttacks: 8
   eHP: {fileID: 114705707951951502}
   EARange: {fileID: 114865254307981994}
   EAHitBox: {fileID: 114530526414275188}
   garrote: {fileID: 1351454151926018}
   espada: {fileID: 0}
   vulnareble: 0
-  KP1: 0
+  KP1: 2
 --- !u!212 &212295688813339852
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -657,7 +721,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 756ab6252a6bd35449a00d7e03f903a8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4761b0e7ebed41440a402e8b3b6b9eaa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
