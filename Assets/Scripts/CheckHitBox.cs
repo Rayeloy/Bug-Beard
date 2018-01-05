@@ -27,7 +27,11 @@ public class CheckHitBox : MonoBehaviour
     protected virtual void OnTriggerEnter2D(Collider2D col)
     {
         tags.Add(col.gameObject);
-        //Debug.Log("tag added: " + col.tag);
+        if (GetComponentInParent<CheckHitBox>().name == "NightmareAttack")
+        {
+            Debug.Log("tag added: " + col.tag);
+        }
+
     }
     private void OnTriggerExit2D(Collider2D col)
     {

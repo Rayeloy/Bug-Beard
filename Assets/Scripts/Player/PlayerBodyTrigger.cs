@@ -10,17 +10,18 @@ public class PlayerBodyTrigger : MonoBehaviour {
         {
             if (!PlayerMovement.instance.bouncing && PlayerSlash.instance.slashSt != PlayerSlash.SlashState.slashing)//recibir daño
             {
-                PlayerMovement.instance.BounceBack(col.transform.position);
                 if(col.gameObject.tag == "enemy")
                 {
+                    PlayerMovement.instance.BounceBack(col.transform.position);
                     PlayerHP.instance.TakeDamage(col.transform.GetComponentInParent<EnemyHP>().damage);
                 }
                 else if (col.gameObject.tag == "enemy_projectile")
                 {
                     if (col.name.Contains("Keeper_Spike"))
                     {
+                        PlayerMovement.instance.BounceBack(col.transform.position);
                         PlayerHP.instance.TakeDamage(col.GetComponent<Keeper_Spike>().damage);
-                    }
+                    }//nightmareAttack solved inside keeper script
                 }
             }
         }

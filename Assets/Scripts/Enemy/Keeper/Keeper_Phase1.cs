@@ -67,7 +67,19 @@ public class Keeper_Phase1 : EnemyAI
     [Header("Nihtmare")]
     public int nightmareMaxAttacks;
     int nightmareAttacks;
-    public float nightmareTimeAttacks;
+    float nightmareTime;
+    public float nightmareTimeFollowingPlayer;
+    public float nightmareAttackFollowSmooth;
+    [Tooltip("Time that the attack is static, recovering for next attack")]
+    public float nightmareAttackingTime;
+    bool nightmareAttacking;
+    [Tooltip("Time that the boss takes to completely dissapear and the black filter appears")]
+    public float nightmareMaxTimeDissapear;
+    bool dissapeared;
+    public SpriteRenderer bossEyes;
+    public GameObject nightmareAttack;
+    public Sprite nightmareAttackWarn;
+    public Sprite nightmareAttackActivated;
 
     public EnemyHP eHP;
     public CheckHitBox EARange;
@@ -98,7 +110,7 @@ public class Keeper_Phase1 : EnemyAI
         timeVulnerable = 0;
         bossWaitTime = 0;//empieza asi
         bossWait = false;
-        hitsTaken = 0;
+        hitsTaken = 1;
         patronIndex = 0;
         nextSkill = false;
         moving = false;
@@ -110,12 +122,15 @@ public class Keeper_Phase1 : EnemyAI
         standBySpriteProp = spritesProportions[0];
 
         nightmareAttacks = 0;
+        nightmareTime = 0;
+        dissapeared = false;
+        nightmareAttacking = false;
 
         lostSoulsWaves = 0;
         lostSoulsTime = 0;
         ghostsList = new List<GameObject>();
 
-        KP1_actPatron = KP1_patron1;
+        KP1_actPatron = KP1_patron2;
     }
 
     private void Start()
@@ -148,11 +163,7 @@ public class Keeper_Phase1 : EnemyAI
                         }
                         else
                         {
-                            timeVulnerable += Time.deltaTime;
-                            if (timeVulnerable > maxTimeVulnerable)
-                            {
-                                AState = AttackState.ready;
-                            }
+                            DoVulnerable();
                         }
                         if (patronTimeline >= espadazoMaxTime && AState == AttackState.ready)
                         {
@@ -187,16 +198,18 @@ public class Keeper_Phase1 : EnemyAI
                         }
                         break;
                     case KeeperP1.nightmare:
-                        DoExcalibur();
-                        if (nightmareAttacks >= nightmareMaxAttacks)
+                        DoNightmare();
+                        if (nightmareAttacks >= nightmareMaxAttacks && !dissapeared)
                         {
                             nextSkill = true;
                         }
                         break;
                     case KeeperP1.excalibur_ls:
                         DoExcalibur();
-                        if (nightmareAttacks >= nightmareMaxAttacks)
+                        DoLostSouls();
+                        if (patronTimeline >= excaliburMaxTime + bossMaxWaitTime && lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)//da tiempo a matar a los últimos ghosts
                         {
+                            portal.enabled = false;
                             nextSkill = true;
                         }
                         break;
@@ -268,6 +281,12 @@ public class Keeper_Phase1 : EnemyAI
                 break;
             case KeeperP1.excalibur_ls:
                 MoveTowards(excaliburPos.position);
+                break;
+            case KeeperP1.nightmare:
+                moving = false;
+                break;
+            case KeeperP1.nightmare_ls:
+                moving = false;
                 break;
         } 
     }
@@ -492,6 +511,16 @@ public class Keeper_Phase1 : EnemyAI
         }
     }
 
+    void DoVulnerable()
+    {
+        timeVulnerable += Time.deltaTime;
+        if (timeVulnerable > maxTimeVulnerable)
+        {
+            AState = AttackState.ready;
+            espada.enabled = false;
+        }
+    }
+
     float lostSoulsActTimeWaves;
     void DoLostSouls()
     {
@@ -519,12 +548,10 @@ public class Keeper_Phase1 : EnemyAI
             }
             lostSoulsWaves++;
             lostSoulsTime = 0;
-            Debug.Log("actTimeWaves=" + lostSoulsActTimeWaves + "; lostSoulsWaves=" + lostSoulsWaves);
             lostSoulsActTimeWaves = lostSoulsTimeWaves;
         }
         lostSoulsTime += Time.deltaTime;
 }
-
     void UpdateGhostsList()
     {
         for(int i=0; i < ghostsList.Count; i++)
@@ -535,6 +562,108 @@ public class Keeper_Phase1 : EnemyAI
             }
         }
     }
+
+    float nightmareAttackFollowSpeedX;
+    float nightmareAttackFollowSpeedY;
+    float attackPosX;
+    float attackPosY;
+    void DoNightmare()
+    {
+        if (patronTimeline == 0)
+        {
+            nightmareAttacks = 0;
+            nightmareTime = 0;
+            attackPosX = PlayerMovement.instance.transform.position.x;
+            attackPosY = PlayerMovement.instance.transform.position.y;
+            //nightmareAttack.GetComponent<Collider2D>().enabled = false;
+            nightmareAttack.GetComponent<SpriteRenderer>().enabled = false;
+            nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder =-1;
+            nightmareAttack.GetComponent<SpriteRenderer>().sprite = nightmareAttackWarn;
+            nightmareAttacking = false;
+            dissapeared = false;
+        }
+        if (nightmareAttacks < nightmareMaxAttacks)
+        {
+            if (nightmareAttacks == 0 && !dissapeared)//desaparece al principio
+            {
+                float prog = nightmareTime / nightmareMaxTimeDissapear;
+                float a = Mathf.Lerp(0, 0.7f, prog);
+                float aBoss = Mathf.Lerp(1, 0, prog);
+                float aEyes = Mathf.Lerp(0, 1, prog);
+                Color colorFilter = new Color(0, 0, 0, a);
+                Color colorBoss = new Color(1, 1, 1, aBoss);
+                Color colorEyes = new Color(1, 1, 1, aEyes);
+                CameraMovement.instance.BlackFilter.color =colorFilter;
+                spriteRend.color = colorBoss;
+                bossEyes.color = colorEyes;
+                if (nightmareTime >= nightmareMaxTimeDissapear)
+                {
+                    dissapeared = true;
+                    nightmareTime = 0;
+                    colliders[0].enabled = false;
+                    nightmareAttack.transform.position = PlayerMovement.instance.transform.position;
+                    nightmareAttack.GetComponent<SpriteRenderer>().enabled = true;
+                }
+            }
+            else//ataques
+            {
+                if (!nightmareAttacking)//follow and attack
+                {
+                    attackPosX = Mathf.SmoothDamp(attackPosX, PlayerMovement.instance.transform.position.x, ref nightmareAttackFollowSpeedX, nightmareAttackFollowSmooth);
+                    attackPosY = Mathf.SmoothDamp(attackPosY, PlayerMovement.instance.transform.position.y, ref nightmareAttackFollowSpeedY, nightmareAttackFollowSmooth);
+                    nightmareAttack.transform.position = new Vector3(attackPosX, attackPosY, 0);
+                    if (nightmareTime >= nightmareTimeFollowingPlayer)//attack!!
+                    {
+                        nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder = 10;
+                        nightmareAttack.GetComponent<SpriteRenderer>().sprite = nightmareAttackActivated;
+                        //nightmareAttack.GetComponent<Collider2D>().enabled = true;
+                        if (nightmareAttack.GetComponent<CheckHitBox>().CheckFor("Player"))
+                        {
+                            PlayerMovement.instance.BounceBack(nightmareAttack.transform.position);
+                            PlayerHP.instance.TakeDamage(GetComponent<EnemyHP>().damage);
+                        }
+                        nightmareTime = 0;
+                        nightmareAttacking = true;
+                    }     
+                }
+                else if(nightmareAttacking)//recovering attack
+                {
+                    if (nightmareTime >= nightmareAttackingTime)
+                    {
+                        //reset attack
+                        nightmareTime = 0;
+                        nightmareAttacking = false;
+                        nightmareAttack.transform.position = PlayerMovement.instance.transform.position;
+                        nightmareAttack.GetComponent<SpriteRenderer>().sprite = nightmareAttackWarn;
+                        nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder = -1;
+                        nightmareAttacks++;
+                    }
+                }
+            }
+        }
+        else//aparece
+        {
+            nightmareAttack.GetComponent<SpriteRenderer>().enabled = false;
+            float prog = nightmareTime / nightmareMaxTimeDissapear;
+            float a = Mathf.Lerp(0.7f, 0, prog);
+            float aBoss = Mathf.Lerp(0, 1, prog);
+            float aEyes = Mathf.Lerp(1, 0, prog);
+            Color colorFilter = new Color(0, 0, 0, a);
+            Color colorBoss = new Color(1, 1, 1, aBoss);
+            Color colorEyes = new Color(1, 1, 1, aEyes);
+            CameraMovement.instance.BlackFilter.color = colorFilter;
+            spriteRend.color = colorBoss;
+            bossEyes.color = colorEyes;
+            if (nightmareTime >= nightmareMaxTimeDissapear)
+            {
+                dissapeared = false;
+                nightmareTime = 0;
+                colliders[0].enabled = true;
+            }
+        }
+        nightmareTime += Time.deltaTime;
+    }
+
     public void BecomeVulnerable()
     {
         Debug.Log("VULNERABLE!");

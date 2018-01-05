@@ -217,7 +217,7 @@ public class PlayerSlash : MonoBehaviour
             {
                 if (hit[j])
                 {
-                    Debug.Log("hit with " + hit[j].collider.gameObject);
+                    //Debug.Log("hit with " + hit[j].collider.gameObject);
                     ManagePlayerAttackCollisions(hit[j].collider,j);
                 }
             }
@@ -244,7 +244,7 @@ public class PlayerSlash : MonoBehaviour
         {
             if (col.tag == "hitBox")
             {
-                Debug.Log("ray "+ray+":PAttack agains " + col.name);
+                //Debug.Log("ray "+ray+":PAttack agains " + col.name);
                 PlayerSlash.instance.StopSlash();
                 //Debug.Log("enemy " + transform.root.name + " recieves damage");
                 if (col.transform.GetComponentInParent<EnemyHP>().gameObject.name.Contains("Ghost"))//menor bounce con fantasmas
@@ -275,7 +275,7 @@ public class PlayerSlash : MonoBehaviour
             }
             else if (col.tag == "enemy")
             {
-                Debug.Log("ray " + ray + ":PAttack agains " + col.name);
+                //Debug.Log("ray " + ray + ":PAttack agains " + col.name);
                 PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack(col.transform.position);
                 if (col.gameObject.layer != 18)// no Keeper
@@ -300,7 +300,6 @@ public class PlayerSlash : MonoBehaviour
     {
         if (instance.atCrystal.attachReady)
         {
-            Debug.Log("Enter Crystal " + crystal);
             PlayerMovement.instance.attachToCrystal(crystal);
             atCrystal = new AttachedCrystal(crystal);
         }
@@ -309,7 +308,6 @@ public class PlayerSlash : MonoBehaviour
     {
         if (crystal == instance.atCrystal.Crystal)
         {
-            Debug.Log("Exit Crystal "+crystal);
             instance.atCrystal.Crystal = null;
             instance.atCrystal.attachReady = true;
         }

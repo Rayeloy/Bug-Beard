@@ -44,10 +44,9 @@ public class CameraMovement : MonoBehaviour
     Collider2D cameraLimits;
 
     //------------------------------CAMERA FINAL VERSION----------------------------
-    [Header("CAMERA FINAL VERSION")]
     Camera myCamera;
-
     private cameraMode camMode;
+    [Header("Camera Final Version")]
     public Vector2 focusPosition;
     hotSpotData currentHotSpot;
     private List<Transform> hsTargets;
@@ -74,6 +73,8 @@ public class CameraMovement : MonoBehaviour
 
     bool ExitingHS = false;
     float ExitingHSMaxTime, ExitingHSTime;
+
+    public SpriteRenderer BlackFilter;
 
     private void Awake()
     {
