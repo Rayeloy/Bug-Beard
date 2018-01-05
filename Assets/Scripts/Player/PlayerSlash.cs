@@ -114,8 +114,11 @@ public class PlayerSlash : MonoBehaviour
     {
         if (!PlayerMovement.instance.stopPlayer)
         {
-            
-            if (Input.GetButtonDown("Slash") && (slashSt == SlashState.ready || slashSt == SlashState.crystal))
+            if (slashSt == SlashState.slashing)
+            {
+                CheckSlash();
+            }
+            else if (Input.GetButtonDown("Slash") && (slashSt == SlashState.ready || slashSt == SlashState.crystal))
             {
                 //Debug.Log("SLASH!");
                 slash();
@@ -186,15 +189,127 @@ public class PlayerSlash : MonoBehaviour
         slashSt = SlashState.ready;
     }
 
+    public void CheckSlash()
+    {
+        RaycastHit2D[] hit;
+        Collider2D PBTrigger = GetComponentInChildren<PlayerBodyTrigger>().GetComponent<Collider2D>();
+        float arrowWide = PBTrigger.bounds.size.y;
+        float arrowHeadDist = arrowWide;
+        Vector2 center = PBTrigger.bounds.center;
+
+        Vector2 arrowHead = center +(lastSlashDir * arrowHeadDist);
+        Vector2 baseDir = new Vector2(lastSlashDir.y, -lastSlashDir.x);
+        Vector2 arrowBase = center + baseDir * arrowWide/2;
+        int divisions = 40;
+        float division = arrowWide / divisions;
+        for(float i= 1; i <= divisions; i++)
+        {
+            Vector2 newBase = arrowBase + (baseDir * (-division * i));
+            Vector2 rayDir = arrowHead - arrowBase;
+            float dist = rayDir.magnitude;
+
+            Debug.DrawLine(newBase, arrowHead, Color.yellow);
+            string[] layers = { "hitBox", "Default", "Enemy", "GhostEnemy", "enemy_Boss", "Enemy_Projectile","Ground"};
+            int layerMask = LayerMask.GetMask(layers);
+            hit = Physics2D.RaycastAll(newBase, rayDir, dist,layerMask);
+            //Debug.Log(gameObject + " COLLISION WITH " + hit.collider.gameObject);
+            for(int j = 0; j < hit.Length; j++)
+            {
+                if (hit[j])
+                {
+                    Debug.Log("hit with " + hit[j].collider.gameObject);
+                    ManagePlayerAttackCollisions(hit[j].collider,j);
+                }
+            }
+        }
+        Debug.DrawLine(center, arrowBase, Color.red);
+        Debug.DrawLine(center, arrowHead, Color.green);
+        //Debug.Log("center=" + center + "; arrowBase= " + arrowBase + "; arrowHead= " + arrowHead);
+    }
+
+    void ManagePlayerAttackCollisions(Collider2D col, int ray)
+    {
+        /*if (tag == "PlayerAttack")
+        {
+            for (int i = 0; i <= enemiesInsidePHB.Count; i++)
+            {
+                if (enemiesInsidePHB[i].enemy != col.gameObject)
+                {
+                    EnemyHB aux = new EnemyHB(col.gameObject, true);
+                    enemiesInsidePHB.Add(aux);
+                }
+            }
+        }*/
+        if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.slashing)//COLLISION DE HITBOX DE ATAQUE DEL JUGADOR Y HACIENDO SLASH
+        {
+            if (col.tag == "hitBox")
+            {
+                Debug.Log("ray "+ray+":PAttack agains " + col.name);
+                PlayerSlash.instance.StopSlash();
+                //Debug.Log("enemy " + transform.root.name + " recieves damage");
+                if (col.transform.GetComponentInParent<EnemyHP>().gameObject.name.Contains("Ghost"))//menor bounce con fantasmas
+                {
+                    PlayerMovement.instance.BounceBack(col.transform.position, PlayerMovement.instance.bounceForce / 1.5f);
+                }
+                else
+                {
+                    PlayerMovement.instance.BounceBack(col.transform.position);
+                }
+                PlayerSlash.instance.ResetSlash();
+                if (col.gameObject.layer == 18)//Keeper
+                {
+                    if (Keeper_Phase1.instance.vulnerable)
+                    {
+                        Keeper_Phase1.instance.BecomeVulnerable();
+                    }
+                    else if (col.name.Contains("Espada"))
+                    {
+                        Keeper_Phase1.instance.TakeHit();
+                    }
+                }
+                else
+                {
+                    (col.transform.GetComponentInParent(typeof(EnemyAI)) as EnemyAI).BounceBack(PlayerMovement.instance.transform.position);
+                    (col.transform.GetComponentInParent(typeof(EnemyHP)) as EnemyHP).TakeDamage(PlayerSlash.instance.slashDamage);
+                }
+            }
+            else if (col.tag == "enemy")
+            {
+                Debug.Log("ray " + ray + ":PAttack agains " + col.name);
+                PlayerSlash.instance.StopSlash();
+                PlayerMovement.instance.BounceBack(col.transform.position);
+                if (col.gameObject.layer != 18)// no Keeper
+                {
+                    (col.transform.GetComponentInParent(typeof(EnemyAI)) as EnemyAI).BounceBack(PlayerMovement.instance.transform.position);
+                }
+            }
+            else if (col.gameObject.tag == "crystal")
+            {
+                PlayerSlash.instance.EnterCrystal(col.gameObject);
+            }
+            else if (col.tag == "destructible")
+            {
+                PlayerSlash.instance.StopSlash();
+                PlayerMovement.instance.BounceBack(col.transform.position);
+                PlayerSlash.instance.ResetSlash();
+                col.gameObject.GetComponent<Destructible>().TakeDamage(PlayerSlash.instance.slashDamage);
+            }
+        }
+    }
     public void EnterCrystal(GameObject crystal)
     {
-        PlayerMovement.instance.attachToCrystal(crystal);
-        atCrystal = new AttachedCrystal(crystal);
+        if (instance.atCrystal.attachReady)
+        {
+            Debug.Log("Enter Crystal " + crystal);
+            PlayerMovement.instance.attachToCrystal(crystal);
+            atCrystal = new AttachedCrystal(crystal);
+        }
     }
     public void ExitCrystal(GameObject crystal)
     {
         if (crystal == instance.atCrystal.Crystal)
         {
+            Debug.Log("Exit Crystal "+crystal);
             instance.atCrystal.Crystal = null;
             instance.atCrystal.attachReady = true;
         }

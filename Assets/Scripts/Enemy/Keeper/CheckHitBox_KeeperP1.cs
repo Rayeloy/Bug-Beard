@@ -14,10 +14,10 @@ public class CheckHitBox_KeeperP1 : CheckHitBox {
                 Debug.Log("enemy " + transform.root.name + " recieves damage");
                 PlayerMovement.instance.BounceBack(col.transform.position);
                 PlayerSlash.instance.slashSt = PlayerSlash.SlashState.ready;
-                if (KeeperAI.vulnareble)
+                if (KeeperAI.vulnerable)
                 {
                     //hit en rodilla
-                    KeeperAI.BecomeVulnarable();
+                    KeeperAI.BecomeVulnerable();
                 }
                 else
                 {

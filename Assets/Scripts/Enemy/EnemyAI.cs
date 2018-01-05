@@ -47,7 +47,8 @@ public class EnemyAI : MonoBehaviour
         preparing=1,
         damaging=2,
         recovering=3,
-        vulnerable=4
+        damaged=4,
+        vulnerable=5
     }
 
     public virtual void Awake()
@@ -121,6 +122,10 @@ public class EnemyAI : MonoBehaviour
                 eState = currentDirection;//mueve hacia la direccion que iba
             }
             Pursue();//check if stopIfNoPlayerDetected, if it is detected, where is it and where to go
+            if (!doesPursue && eState==SafeDir)
+            {
+                WillFall = false;
+            }
         }
         else
         {

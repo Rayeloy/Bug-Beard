@@ -45,7 +45,7 @@ public class Keeper_Spike : MonoBehaviour {
     }
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Player" || col.gameObject.tag == "ground"){
+        if (col.gameObject.tag == "Player" || col.gameObject.tag == "ground"|| col.gameObject.tag =="PlayeAttack"){
             //animacion destroy spike
             destroying = true;
         }

@@ -4,14 +4,22 @@ using UnityEngine;
 
 public class Keeper_Phase1 : EnemyAI
 {
+    public static Keeper_Phase1 instance;
+
     [Header("Sprites")]
     public SpriteRenderer spriteRend;
     public Sprite[] keeperSprites;
-    public Vector2 standBySpritePos;
-    public Vector2 standBySpriteProp;
-    public Vector2[] spritesOffsets;
+    Vector2 standBySpritePos;
+    Vector2 standBySpriteProp;
+    public Vector2[] spritesOffsets;//ORDEN: Standby, Anticipation, Attack, Damaged, Vulnerable,
     public Vector2[] spritesProportions;
+    public Collider2D[] colliders;
 
+    [Header("BOSS SKILLS")]
+    float bossWaitTime;
+    bool bossWait;
+    [Tooltip("Max time the boss will wait on standBy after Excalibur and Espadazo")]
+    public float bossMaxWaitTime;
     private float attackTimeline;
     private int hitsTaken;
     private float patronTimeline;
@@ -23,11 +31,13 @@ public class Keeper_Phase1 : EnemyAI
     bool nextSkill;
 
     [Header("Espadazo")]
+    public Collider2D espada;
     public float espadazoMaxTime;
     public Transform espadazoPos;
     public float timeToAttack;
     public float timeDamaging;
     public float timeRecovering;
+    public float maxTimeDamaged;
     public float maxTimeVulnerable;
     float timeVulnerable;
 
@@ -47,6 +57,12 @@ public class Keeper_Phase1 : EnemyAI
     public int lostSoulsMaxWaves;
     int lostSoulsWaves;
     public float lostSoulsTimeWaves;
+    float lostSoulsTime;
+    public int ghostsPerWave;
+    public GameObject ghost;
+    public SpriteRenderer portal;
+    public Transform ghosts;
+    List<GameObject> ghostsList;
 
     [Header("Nihtmare")]
     public int nightmareMaxAttacks;
@@ -58,9 +74,8 @@ public class Keeper_Phase1 : EnemyAI
     public CheckHitBox EAHitBox;
     private bool damaged;
     public GameObject garrote;
-    public GameObject espada;
     [HideInInspector]
-    public bool vulnareble = false;
+    public bool vulnerable = false;//esta variable es para saber si está activa la hitbox de la rodilla
 
     [HideInInspector]
     public KeeperP1 KP1 = KeeperP1.espazado;
@@ -78,17 +93,27 @@ public class Keeper_Phase1 : EnemyAI
     public override void Awake()
     {
         base.Awake();
+        instance = this;
         attackTimeline = 0;
         timeVulnerable = 0;
+        bossWaitTime = 0;//empieza asi
+        bossWait = false;
         hitsTaken = 0;
         patronIndex = 0;
-        nightmareAttacks = 0;
-        lostSoulsWaves = 0;
         nextSkill = false;
         moving = false;
         poseSet = false;
         AState = AttackState.ready;
         damaged = false;
+
+        standBySpritePos = spritesOffsets[0];
+        standBySpriteProp = spritesProportions[0];
+
+        nightmareAttacks = 0;
+
+        lostSoulsWaves = 0;
+        lostSoulsTime = 0;
+        ghostsList = new List<GameObject>();
 
         KP1_actPatron = KP1_patron1;
     }
@@ -102,6 +127,7 @@ public class Keeper_Phase1 : EnemyAI
     {
         gravityFalls();
         CheckGrounded();
+        UpdateGhostsList();
         if (!stopEnemy)
         {
             //Debug.Log("Moving= " + moving);
@@ -130,20 +156,33 @@ public class Keeper_Phase1 : EnemyAI
                         }
                         if (patronTimeline >= espadazoMaxTime && AState == AttackState.ready)
                         {
-                            nextSkill = true;
+                            if (bossWait)
+                            {
+                                bossWaitTime += Time.deltaTime;
+                                if(bossWaitTime>= bossMaxWaitTime)
+                                {
+                                    bossWait = false;
+                                }
+                            }
+                            else
+                            {
+                                nextSkill = true;
+                            }
                         }
                         break;
                     case KeeperP1.excalibur:
                         DoExcalibur();
-                        if (patronTimeline >= excaliburMaxTime)
+                        if (patronTimeline >= excaliburMaxTime+bossMaxWaitTime)
                         {
+
                             nextSkill = true;
                         }
                         break;
                     case KeeperP1.lostSouls:
-                        DoExcalibur();
-                        if (lostSoulsWaves >= lostSoulsMaxWaves)
+                        DoLostSouls();
+                        if (lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime>=lostSoulsTimeWaves*2)//da tiempo a matar a los últimos ghosts
                         {
+                            portal.enabled = false;
                             nextSkill = true;
                         }
                         break;
@@ -258,13 +297,23 @@ public class Keeper_Phase1 : EnemyAI
         spriteRend.sprite = keeperSprites[poseIndex];
         spriteRend.transform.localPosition = standBySpritePos + spritesOffsets[poseIndex];
         spriteRend.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (i == poseIndex) {
+                colliders[i].enabled = true;
+            }
+            else
+            {
+                colliders[i].enabled = false;
+            }
+        }
     }
 
     void ManagePose()
     {
         if (moving)
         {
-            //SetPose(1);
+            SetPose(0);
         }
         else if (!poseSet)
         {
@@ -278,15 +327,65 @@ public class Keeper_Phase1 : EnemyAI
                     break;
                 case KeeperP1.espazado:
                     weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
+                    switch (AState)
+                    {
+                        case AttackState.ready:
+                            SetPose(0);
+                            break;
+                        case AttackState.preparing:
+                            SetPose(1);
+                            break;
+                        case AttackState.damaging:
+                            SetPose(2);
+                            break;
+                        case AttackState.recovering:
+                            SetPose(2);
+                            break;
+                        case AttackState.damaged:
+                            SetPose(3);
+                            break;
+                        case AttackState.vulnerable:
+                            SetPose(4);
+                            break;
+                    }
                     break;
                 case KeeperP1.nightmare:
+                    if (patronTimeline == 0)
+                    {
+                        SetPose(0);
+                    }
                     break;
                 case KeeperP1.excalibur_ls:
                     break;
                 case KeeperP1.nightmare_ls:
+                    if (patronTimeline == 0)
+                    {
+                        SetPose(0);
+                    }
                     break;
                 case KeeperP1.espadazo_ls:
                     weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
+                    switch (AState)
+                    {
+                        case AttackState.ready:
+                            SetPose(0);
+                            break;
+                        case AttackState.preparing:
+                            SetPose(1);
+                            break;
+                        case AttackState.damaging:
+                            SetPose(2);
+                            break;
+                        case AttackState.recovering:
+                            SetPose(2);
+                            break;
+                        case AttackState.damaged:
+                            SetPose(3);
+                            break;
+                        case AttackState.vulnerable:
+                            SetPose(4);
+                            break;
+                    }
                     break;
             }
             poseSet = true;
@@ -295,31 +394,33 @@ public class Keeper_Phase1 : EnemyAI
 
     void DoExcalibur()
     {
-        if (patronTimeline == 0)//primera vez
+        if (patronTimeline < excaliburMaxTime)
         {
-            CameraMovement.instance.StartShakeCamera(excaliburMaxTime);
-        }
-        if (spikesTime >= timeBetweenSpikes)
-        {
-            spikesTime = 0;
-            //get random pos x between range (room wide-offset); pos y will be the same always
-            //no se si coge world positions o local positions...
-            float MaxRange = ceiling.bounds.max.x - spikeWidth/2 - 0.3f;
-            float MinRange = ceiling.bounds.min.x + spikeWidth / 2 + 0.3f;
-            float posY = ceiling.bounds.min.y- spikeHeight/2 - 0.3f;//algo de olgura para evitar collision con techo
-            float posX = Random.Range(MinRange, MaxRange);
-            Vector3 spikePos = new Vector3(posX, posY,0);
-            //spawn Spike at random pos
-            GameObject newSpike=Instantiate(spike,spikePos,Quaternion.identity,spikes);
-            //set spike speed downwards
-            newSpike.GetComponent<Rigidbody2D>().velocity = Vector2.down * spikesSpeed;
-            newSpike.GetComponent<Keeper_Spike>().konoStart();
-            //spike ignore obstacles? yes
-            //spike damages player on collision
-            //spike destroys con collision with stage(care for colliding at spawn)
-
-        }
-        spikesTime += Time.deltaTime;
+            if (patronTimeline == 0)//primera vez
+            {
+                CameraMovement.instance.StartShakeCamera(excaliburMaxTime);
+            }
+            if (spikesTime >= timeBetweenSpikes)
+            {
+                spikesTime = 0;
+                //get random pos x between range (room wide-offset); pos y will be the same always
+                //no se si coge world positions o local positions...
+                float MaxRange = ceiling.bounds.max.x - spikeWidth / 2 - 0.3f;
+                float MinRange = ceiling.bounds.min.x + spikeWidth / 2 + 0.3f;
+                float posY = ceiling.bounds.min.y - spikeHeight / 2 - 0.3f;//algo de olgura para evitar collision con techo
+                float posX = Random.Range(MinRange, MaxRange);
+                Vector3 spikePos = new Vector3(posX, posY, 0);
+                //spawn Spike at random pos
+                GameObject newSpike = Instantiate(spike, spikePos, Quaternion.identity, spikes);
+                //set spike speed downwards
+                newSpike.GetComponent<Rigidbody2D>().velocity = Vector2.down * spikesSpeed;
+                newSpike.GetComponent<Keeper_Spike>().konoStart();
+                //spike ignore obstacles? yes
+                //spike damages player on collision
+                //spike destroys con collision with stage(care for colliding at spawn)
+            }
+            spikesTime += Time.deltaTime;
+        }   
     }
 
     //uso esta funcion como la skill espadazo
@@ -329,17 +430,18 @@ public class Keeper_Phase1 : EnemyAI
         {
             attackTimeline = 0;
             AState = AttackState.preparing;
+            poseSet = false;
+            weakBox.SetActive(true);
+            vulnerable = true;
             //stoppu = true;
-            garrote.SetActive(true);
-            garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 3);
+            //garrote.SetActive(true);
+            //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 3);
         }
         else
         {
             //PREPARING ATTACK
             if (attackTimeline > timeToAttack && attackTimeline < timeToAttack + timeDamaging)//quito la condicion  && AState == AttackState.preparing, la pongo abajo vv
             {
-                weakBox.SetActive(true);
-                vulnareble = true;
 
                 if (!damaged && EAHitBox.CheckFor("Player"))
                 {
@@ -349,47 +451,113 @@ public class Keeper_Phase1 : EnemyAI
                 if (AState == AttackState.preparing)//separo la condición aqui abajo para poder comprobar si hace daño constantemente y no una sola vez
                 {
                     AState = AttackState.damaging;
-                    garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 3);
+                    poseSet = false;
+                    //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 3);
                 }
             }
             //ATTACKING
             else if (attackTimeline > timeDamaging + timeToAttack && AState == AttackState.damaging)
             {
-                vulnareble = false;
+                vulnerable = false;
                 weakBox.SetActive(false);
 
                 damaged = false;
                 AState = AttackState.recovering;
-                garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 1);
+                poseSet = false;
+                //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 1);
             }
             //RECOVERING
             else if (attackTimeline > timeDamaging + timeToAttack + timeRecovering && AState == AttackState.recovering)
             {
                 AState = AttackState.ready;
+                poseSet = false;
                 //stoppu = false;
-                garrote.SetActive(false);
-                garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 1);
+                // garrote.SetActive(false);
+                //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 1);
             }
         }
-        if (AState != AttackState.ready)
+        if (AState == AttackState.preparing || AState==AttackState.damaging || AState == AttackState.recovering)
         {
             attackTimeline += Time.deltaTime;
         }
+        else if (AState == AttackState.damaged)
+        {
+            attackTimeline += Time.deltaTime;
+            if (attackTimeline >= maxTimeDamaged)
+            {
+                attackTimeline = 0;
+                AState = AttackState.vulnerable;
+                poseSet = false;
+            }
+        }
     }
 
-    public void BecomeVulnarable()
+    float lostSoulsActTimeWaves;
+    void DoLostSouls()
     {
+        //SetPose
+        if (patronTimeline == 0)
+        {
+            portal.enabled = true;
+            lostSoulsTime = 0;
+            lostSoulsWaves = 0;
+            lostSoulsActTimeWaves = lostSoulsTimeWaves / 2;
+        }
+        if (lostSoulsTime >= lostSoulsActTimeWaves && lostSoulsWaves<lostSoulsMaxWaves)
+        {
+            for (int i = 0; i < ghostsPerWave; i++)
+            {
+                //pos Y 
+                //pos X
+                float miny = portal.bounds.min.y;
+                float maxy = portal.bounds.max.y;
+                float y = Random.Range(miny, maxy);
+                float x = portal.bounds.center.x-0.5f;
+                Vector3 spawnPos = new Vector3(x, y, 0);
+                GameObject newGhost = Instantiate(ghost, spawnPos, Quaternion.identity, ghosts);
+                ghostsList.Add(newGhost);
+            }
+            lostSoulsWaves++;
+            lostSoulsTime = 0;
+            Debug.Log("actTimeWaves=" + lostSoulsActTimeWaves + "; lostSoulsWaves=" + lostSoulsWaves);
+            lostSoulsActTimeWaves = lostSoulsTimeWaves;
+        }
+        lostSoulsTime += Time.deltaTime;
+}
+
+    void UpdateGhostsList()
+    {
+        for(int i=0; i < ghostsList.Count; i++)
+        {
+            if (ghostsList[i] == null)
+            {
+                ghostsList.RemoveAt(i);
+            }
+        }
+    }
+    public void BecomeVulnerable()
+    {
+        Debug.Log("VULNERABLE!");
         weakBox.SetActive(false);
-        vulnareble = false;
-        AState = AttackState.vulnerable;
+        espada.enabled = true;
+        vulnerable = false;//esta variable es para saber si está activa la hitbox de la rodilla
+        AState = AttackState.damaged;
+        poseSet = false;
         //animación a vulnerable
         //espada vulnerable 
-        espada.SetActive(true);
         attackTimeline = 0;
     }
 
-    private void takeHit()
+    public void TakeHit()
     {
+        bossWaitTime = 0;
+        bossWait = true;
+        if (AState == AttackState.vulnerable)
+        {
+            espada.enabled = false;
+            AState = AttackState.ready;
+            patronTimeline = espadazoMaxTime + 1;
+        }
         patronIndex = 0;
         hitsTaken++;
         switch (hitsTaken)
@@ -407,6 +575,7 @@ public class Keeper_Phase1 : EnemyAI
                 //phase2 starts
                 break;
         }
+        Debug.Log("hitsTaken=" + hitsTaken);
         ManageCurrentSkill();
     }
 }

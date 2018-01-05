@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 74ad3f3494589fc4b8d16304de6dfcfc
-timeCreated: 1514602205
+guid: 4761b0e7ebed41440a402e8b3b6b9eaa
+timeCreated: 1515072225
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: "Sprite Protagonista Da\xF1o_0"
+    21300000: Boss Standby Sprite_0
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -101,13 +101,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Sprite Protagonista Da\xF1o_0"
+      name: Boss Standby Sprite_0
       rect:
         serializedVersion: 2
-        x: 295
-        y: 43
-        width: 714
-        height: 1512
+        x: 239
+        y: 137
+        width: 2772
+        height: 1687
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

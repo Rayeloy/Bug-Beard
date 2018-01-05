@@ -25,4 +25,11 @@ public class PlayerBodyTrigger : MonoBehaviour {
             }
         }
     }
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.tag == "crystal")
+        {
+            PlayerSlash.instance.ExitCrystal(col.gameObject);
+        }
+    }
 }
