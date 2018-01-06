@@ -259,6 +259,7 @@ public class Keeper_Phase1 : EnemyAI
         nightmareAttacks = 0;
         lostSoulsWaves = 0;
         spikesTime = 0;
+        excaliburCharging = true;
         Debug.Log("Current skill= " + KP1);
     }
 
@@ -431,17 +432,20 @@ public class Keeper_Phase1 : EnemyAI
     {
         if (patronTimeline < excaliburMaxTime)
         {
+            Debug.Log("excaliburCharging= " + excaliburCharging);
             if (patronTimeline == 0)//primera vez
             {
-                CameraMovement.instance.StartShakeCamera(excaliburMaxTime);
-                excaliburCharging = true;
+                spikesTime = 0;
             }
             if (excaliburCharging && spikesTime >= 1.5f)
             {
+                Debug.Log("excalibur charging");
                 spikesTime = 0;
                 excaliburCharging = false;
+                poseSet = false;
+                CameraMovement.instance.StartShakeCamera(excaliburMaxTime);
             }
-            if (!excaliburCharging && spikesTime >= timeBetweenSpikes)
+            else if(!excaliburCharging && spikesTime >= timeBetweenSpikes)
             {
                 spikesTime = 0;
                 //get random pos x between range (room wide-offset); pos y will be the same always

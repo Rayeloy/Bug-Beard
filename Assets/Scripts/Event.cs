@@ -206,6 +206,10 @@ public class Event : MonoBehaviour {
     {
         if (!startEvent)
         {
+            if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.crystal)
+            {
+                PlayerSlash.instance.ExitJumpCrystal();
+            }
             PlayerMovement.instance.stopPlayer = true;
             startEvent = true;
             //move camera hotSpot
