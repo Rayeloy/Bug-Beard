@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Keeper_Phase2 : HeavyAI {
+public class Keeper_Phase2 : EnemyAI {
 
     public static Keeper_Phase2 instance;
 
     [Header("Sprites")]
-    public SpriteRenderer spriteRend;
     public Sprite[] keeperSprites;
     Vector2 standBySpritePos;
     Vector2 standBySpriteProp;
@@ -25,27 +24,16 @@ public class Keeper_Phase2 : HeavyAI {
     private int hitsTaken;
     private float patronTimeline;
     KeeperP2[] KP2_actPatron;
-    KeeperP2[] KP2_patron1 = { KeeperP2.excalibur, KeeperP1.lostSouls, KeeperP1.espazado };
-    KeeperP2[] KP2_patron2 = { KeeperP1.excalibur_ls, KeeperP1.nightmare, KeeperP1.espazado };
-    KeeperP2[] KP2_patron3 = { KeeperP1.excalibur_ls, KeeperP1.nightmare_ls, KeeperP1.espadazo_ls };
+    KeeperP2[] KP2_patron1 = { KeeperP2.rugido, KeeperP2.zarpazoEspectral, KeeperP2.AcidExalation };
+    KeeperP2[] KP2_patron2 = { KeeperP2.rugido_ZarpazoEspectral, KeeperP2.RayoFatuo, KeeperP2.AcidExalation };
+    KeeperP2[] KP2_patron3 = { KeeperP2.rugido_ZarpazoEspectral, KeeperP2.rugido_RayoFatuo, KeeperP2.rugido_AcidExalation };
     int patronIndex;
     bool nextSkill;
 
-    [Header("Espadazo")]
-    public Collider2D espada;
-    public float espadazoMaxTime;
-    public Transform espadazoPos;
-    public float timeToAttack;
-    public float timeDamaging;
-    public float timeRecovering;
-    public float maxTimeDamaged;
-    public float maxTimeVulnerable;
-    float timeVulnerable;
-
-    [Header("Excalibur")]
-    public float excaliburMaxTime;
-    bool excaliburCharging;
-    public Transform excaliburPos;
+    [Header("Rugido")]
+    public float rugidoMaxTime;
+    bool rugidoCharging;
+    public Transform rugidoPos;
     public float timeBetweenSpikes;
     float spikesTime;
     public float spikesSpeed;
@@ -55,37 +43,16 @@ public class Keeper_Phase2 : HeavyAI {
     float spikeWidth = 9.10791f;//width of the widest possible spike
     float spikeHeight = 12.91689f;
 
-    [Header("Lost Souls")]
-    public int lostSoulsMaxWaves;
-    int lostSoulsWaves;
-    public float lostSoulsTimeWaves;
-    float lostSoulsTime;
-    public int ghostsPerWave;
-    public GameObject ghost;
-    public SpriteRenderer portal;
-    public Transform ghosts;
-    List<GameObject> ghostsList;
+    [Header("Zarpazo Espectral")]
 
-    [Header("Nihtmare")]
-    public int nightmareMaxAttacks;
-    int nightmareAttacks;
-    float nightmareTime;
-    public float nightmareTimeFollowingPlayer;
-    public float nightmareAttackFollowSmooth;
-    [Tooltip("Time that the attack is static, recovering for next attack")]
-    public float nightmareAttackingTime;
-    bool nightmareAttacking;
-    [Tooltip("Time that the boss takes to completely dissapear and the black filter appears")]
-    public float nightmareMaxTimeDissapear;
-    bool dissapeared;
-    public SpriteRenderer bossEyes;
-    public GameObject nightmareAttack;
-    public Sprite nightmareAttackWarn;
-    public Sprite nightmareAttackActivated;
+
+    [Header("Acid Exalation")]
+
+
+    [Header("Rayo Fatuo")]
+
 
     public EnemyHP eHP;
-    public CheckHitBox EARange;
-    public CheckHitBox EAHitBox;
     private bool damaged;
     [HideInInspector]
     public bool vulnerable = false;//esta variable es para saber si está activa la hitbox de la rodilla
@@ -103,13 +70,17 @@ public class Keeper_Phase2 : HeavyAI {
         rugido_AcidExalation=6
     }
 
-    public override void Awake()
+    private void OnEnable()
     {
-        base.Awake();
-        instance = this;
+        KonoStart();
+        //TRANSICIÓN
+        ManageCurrentSkill();
+    }
 
+    public void KonoStart()
+    {
+        instance = this;
         attackTimeline = 0;
-        timeVulnerable = 0;
         bossWaitTime = 0;
         bossWait = false;
         hitsTaken = 0;
@@ -126,22 +97,9 @@ public class Keeper_Phase2 : HeavyAI {
         standBySpritePos = spritesOffsets[0];
         standBySpriteProp = spritesProportions[0];
 
-        nightmareAttacks = 0;
-        nightmareTime = 0;
-        dissapeared = false;
-        nightmareAttacking = false;
-
-        lostSoulsWaves = 0;
-        lostSoulsTime = 0;
-        ghostsList = new List<GameObject>();
-
         KP2_actPatron = KP2_patron1;
     }
 
-    private void Start()
-    {
-        ManageCurrentSkill();
-    }
 
     public override void Update()
     {
@@ -164,72 +122,31 @@ public class Keeper_Phase2 : HeavyAI {
             {
                 if (moving)
                 {
-                    PositionForSkill();
+                    //PositionForSkill();
                 }
                 else
                 {
                     switch (KP2)
                     {
-                        case KeeperP1.espazado:
-                            DoEspadazo();
-                            if (patronTimeline >= espadazoMaxTime && AState == AttackState.ready)//cuando termina espadazo sin recibir hit
-                            {
-                                doesPursue = false;
-                                stoppu = false;
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP1.excalibur:
-                            DoExcalibur();
-                            if (patronTimeline >= excaliburMaxTime + bossMaxWaitTime)
+                        case KeeperP2.rugido:
+                            DoRugido();
+                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime)
                             {
 
                                 nextSkill = true;
                             }
                             break;
-                        case KeeperP1.lostSouls:
-                            DoLostSouls();
-                            if (lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)//da tiempo a matar a los últimos ghosts
-                            {
-                                portal.enabled = false;
-                                nextSkill = true;
-                            }
+                        case KeeperP2.zarpazoEspectral:
                             break;
-                        case KeeperP1.nightmare:
-                            DoNightmare();
-                            if (nightmareAttacks >= nightmareMaxAttacks && !dissapeared)
-                            {
-                                nextSkill = true;
-                            }
+                        case KeeperP2.AcidExalation:
                             break;
-                        case KeeperP1.excalibur_ls:
-                            DoExcalibur();
-                            DoLostSouls();
-                            if (patronTimeline >= excaliburMaxTime + bossMaxWaitTime && lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)//da tiempo a matar a los últimos ghosts
-                            {
-                                portal.enabled = false;
-                                nextSkill = true;
-                            }
+                        case KeeperP2.RayoFatuo:
                             break;
-                        case KeeperP1.nightmare_ls:
-                            DoNightmare();
-                            DoLostSouls();
-                            if (nightmareAttacks >= nightmareMaxAttacks && !dissapeared && lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)
-                            {
-                                portal.enabled = false;
-                                nextSkill = true;
-                            }
+                        case KeeperP2.rugido_ZarpazoEspectral:
                             break;
-                        case KeeperP1.espadazo_ls:
-                            DoLostSouls();
-                            DoEspadazo();
-                            if (lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2 && patronTimeline >= espadazoMaxTime && AState == AttackState.ready)//da tiempo a matar a los últimos ghosts
-                            {
-                                portal.enabled = false;
-                                doesPursue = false;
-                                stoppu = false;
-                                nextSkill = true;
-                            }
+                        case KeeperP2.rugido_AcidExalation:
+                            break;
+                        case KeeperP2.rugido_RayoFatuo:
                             break;
                     }
                     if (!nextSkill)
@@ -250,11 +167,11 @@ public class Keeper_Phase2 : HeavyAI {
 
     void ManageCurrentSkill()
     {
-        if (patronIndex >= KP1_actPatron.Length)
+        if (patronIndex >= KP2_actPatron.Length)
         {
             patronIndex = 0;
         }
-        KP1 = KP1_actPatron[patronIndex];
+        KP2 = KP2_actPatron[patronIndex];
         nextSkill = false;
         patronTimeline = 0;
 
@@ -263,26 +180,24 @@ public class Keeper_Phase2 : HeavyAI {
         patronIndex++;
 
         //puedo poner Ifs para solo resetear lo siguiente en caso de que sea la siguiente skill
-        nightmareAttacks = 0;
-        lostSoulsWaves = 0;
         spikesTime = 0;
-        excaliburCharging = true;
-        Debug.Log("Current skill= " + KP1);
+        rugidoCharging = true;
+        Debug.Log("Current skill= " + KP2);
     }
 
     bool poseSet = false;
     float posOlgura = 0.5f;
-    void PositionForSkill()
+    /*void PositionForSkill()
     {
-        switch (KP1)
+        switch (KP2)
         {
-            case KeeperP1.espazado:
+            case KeeperP2.espazado:
                 moving = false;
                 break;
-            case KeeperP1.espadazo_ls:
+            case KeeperP2.espadazo_ls:
                 moving = false;
                 break;
-            case KeeperP1.lostSouls:
+            case KeeperP2.lostSouls:
                 MoveTowards(espadazoPos.position);
                 break;
             case KeeperP1.excalibur:
@@ -298,7 +213,7 @@ public class Keeper_Phase2 : HeavyAI {
                 moving = false;
                 break;
         }
-    }
+    }*/
     bool moving = false;
     void MoveTowards(Vector3 targetPos)
     {
@@ -321,9 +236,9 @@ public class Keeper_Phase2 : HeavyAI {
 
     void SetPose(int poseIndex)
     {
-        spriteRend.sprite = keeperSprites[poseIndex];
-        spriteRend.transform.localPosition = standBySpritePos + spritesOffsets[poseIndex];
-        spriteRend.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
+        sprite.sprite = keeperSprites[poseIndex];
+        sprite.transform.localPosition = standBySpritePos + spritesOffsets[poseIndex];
+        sprite.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
         for (int i = 0; i < colliders.Length; i++)
         {
             if (i == poseIndex)
@@ -351,7 +266,6 @@ public class Keeper_Phase2 : HeavyAI {
             luces[1].enabled = false;
         }
     }
-
     void ManagePose()
     {
         if (moving)
@@ -360,96 +274,92 @@ public class Keeper_Phase2 : HeavyAI {
         }
         else if (!poseSet)
         {
-            switch (KP1)
+            switch (KP2)
             {
-                case KeeperP1.excalibur:
-                    if (excaliburCharging)
-                    {
-                        SetPose(5);
-                    }
-                    else
-                    {
-                        SetPose(6);
-                    }
-
+                case KeeperP2.rugido:
                     break;
-                case KeeperP1.lostSouls:
-                    weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
-                    SetPose(7);
+                case KeeperP2.zarpazoEspectral:
                     break;
-                case KeeperP1.espazado:
-                    switch (AState)
-                    {
-                        case AttackState.ready:
-                            SetPose(0);
-                            break;
-                        case AttackState.preparing:
-                            SetPose(1);
-                            break;
-                        case AttackState.damaging:
-                            SetPose(2);
-                            break;
-                        case AttackState.recovering:
-                            SetPose(2);
-                            break;
-                        case AttackState.damaged:
-                            SetPose(3);
-                            break;
-                        case AttackState.vulnerable:
-                            SetPose(4);
-                            break;
-                        case AttackState.damagedAfterVulnerable:
-                            SetPose(3);
-                            break;
-                    }
+                case KeeperP2.AcidExalation:
                     break;
-                case KeeperP1.nightmare:
-                    if (patronTimeline == 0)
-                    {
-                        SetPose(0);
-                    }
+                case KeeperP2.RayoFatuo:
                     break;
-                case KeeperP1.excalibur_ls:
-                    if (excaliburCharging)
-                    {
-                        SetPose(5);
-                    }
-                    else
-                    {
-                        SetPose(6);
-                    }
+                case KeeperP2.rugido_ZarpazoEspectral:
                     break;
-                case KeeperP1.nightmare_ls:
-                    if (patronTimeline == 0)
-                    {
-                        SetPose(0);
-                    }
+                case KeeperP2.rugido_AcidExalation:
                     break;
-                case KeeperP1.espadazo_ls:
-                    switch (AState)
-                    {
-                        case AttackState.ready:
-                            SetPose(0);
-                            break;
-                        case AttackState.preparing:
-                            SetPose(1);
-                            break;
-                        case AttackState.damaging:
-                            SetPose(2);
-                            break;
-                        case AttackState.recovering:
-                            SetPose(2);
-                            break;
-                        case AttackState.damaged:
-                            SetPose(3);
-                            break;
-                        case AttackState.vulnerable:
-                            SetPose(4);
-                            break;
-                    }
+                case KeeperP2.rugido_RayoFatuo:
                     break;
             }
             poseSet = true;
         }
     }
+
+    void DoRugido()
+    {
+        if (patronTimeline < rugidoMaxTime)
+        {
+            if (patronTimeline == 0)//primera vez
+            {
+                spikesTime = 0;
+            }
+            if (rugidoCharging && spikesTime >= 1.5f)
+            {
+                spikesTime = 0;
+                rugidoCharging = false;
+                poseSet = false;
+                CameraMovement.instance.StartShakeCamera(rugidoMaxTime);
+            }
+            else if (!rugidoCharging && spikesTime >= timeBetweenSpikes)
+            {
+                spikesTime = 0;
+                //get random pos x between range (room wide-offset); pos y will be the same always
+                //no se si coge world positions o local positions...
+                float MaxRange = ceiling.bounds.max.x - spikeWidth / 2 - 0.3f;
+                float MinRange = ceiling.bounds.min.x + spikeWidth / 2 + 0.3f;
+                float posY = ceiling.bounds.min.y - spikeHeight / 2 - 0.3f;//algo de olgura para evitar collision con techo
+                float posX = Random.Range(MinRange, MaxRange);
+                Vector3 spikePos = new Vector3(posX, posY, 0);
+                //spawn Spike at random pos
+                GameObject newSpike = Instantiate(spike, spikePos, Quaternion.identity, spikes);
+                //set spike speed downwards
+                newSpike.GetComponent<Rigidbody2D>().velocity = Vector2.down * spikesSpeed;
+                newSpike.GetComponent<Keeper_Spike>().konoStart();
+                //spike ignore obstacles? yes
+                //spike damages player on collision
+                //spike destroys con collision with stage(care for colliding at spawn)
+            }
+            spikesTime += Time.deltaTime;
+        }
+    }
+
+    public void TakeHit()
+    {
+        if (hitsTaken < 3)
+        {
+            bossWaitTime = 0;
+            bossWait = true;
+            poseSet = false;
+            patronIndex = 0;
+            Debug.Log("hitsTaken=" + hitsTaken);
+        }
+        hitsTaken++;
+        switch (hitsTaken)
+        {
+            case 0:
+                KP2_actPatron = KP2_patron1;
+                break;
+            case 1:
+                KP2_actPatron = KP2_patron2;
+                break;
+            case 2:
+                KP2_actPatron = KP2_patron3;
+                break;
+            case 3:
+                //end fight
+                break;
+        }
+
+    }
+
 }

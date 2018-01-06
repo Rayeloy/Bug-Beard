@@ -276,7 +276,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1318990619047536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2967.97, y: 143.66, z: 10}
+  m_LocalPosition: {x: 2362.5, y: 80.1, z: 10}
   m_LocalScale: {x: 2.7212582, y: 2.7212582, z: 2.7212582}
   m_Children:
   - {fileID: 4437459639733436}
@@ -513,6 +513,9 @@ MonoBehaviour:
   camera: {fileID: 0}
   myRB: {fileID: 50310238054895654}
   playerM: {fileID: 114111340313332842}
+  slashSplash: {fileID: 1812695640090156, guid: 3f4992e7cc15aeb459c565ecfbbd83cb,
+    type: 2}
+  slashSplashes: {fileID: 0}
   timeSlashing: 0
   lastSlashDir: {x: 0, y: 0}
   slashSt: 0
@@ -809,7 +812,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 0ec4024724d86404db49a8ce49f16bbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1

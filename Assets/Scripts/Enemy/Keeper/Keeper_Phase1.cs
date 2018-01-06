@@ -10,7 +10,6 @@ public class Keeper_Phase1 : EnemyAI
     public Keeper_Phase2 KeeperP2;
 
     [Header("Sprites")]
-    public SpriteRenderer spriteRend;
     public Sprite[] keeperSprites;
     Vector2 standBySpritePos;
     Vector2 standBySpriteProp;
@@ -326,9 +325,9 @@ public class Keeper_Phase1 : EnemyAI
 
     void SetPose(int poseIndex)
     {
-        spriteRend.sprite = keeperSprites[poseIndex];
-        spriteRend.transform.localPosition = standBySpritePos + spritesOffsets[poseIndex];
-        spriteRend.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
+        sprite.sprite = keeperSprites[poseIndex];
+        sprite.transform.localPosition = standBySpritePos + spritesOffsets[poseIndex];
+        sprite.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
         for (int i = 0; i < colliders.Length; i++)
         {
             if (i == poseIndex)
@@ -673,7 +672,7 @@ public class Keeper_Phase1 : EnemyAI
                 Color colorBoss = new Color(1, 1, 1, aBoss);
                 Color colorEyes = new Color(1, 1, 1, aEyes);
                 CameraMovement.instance.BlackFilter.color = colorFilter;
-                spriteRend.color = colorBoss;
+                sprite.color = colorBoss;
                 bossEyes.color = colorEyes;
                 if (nightmareTime >= nightmareMaxTimeDissapear)
                 {
@@ -692,7 +691,7 @@ public class Keeper_Phase1 : EnemyAI
                     nightmareAttack.transform.position = new Vector3(attackPosX, attackPosY, 0);
                     if (nightmareTime >= nightmareTimeFollowingPlayer)//attack!!
                     {
-                        nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder = 10;
+                        nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder = PlayerAnimations.instance.SpriteRend.sortingOrder+1;
                         nightmareAttack.GetComponent<SpriteRenderer>().sprite = nightmareAttackActivated;
                         //nightmareAttack.GetComponent<Collider2D>().enabled = true;
                         if (nightmareAttack.GetComponent<CheckHitBox>().CheckFor("Player"))
@@ -730,7 +729,7 @@ public class Keeper_Phase1 : EnemyAI
             Color colorBoss = new Color(1, 1, 1, aBoss);
             Color colorEyes = new Color(1, 1, 1, aEyes);
             CameraMovement.instance.BlackFilter.color = colorFilter;
-            spriteRend.color = colorBoss;
+            sprite.color = colorBoss;
             bossEyes.color = colorEyes;
             if (nightmareTime >= nightmareMaxTimeDissapear)
             {
@@ -769,6 +768,7 @@ public class Keeper_Phase1 : EnemyAI
             if (p2Start)
             {
                 KeeperP2.enabled=true;
+                Debug.Log("PHASE 2");
                 this.enabled = false;
                 //START PHASE2
             }

@@ -25,6 +25,8 @@ public class PlayerSlash : MonoBehaviour
     private Vector2 myPos;//my position - Origen del slash
     public PlayerMovement playerM;
 
+    public GameObject slashSplash;
+    public Transform slashSplashes;
     private float slashDist;
     [HideInInspector]
     public float timeSlashing;
@@ -218,7 +220,7 @@ public class PlayerSlash : MonoBehaviour
                 if (hit[j])
                 {
                     //Debug.Log("hit with " + hit[j].collider.gameObject);
-                    ManagePlayerAttackCollisions(hit[j].collider,j);
+                    ManagePlayerAttackCollisions(hit[j].collider,j,hit[j]);
                 }
             }
         }
@@ -227,7 +229,7 @@ public class PlayerSlash : MonoBehaviour
         //Debug.Log("center=" + center + "; arrowBase= " + arrowBase + "; arrowHead= " + arrowHead);
     }
 
-    void ManagePlayerAttackCollisions(Collider2D col, int ray)
+    void ManagePlayerAttackCollisions(Collider2D col, int ray, RaycastHit2D hit)
     {
         /*if (tag == "PlayerAttack")
         {
@@ -245,6 +247,7 @@ public class PlayerSlash : MonoBehaviour
             if (col.tag == "hitBox")
             {
                 //Debug.Log("ray "+ray+":PAttack agains " + col.name);
+                StartCoroutine(SplashAnim(hit.point));
                 PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack(col.transform.position, PlayerMovement.instance.bounceForce / 3f);
                 //Debug.Log("enemy " + transform.root.name + " recieves damage");
@@ -340,5 +343,12 @@ public class PlayerSlash : MonoBehaviour
     {
         float angle = Mathf.Atan2((posB.x - posA.x), (posB.y - posA.y)) * Mathf.Rad2Deg;
         return new Vector2(speed * Mathf.Cos(angle), speed * Mathf.Sin(angle));
+    }
+
+    IEnumerator SplashAnim(Vector3 _position)
+    {
+        GameObject splash = Instantiate(slashSplash, _position, Quaternion.identity, slashSplashes);
+        yield return new WaitForSeconds(0.2f);
+        Destroy(splash);
     }
 }
