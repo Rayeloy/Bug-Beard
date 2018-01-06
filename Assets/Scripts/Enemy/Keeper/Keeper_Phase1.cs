@@ -5,6 +5,9 @@ using UnityEngine;
 public class Keeper_Phase1 : EnemyAI
 {
     public static Keeper_Phase1 instance;
+    [HideInInspector]
+    public bool p2Start;
+    public Keeper_Phase2 KeeperP2;
 
     [Header("Sprites")]
     public SpriteRenderer spriteRend;
@@ -14,6 +17,7 @@ public class Keeper_Phase1 : EnemyAI
     public Vector2[] spritesOffsets;//ORDEN: Standby, Anticipation, Attack, Damaged, Vulnerable,
     public Vector2[] spritesProportions;
     public Collider2D[] colliders;
+    public SpriteRenderer[] luces;
 
     [Header("BOSS SKILLS")]
     float bossWaitTime;
@@ -86,7 +90,6 @@ public class Keeper_Phase1 : EnemyAI
     public CheckHitBox EARange;
     public CheckHitBox EAHitBox;
     private bool damaged;
-    public GameObject garrote;
     [HideInInspector]
     public bool vulnerable = false;//esta variable es para saber si está activa la hitbox de la rodilla
 
@@ -105,11 +108,14 @@ public class Keeper_Phase1 : EnemyAI
 
     public override void Awake()
     {
+        KeeperP2.enabled = false;
         base.Awake();
         instance = this;
+        p2Start = false;
+
         attackTimeline = 0;
         timeVulnerable = 0;
-        bossWaitTime = 0;//empieza asi
+        bossWaitTime = 0;
         bossWait = false;
         hitsTaken = 0;
         patronIndex = 0;
@@ -118,6 +124,9 @@ public class Keeper_Phase1 : EnemyAI
         poseSet = false;
         AState = AttackState.ready;
         damaged = false;
+
+        luces[0].enabled = false;
+        luces[1].enabled = false;
 
         standBySpritePos = spritesOffsets[0];
         standBySpriteProp = spritesProportions[0];
@@ -146,7 +155,7 @@ public class Keeper_Phase1 : EnemyAI
         UpdateGhostsList();
         if (!stopEnemy)
         {
-            Debug.Log("Moving= " + moving);
+            //Debug.Log("Moving= " + moving);
             ManagePose();
             if (bossWait)
             {
@@ -168,7 +177,7 @@ public class Keeper_Phase1 : EnemyAI
                     {
                         case KeeperP1.espazado:
                             DoEspadazo();
-                            if (patronTimeline >= espadazoMaxTime && AState == AttackState.ready)
+                            if (patronTimeline >= espadazoMaxTime && AState == AttackState.ready)//cuando termina espadazo sin recibir hit
                             {
                                 doesPursue = false;
                                 stoppu = false;
@@ -228,8 +237,11 @@ public class Keeper_Phase1 : EnemyAI
                             }
                             break;
                     }
-                    //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
-                    patronTimeline += Time.deltaTime;
+                    if (!nextSkill)
+                    {
+                        //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
+                        patronTimeline += Time.deltaTime;
+                    }
                 }
                 //NO MOVER. Deber ir siempre tras el switch
                 //Debug.Log("patronTimeline= "+patronTimeline);
@@ -308,7 +320,7 @@ public class Keeper_Phase1 : EnemyAI
             eState = enemyState.stop;
             moving = false;
         }
-        Debug.Log("eState= " + eState + "; stoppu= " + stoppu);
+        //Debug.Log("eState= " + eState + "; stoppu= " + stoppu);
         HorizontalMovement();
     }
 
@@ -327,6 +339,20 @@ public class Keeper_Phase1 : EnemyAI
             {
                 colliders[i].enabled = false;
             }
+        }
+        if (poseIndex == 1)
+        {
+            luces[0].enabled = true;
+            luces[1].enabled = false;
+        }else if(poseIndex == 4)
+        {
+            luces[0].enabled = false;
+            luces[1].enabled = true;
+        }
+        else
+        {
+            luces[0].enabled = false;
+            luces[1].enabled = false;
         }
     }
 
@@ -375,6 +401,9 @@ public class Keeper_Phase1 : EnemyAI
                             break;
                         case AttackState.vulnerable:
                             SetPose(4);
+                            break;
+                        case AttackState.damagedAfterVulnerable:
+                            SetPose(3);
                             break;
                     }
                     break;
@@ -432,14 +461,12 @@ public class Keeper_Phase1 : EnemyAI
     {
         if (patronTimeline < excaliburMaxTime)
         {
-            Debug.Log("excaliburCharging= " + excaliburCharging);
             if (patronTimeline == 0)//primera vez
             {
                 spikesTime = 0;
             }
             if (excaliburCharging && spikesTime >= 1.5f)
             {
-                Debug.Log("excalibur charging");
                 spikesTime = 0;
                 excaliburCharging = false;
                 poseSet = false;
@@ -473,18 +500,21 @@ public class Keeper_Phase1 : EnemyAI
         if (patronTimeline == 0)
         {
             doesPursue = true;
+            attackTimeline = 0;
         }
-        if (AState != AttackState.vulnerable)
+        if (AState != AttackState.vulnerable && AState!=AttackState.damagedAfterVulnerable)
         {
             HorizontalMovement();
             Attack();
         }
-        else
+        else if(AState == AttackState.vulnerable)
         {
             DoVulnerable();
+        }else if (AState == AttackState.damagedAfterVulnerable)
+        {
+            DoDamagedAfterVulnerable();
         }
     }
-
     //uso esta funcion como la skill espadazo
     public override void Attack()
     {
@@ -532,6 +562,7 @@ public class Keeper_Phase1 : EnemyAI
             //RECOVERING
             else if (attackTimeline > timeDamaging + timeToAttack + timeRecovering && AState == AttackState.recovering)
             {
+                Debug.Log("ATTACK READY");
                 AState = AttackState.ready;
                 poseSet = false;
                 stoppu = false;
@@ -549,19 +580,21 @@ public class Keeper_Phase1 : EnemyAI
             if (attackTimeline >= maxTimeDamaged)
             {
                 attackTimeline = 0;
+                timeVulnerable = 0;
                 AState = AttackState.vulnerable;
                 poseSet = false;
             }
         }
     }
-
     void DoVulnerable()
     {
         timeVulnerable += Time.deltaTime;
         if (timeVulnerable > maxTimeVulnerable)
         {
+            Debug.Log("ATTACK READY");
             AState = AttackState.ready;
             espada.enabled = false;
+            poseSet = false;
         }
     }
 
@@ -571,6 +604,7 @@ public class Keeper_Phase1 : EnemyAI
         //SetPose
         if (patronTimeline == 0)
         {
+            Debug.Log("portal opened!");
             portal.enabled = true;
             lostSoulsTime = 0;
             lostSoulsWaves = 0;
@@ -625,6 +659,7 @@ public class Keeper_Phase1 : EnemyAI
             nightmareAttack.GetComponent<SpriteRenderer>().sprite = nightmareAttackWarn;
             nightmareAttacking = false;
             dissapeared = false;
+            colliders[0].enabled = false;
         }
         if (nightmareAttacks < nightmareMaxAttacks)
         {
@@ -644,7 +679,6 @@ public class Keeper_Phase1 : EnemyAI
                 {
                     dissapeared = true;
                     nightmareTime = 0;
-                    colliders[0].enabled = false;
                     nightmareAttack.transform.position = PlayerMovement.instance.transform.position;
                     nightmareAttack.GetComponent<SpriteRenderer>().enabled = true;
                 }
@@ -711,8 +745,7 @@ public class Keeper_Phase1 : EnemyAI
     public void BecomeVulnerable()
     {
         Debug.Log("VULNERABLE!");
-        doesPursue = false;
-        stoppu = false;
+        //doesPursue = false;
         weakBox.SetActive(false);
         espada.enabled = true;
         vulnerable = false;//esta variable es para saber si está activa la hitbox de la rodilla
@@ -722,19 +755,43 @@ public class Keeper_Phase1 : EnemyAI
         //espada vulnerable 
         attackTimeline = 0;
     }
+    void DoDamagedAfterVulnerable()
+    {
+        Debug.Log("damaged after vulnerable");
+        attackTimeline += Time.deltaTime;
+        if (attackTimeline >= maxTimeDamaged)
+        {
+            attackTimeline = 0;
+            AState = AttackState.ready;
+            poseSet = false;
+            stoppu = false;
+            doesPursue = false;
+            if (p2Start)
+            {
+                KeeperP2.enabled=true;
+                this.enabled = false;
+                //START PHASE2
+            }
+        }
+    }
 
     public void TakeHit()
     {
         portal.enabled = false;
-        bossWaitTime = 0;
-        bossWait = true;
-        if (AState == AttackState.vulnerable)
+        if (hitsTaken < 3)
         {
-            espada.enabled = false;
-            AState = AttackState.ready;
-            patronTimeline = espadazoMaxTime + 1;
+            bossWaitTime = 0;
+            bossWait = true;
+            if (AState == AttackState.vulnerable)
+            {
+                espada.enabled = false;
+                AState = AttackState.damagedAfterVulnerable;
+                patronTimeline = espadazoMaxTime + 1;
+                poseSet = false;
+            }
+            patronIndex = 0;
+            Debug.Log("hitsTaken=" + hitsTaken);
         }
-        patronIndex = 0;
         hitsTaken++;
         switch (hitsTaken)
         {
@@ -748,10 +805,9 @@ public class Keeper_Phase1 : EnemyAI
                 KP1_actPatron = KP1_patron3;
                 break;
             case 3:
-                //phase2 starts
+                p2Start = true;
                 break;
         }
-        Debug.Log("hitsTaken=" + hitsTaken);
-        ManageCurrentSkill();
+
     }
 }

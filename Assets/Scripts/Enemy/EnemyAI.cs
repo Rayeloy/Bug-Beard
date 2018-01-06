@@ -48,7 +48,8 @@ public class EnemyAI : MonoBehaviour
         damaging=2,
         recovering=3,
         damaged=4,
-        vulnerable=5
+        vulnerable=5,
+        damagedAfterVulnerable=6
     }
 
     public virtual void Awake()
