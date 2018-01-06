@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2e30f5dc6395fe9429938021e95e7b3a
-timeCreated: 1515262790
+guid: f3d5ba4d005dbfa41a3a3e2d81bd81c7
+timeCreated: 1515265954
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Boss 2nd fase - Standby 2_0
+    21300000: 3 Tile piedra Dcha_0
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -79,13 +79,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Boss 2nd fase - Standby 2_0
+      name: 3 Tile piedra Dcha_0
       rect:
         serializedVersion: 2
-        x: 484
-        y: 80
-        width: 2291
-        height: 1228
+        x: 614
+        y: 310
+        width: 772
+        height: 124
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

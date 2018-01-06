@@ -1,10 +1,11 @@
 fileFormatVersion: 2
-guid: 2e30f5dc6395fe9429938021e95e7b3a
-timeCreated: 1515262790
+guid: 4a5a99301341cb4469d69355e0dae4b0
+timeCreated: 1515263780
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Boss 2nd fase - Standby 2_0
+    21300000: Columna rota_0
+    21300002: Columna rota_1
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -79,13 +80,27 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Boss 2nd fase - Standby 2_0
+      name: Columna rota_0
       rect:
         serializedVersion: 2
-        x: 484
-        y: 80
-        width: 2291
-        height: 1228
+        x: 655
+        y: 2412
+        width: 821
+        height: 828
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Columna rota_1
+      rect:
+        serializedVersion: 2
+        x: 643
+        y: 183
+        width: 850
+        height: 1226
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

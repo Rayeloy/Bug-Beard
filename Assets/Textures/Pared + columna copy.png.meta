@@ -1,10 +1,11 @@
 fileFormatVersion: 2
-guid: 2e30f5dc6395fe9429938021e95e7b3a
-timeCreated: 1515262790
+guid: 5994b8347a3281345a6d799a639e25f2
+timeCreated: 1515264003
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Boss 2nd fase - Standby 2_0
+    21300000: Pared + columna copy_0
+    21300002: Pared + columna copy_1
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -79,13 +80,27 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Boss 2nd fase - Standby 2_0
+      name: Pared + columna copy_0
       rect:
         serializedVersion: 2
-        x: 484
-        y: 80
-        width: 2291
-        height: 1228
+        x: 313
+        y: 50
+        width: 3079
+        height: 4744
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Pared + columna copy_1
+      rect:
+        serializedVersion: 2
+        x: 3875
+        y: 3836
+        width: 16
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

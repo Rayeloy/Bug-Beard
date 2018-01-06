@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 2e30f5dc6395fe9429938021e95e7b3a
-timeCreated: 1515262790
+guid: 033ff502410c43445a18fcf07f0796a3
+timeCreated: 1515263615
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Boss 2nd fase - Standby 2_0
+    21300000: Columna caida_0
+    21300002: Columna caida_1
+    21300004: Columna caida_2
+    21300006: Columna caida_3
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -79,13 +82,55 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Boss 2nd fase - Standby 2_0
+      name: Columna caida_0
       rect:
         serializedVersion: 2
-        x: 484
-        y: 80
-        width: 2291
-        height: 1228
+        x: 2568
+        y: 2005
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Columna caida_1
+      rect:
+        serializedVersion: 2
+        x: 2624
+        y: 1601
+        width: 11
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Columna caida_2
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 163
+        width: 2358
+        height: 1406
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Columna caida_3
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 0
+        width: 90
+        height: 11
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

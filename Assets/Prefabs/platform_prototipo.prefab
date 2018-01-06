@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212792268547732264}
   - component: {fileID: 61840944313951288}
   m_Layer: 17
-  m_Name: platform_prototipo
+  m_Name: platform_cesped
   m_TagString: platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
