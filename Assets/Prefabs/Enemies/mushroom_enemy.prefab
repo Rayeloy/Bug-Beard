@@ -258,12 +258,11 @@ MonoBehaviour:
   playerDetected: 0
   speed: 5
   maxFallSpeed: -40
-  gravity: -62.5
   myRB: {fileID: 50002515632592824}
   sprite: {fileID: 212672288956752930}
   weakBox: {fileID: 1919574835159370}
   weakBoxOrientation: 0
-  stoppu: 0
+  stopEnemy: 0
   eState: 0
   currentDirection: 0
   AState: 0
@@ -322,5 +321,5 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0

@@ -246,15 +246,14 @@ public class PlayerSlash : MonoBehaviour
             {
                 //Debug.Log("ray "+ray+":PAttack agains " + col.name);
                 PlayerSlash.instance.StopSlash();
+                PlayerMovement.instance.BounceBack(col.transform.position, PlayerMovement.instance.bounceForce / 3f);
                 //Debug.Log("enemy " + transform.root.name + " recieves damage");
-                if (col.transform.GetComponentInParent<EnemyHP>().gameObject.name.Contains("Ghost"))//menor bounce con fantasmas
+                /*if (col.transform.GetComponentInParent<EnemyHP>().gameObject.name.Contains("Ghost"))//menor bounce con fantasmas
                 {
-                    PlayerMovement.instance.BounceBack(col.transform.position, PlayerMovement.instance.bounceForce / 1.5f);
                 }
                 else
                 {
-                    PlayerMovement.instance.BounceBack(col.transform.position);
-                }
+                }*/
                 PlayerSlash.instance.ResetSlash();
                 if (col.gameObject.layer == 18)//Keeper
                 {

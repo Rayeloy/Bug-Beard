@@ -40,6 +40,7 @@ public class HeavyAI : EnemyAI
         {
             attackTimeline = 0;
             AState = AttackState.preparing;
+            Debug.Log("stoppu true");
             stoppu = true;
             garrote.SetActive(true);
             garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 3);

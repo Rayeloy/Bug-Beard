@@ -43,6 +43,7 @@ public class Keeper_Phase1 : EnemyAI
 
     [Header("Excalibur")]
     public float excaliburMaxTime;
+    bool excaliburCharging;
     public Transform excaliburPos;
     public float timeBetweenSpikes;
     float spikesTime;
@@ -110,7 +111,7 @@ public class Keeper_Phase1 : EnemyAI
         timeVulnerable = 0;
         bossWaitTime = 0;//empieza asi
         bossWait = false;
-        hitsTaken = 1;
+        hitsTaken = 0;
         patronIndex = 0;
         nextSkill = false;
         moving = false;
@@ -130,7 +131,7 @@ public class Keeper_Phase1 : EnemyAI
         lostSoulsTime = 0;
         ghostsList = new List<GameObject>();
 
-        KP1_actPatron = KP1_patron2;
+        KP1_actPatron = KP1_patron1;
     }
 
     private void Start()
@@ -145,97 +146,97 @@ public class Keeper_Phase1 : EnemyAI
         UpdateGhostsList();
         if (!stopEnemy)
         {
-            //Debug.Log("Moving= " + moving);
+            Debug.Log("Moving= " + moving);
             ManagePose();
-            if (moving)
+            if (bossWait)
             {
-                PositionForSkill();
+                bossWaitTime += Time.deltaTime;
+                if (bossWaitTime >= bossMaxWaitTime)
+                {
+                    bossWait = false;
+                }
             }
             else
             {
-                switch (KP1)
+                if (moving)
                 {
-                    case KeeperP1.espazado:
-
-                        if (AState != AttackState.vulnerable)
-                        {
-                            Attack();
-                        }
-                        else
-                        {
-                            DoVulnerable();
-                        }
-                        if (patronTimeline >= espadazoMaxTime && AState == AttackState.ready)
-                        {
-                            if (bossWait)
+                    PositionForSkill();
+                }
+                else
+                {
+                    switch (KP1)
+                    {
+                        case KeeperP1.espazado:
+                            DoEspadazo();
+                            if (patronTimeline >= espadazoMaxTime && AState == AttackState.ready)
                             {
-                                bossWaitTime += Time.deltaTime;
-                                if(bossWaitTime>= bossMaxWaitTime)
-                                {
-                                    bossWait = false;
-                                }
+                                doesPursue = false;
+                                stoppu = false;
+                                nextSkill = true;
                             }
-                            else
+                            break;
+                        case KeeperP1.excalibur:
+                            DoExcalibur();
+                            if (patronTimeline >= excaliburMaxTime + bossMaxWaitTime)
+                            {
+
+                                nextSkill = true;
+                            }
+                            break;
+                        case KeeperP1.lostSouls:
+                            DoLostSouls();
+                            if (lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)//da tiempo a matar a los últimos ghosts
+                            {
+                                portal.enabled = false;
+                                nextSkill = true;
+                            }
+                            break;
+                        case KeeperP1.nightmare:
+                            DoNightmare();
+                            if (nightmareAttacks >= nightmareMaxAttacks && !dissapeared)
                             {
                                 nextSkill = true;
                             }
-                        }
-                        break;
-                    case KeeperP1.excalibur:
-                        DoExcalibur();
-                        if (patronTimeline >= excaliburMaxTime+bossMaxWaitTime)
-                        {
-
-                            nextSkill = true;
-                        }
-                        break;
-                    case KeeperP1.lostSouls:
-                        DoLostSouls();
-                        if (lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime>=lostSoulsTimeWaves*2)//da tiempo a matar a los últimos ghosts
-                        {
-                            portal.enabled = false;
-                            nextSkill = true;
-                        }
-                        break;
-                    case KeeperP1.nightmare:
-                        DoNightmare();
-                        if (nightmareAttacks >= nightmareMaxAttacks && !dissapeared)
-                        {
-                            nextSkill = true;
-                        }
-                        break;
-                    case KeeperP1.excalibur_ls:
-                        DoExcalibur();
-                        DoLostSouls();
-                        if (patronTimeline >= excaliburMaxTime + bossMaxWaitTime && lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)//da tiempo a matar a los últimos ghosts
-                        {
-                            portal.enabled = false;
-                            nextSkill = true;
-                        }
-                        break;
-                    case KeeperP1.nightmare_ls:
-                        DoExcalibur();
-                        if (nightmareAttacks >= nightmareMaxAttacks)
-                        {
-                            nextSkill = true;
-                        }
-                        break;
-                    case KeeperP1.espadazo_ls:
-                        DoExcalibur();
-                        if (nightmareAttacks >= nightmareMaxAttacks)
-                        {
-                            nextSkill = true;
-                        }
-                        break;
+                            break;
+                        case KeeperP1.excalibur_ls:
+                            DoExcalibur();
+                            DoLostSouls();
+                            if (patronTimeline >= excaliburMaxTime + bossMaxWaitTime && lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)//da tiempo a matar a los últimos ghosts
+                            {
+                                portal.enabled = false;
+                                nextSkill = true;
+                            }
+                            break;
+                        case KeeperP1.nightmare_ls:
+                            DoNightmare();
+                            DoLostSouls();
+                            if (nightmareAttacks >= nightmareMaxAttacks && !dissapeared && lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2)
+                            {
+                                portal.enabled = false;
+                                nextSkill = true;
+                            }
+                            break;
+                        case KeeperP1.espadazo_ls:
+                            DoLostSouls();
+                            DoEspadazo();
+                            if (lostSoulsWaves >= lostSoulsMaxWaves && lostSoulsTime >= lostSoulsTimeWaves * 2 && patronTimeline >= espadazoMaxTime && AState == AttackState.ready)//da tiempo a matar a los últimos ghosts
+                            {
+                                portal.enabled = false;
+                                doesPursue = false;
+                                stoppu = false;
+                                nextSkill = true;
+                            }
+                            break;
+                    }
+                    //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
+                    patronTimeline += Time.deltaTime;
                 }
-                //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
-                patronTimeline += Time.deltaTime;
-            }
-            //NO MOVER. Deber ir siempre tras el switch
-            //Debug.Log("patronTimeline= "+patronTimeline);
-            if (nextSkill)
-            {
-                ManageCurrentSkill();
+                //NO MOVER. Deber ir siempre tras el switch
+                //Debug.Log("patronTimeline= "+patronTimeline);
+                if (nextSkill)
+                {
+                    ManageCurrentSkill();
+                }
             }
         }
     }
@@ -268,10 +269,10 @@ public class Keeper_Phase1 : EnemyAI
         switch (KP1)
         {
             case KeeperP1.espazado:
-                MoveTowards(espadazoPos.position);
+                moving = false;
                 break;
             case KeeperP1.espadazo_ls:
-                MoveTowards(espadazoPos.position);
+                moving = false;
                 break;
             case KeeperP1.lostSouls:
                 MoveTowards(espadazoPos.position);
@@ -288,7 +289,7 @@ public class Keeper_Phase1 : EnemyAI
             case KeeperP1.nightmare_ls:
                 moving = false;
                 break;
-        } 
+        }
     }
     bool moving = false;
     void MoveTowards(Vector3 targetPos)
@@ -296,19 +297,18 @@ public class Keeper_Phase1 : EnemyAI
         if (transform.position.x < targetPos.x - posOlgura)
         {
             eState = enemyState.wRight;
-            HorizontalMovement();
         }
         else if (transform.position.x > targetPos.x + posOlgura)
         {
             eState = enemyState.wLeft;
-            HorizontalMovement();
         }
         else
         {
             eState = enemyState.stop;
-            HorizontalMovement();
             moving = false;
         }
+        Debug.Log("eState= " + eState + "; stoppu= " + stoppu);
+        HorizontalMovement();
     }
 
     void SetPose(int poseIndex)
@@ -318,7 +318,8 @@ public class Keeper_Phase1 : EnemyAI
         spriteRend.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
         for (int i = 0; i < colliders.Length; i++)
         {
-            if (i == poseIndex) {
+            if (i == poseIndex)
+            {
                 colliders[i].enabled = true;
             }
             else
@@ -339,13 +340,21 @@ public class Keeper_Phase1 : EnemyAI
             switch (KP1)
             {
                 case KeeperP1.excalibur:
-                    //SetPose();
+                    if (excaliburCharging)
+                    {
+                        SetPose(5);
+                    }
+                    else
+                    {
+                        SetPose(6);
+                    }
+
                     break;
                 case KeeperP1.lostSouls:
                     weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
+                    SetPose(7);
                     break;
                 case KeeperP1.espazado:
-                    weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
                     switch (AState)
                     {
                         case AttackState.ready:
@@ -375,6 +384,14 @@ public class Keeper_Phase1 : EnemyAI
                     }
                     break;
                 case KeeperP1.excalibur_ls:
+                    if (excaliburCharging)
+                    {
+                        SetPose(5);
+                    }
+                    else
+                    {
+                        SetPose(6);
+                    }
                     break;
                 case KeeperP1.nightmare_ls:
                     if (patronTimeline == 0)
@@ -383,7 +400,6 @@ public class Keeper_Phase1 : EnemyAI
                     }
                     break;
                 case KeeperP1.espadazo_ls:
-                    weakBox.transform.parent.rotation = Quaternion.Euler(0, 180, 0);
                     switch (AState)
                     {
                         case AttackState.ready:
@@ -418,8 +434,14 @@ public class Keeper_Phase1 : EnemyAI
             if (patronTimeline == 0)//primera vez
             {
                 CameraMovement.instance.StartShakeCamera(excaliburMaxTime);
+                excaliburCharging = true;
             }
-            if (spikesTime >= timeBetweenSpikes)
+            if (excaliburCharging && spikesTime >= 1.5f)
+            {
+                spikesTime = 0;
+                excaliburCharging = false;
+            }
+            if (!excaliburCharging && spikesTime >= timeBetweenSpikes)
             {
                 spikesTime = 0;
                 //get random pos x between range (room wide-offset); pos y will be the same always
@@ -439,7 +461,24 @@ public class Keeper_Phase1 : EnemyAI
                 //spike destroys con collision with stage(care for colliding at spawn)
             }
             spikesTime += Time.deltaTime;
-        }   
+        }
+    }
+
+    void DoEspadazo()
+    {
+        if (patronTimeline == 0)
+        {
+            doesPursue = true;
+        }
+        if (AState != AttackState.vulnerable)
+        {
+            HorizontalMovement();
+            Attack();
+        }
+        else
+        {
+            DoVulnerable();
+        }
     }
 
     //uso esta funcion como la skill espadazo
@@ -452,7 +491,8 @@ public class Keeper_Phase1 : EnemyAI
             poseSet = false;
             weakBox.SetActive(true);
             vulnerable = true;
-            //stoppu = true;
+            Debug.Log("stoppu true");
+            stoppu = true;
             //garrote.SetActive(true);
             //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 3);
         }
@@ -490,12 +530,12 @@ public class Keeper_Phase1 : EnemyAI
             {
                 AState = AttackState.ready;
                 poseSet = false;
-                //stoppu = false;
+                stoppu = false;
                 // garrote.SetActive(false);
                 //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 1);
             }
         }
-        if (AState == AttackState.preparing || AState==AttackState.damaging || AState == AttackState.recovering)
+        if (AState == AttackState.preparing || AState == AttackState.damaging || AState == AttackState.recovering)
         {
             attackTimeline += Time.deltaTime;
         }
@@ -532,7 +572,7 @@ public class Keeper_Phase1 : EnemyAI
             lostSoulsWaves = 0;
             lostSoulsActTimeWaves = lostSoulsTimeWaves / 2;
         }
-        if (lostSoulsTime >= lostSoulsActTimeWaves && lostSoulsWaves<lostSoulsMaxWaves)
+        if (lostSoulsTime >= lostSoulsActTimeWaves && lostSoulsWaves < lostSoulsMaxWaves)
         {
             for (int i = 0; i < ghostsPerWave; i++)
             {
@@ -541,7 +581,7 @@ public class Keeper_Phase1 : EnemyAI
                 float miny = portal.bounds.min.y;
                 float maxy = portal.bounds.max.y;
                 float y = Random.Range(miny, maxy);
-                float x = portal.bounds.center.x-0.5f;
+                float x = portal.bounds.center.x - 0.5f;
                 Vector3 spawnPos = new Vector3(x, y, 0);
                 GameObject newGhost = Instantiate(ghost, spawnPos, Quaternion.identity, ghosts);
                 ghostsList.Add(newGhost);
@@ -551,10 +591,10 @@ public class Keeper_Phase1 : EnemyAI
             lostSoulsActTimeWaves = lostSoulsTimeWaves;
         }
         lostSoulsTime += Time.deltaTime;
-}
+    }
     void UpdateGhostsList()
     {
-        for(int i=0; i < ghostsList.Count; i++)
+        for (int i = 0; i < ghostsList.Count; i++)
         {
             if (ghostsList[i] == null)
             {
@@ -577,7 +617,7 @@ public class Keeper_Phase1 : EnemyAI
             attackPosY = PlayerMovement.instance.transform.position.y;
             //nightmareAttack.GetComponent<Collider2D>().enabled = false;
             nightmareAttack.GetComponent<SpriteRenderer>().enabled = false;
-            nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder =-1;
+            nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder = -1;
             nightmareAttack.GetComponent<SpriteRenderer>().sprite = nightmareAttackWarn;
             nightmareAttacking = false;
             dissapeared = false;
@@ -593,7 +633,7 @@ public class Keeper_Phase1 : EnemyAI
                 Color colorFilter = new Color(0, 0, 0, a);
                 Color colorBoss = new Color(1, 1, 1, aBoss);
                 Color colorEyes = new Color(1, 1, 1, aEyes);
-                CameraMovement.instance.BlackFilter.color =colorFilter;
+                CameraMovement.instance.BlackFilter.color = colorFilter;
                 spriteRend.color = colorBoss;
                 bossEyes.color = colorEyes;
                 if (nightmareTime >= nightmareMaxTimeDissapear)
@@ -624,9 +664,9 @@ public class Keeper_Phase1 : EnemyAI
                         }
                         nightmareTime = 0;
                         nightmareAttacking = true;
-                    }     
+                    }
                 }
-                else if(nightmareAttacking)//recovering attack
+                else if (nightmareAttacking)//recovering attack
                 {
                     if (nightmareTime >= nightmareAttackingTime)
                     {
@@ -667,6 +707,8 @@ public class Keeper_Phase1 : EnemyAI
     public void BecomeVulnerable()
     {
         Debug.Log("VULNERABLE!");
+        doesPursue = false;
+        stoppu = false;
         weakBox.SetActive(false);
         espada.enabled = true;
         vulnerable = false;//esta variable es para saber si está activa la hitbox de la rodilla
@@ -679,6 +721,7 @@ public class Keeper_Phase1 : EnemyAI
 
     public void TakeHit()
     {
+        portal.enabled = false;
         bossWaitTime = 0;
         bossWait = true;
         if (AState == AttackState.vulnerable)

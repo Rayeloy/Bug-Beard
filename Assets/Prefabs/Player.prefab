@@ -276,7 +276,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1318990619047536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2987, y: 135, z: 10}
+  m_LocalPosition: {x: 2967.97, y: 143.66, z: 10}
   m_LocalScale: {x: 2.7212582, y: 2.7212582, z: 2.7212582}
   m_Children:
   - {fileID: 4437459639733436}
@@ -343,7 +343,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1795961907769810}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -473,8 +473,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0ec4024724d86404db49a8ce49f16bbf, type: 3}
   - {fileID: 21300000, guid: 4e4703e8b7bea8f44a88c69b3ba3def6, type: 3}
   - {fileID: 21300000, guid: 23aea82c9f9d1f246a79d893d5c0abf7, type: 3}
-  - {fileID: 21300000, guid: 2fe87c4e3ccb2d2448460bd052b2e7e1, type: 3}
-  - {fileID: 21300000, guid: 74ad3f3494589fc4b8d16304de6dfcfc, type: 3}
+  - {fileID: 21300000, guid: d64f16e543556c347b9cda1fba43d617, type: 3}
+  - {fileID: 21300000, guid: e0320d559787d8344b238a5877d72be0, type: 3}
   Proportions:
   - {x: 1, y: 1}
   - {x: 1.315301, y: 1.315301}
@@ -483,7 +483,7 @@ MonoBehaviour:
   - {x: 1.325319, y: 1.325319}
   Offsets:
   - {x: 0, y: 0}
-  - {x: 0, y: 0.08}
+  - {x: 0.1, y: 0.08}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0.1}
@@ -527,9 +527,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141baa213e7528a4886b7f5d4f092178, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHitPoints: 100
+  MaxHitPoints: 200
   HitPoints: 100
-  MaxInmunityTime: 3
+  MaxInmunityTime: 2
   Inmune: 0
   spriteRend: {fileID: 212935320664920784}
 --- !u!114 &114725011849290940
