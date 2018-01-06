@@ -2,15 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Keeper_Phase2 : EnemyAI {
+public class Keeper_Phase2 : EnemyAI
+{
 
     public static Keeper_Phase2 instance;
 
+    [Header("Transition")]
+    public float espadaRotaMaxTime;
+    public float standByMaxTime;
+    public float scenaryChangeMaxTime;
+    [Tooltip("Time that the boss takes to completely dissapear and the black filter appears")]
+    public float maxTimeDissapear;
+    int dissapeared;//0 start, 1 wait in dissapeared, 2 Start appear, 3 appear again
+    bool inTransition;
+    Transition Trans;
+    enum Transition
+    {
+        bossAnimation,
+        bossDissapear,
+        stageChanging,
+        fightStarts
+    }
+    public Transform safePlayerPos;
+    public Transform bossOriginalPos;
+    bool chenji;
+    public Transform[] posScenary;//grounds from left to right (only the ones that change), Platforms from left to right, crystals from left to right
+    public Transform[] newPosScenary;
+    List<Vector3> OrigPosScenary;
+
     [Header("Sprites")]
-    public Sprite[] keeperSprites;
+    public Sprite[] keeperSprites;//ORDEN: StandBy=0, Damaged=1, Rugido=2, ZarpazaoEspectral=3,AcidExalation=4, RayoFatuo=5, Muerto=6
     Vector2 standBySpritePos;
     Vector2 standBySpriteProp;
-    public Vector2[] spritesOffsets;//ORDEN: Standby, Anticipation, Attack, Damaged, Vulnerable,
+    public Vector2[] spritesOffsets;
     public Vector2[] spritesProportions;
     public Collider2D[] colliders;
     public SpriteRenderer[] luces;
@@ -18,7 +42,7 @@ public class Keeper_Phase2 : EnemyAI {
     [Header("BOSS SKILLS")]
     float bossWaitTime;
     bool bossWait;
-    [Tooltip("Max time the boss will wait on standBy after Excalibur and Espadazo")]
+    [Tooltip("Max time the boss will wait on standBy after Rugido")]
     public float bossMaxWaitTime;
     private float attackTimeline;
     private int hitsTaken;
@@ -33,7 +57,6 @@ public class Keeper_Phase2 : EnemyAI {
     [Header("Rugido")]
     public float rugidoMaxTime;
     bool rugidoCharging;
-    public Transform rugidoPos;
     public float timeBetweenSpikes;
     float spikesTime;
     public float spikesSpeed;
@@ -65,21 +88,24 @@ public class Keeper_Phase2 : EnemyAI {
         zarpazoEspectral = 1,
         AcidExalation = 2,
         RayoFatuo = 3,
-        rugido_ZarpazoEspectral=4,
-        rugido_RayoFatuo=5,
-        rugido_AcidExalation=6
-    }
-
-    private void OnEnable()
-    {
-        KonoStart();
-        //TRANSICIÓN
-        ManageCurrentSkill();
+        rugido_ZarpazoEspectral = 4,
+        rugido_RayoFatuo = 5,
+        rugido_AcidExalation = 6
     }
 
     public void KonoStart()
     {
         instance = this;
+        inTransition = true;
+        Trans = Transition.bossAnimation;
+        dissapeared = 0;
+        chenji = false;
+        OrigPosScenary = new List<Vector3>();
+        for(int i = 0; i <= posScenary.Length; i++)
+        {
+            OrigPosScenary.Add(posScenary[i].position);
+        }
+
         attackTimeline = 0;
         bossWaitTime = 0;
         bossWait = false;
@@ -99,10 +125,78 @@ public class Keeper_Phase2 : EnemyAI {
 
         KP2_actPatron = KP2_patron1;
     }
+    private void OnEnable()
+    {
+        KonoStart();
+        poseSet = false;
+        SetPose(1);
+        PlayerMovement.instance.stopPlayer = true;
+    }
 
 
     public override void Update()
     {
+        if (inTransition)
+        {
+            DoTransition();
+        }
+        else
+        {
+            CheckGrounded();
+            gravityFalls();
+            //UpdateGhostsList();
+            if (!stopEnemy)
+            {
+                //Debug.Log("Moving= " + moving);
+                ManagePose();
+                if (bossWait)
+                {
+                    bossWaitTime += Time.deltaTime;
+                    if (bossWaitTime >= bossMaxWaitTime)
+                    {
+                        bossWait = false;
+                    }
+                }
+                else
+                {
+                    switch (KP2)
+                    {
+                        case KeeperP2.rugido:
+                            DoRugido();
+                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime)
+                            {
+
+                                nextSkill = true;
+                            }
+                            break;
+                        case KeeperP2.zarpazoEspectral:
+                            break;
+                        case KeeperP2.AcidExalation:
+                            break;
+                        case KeeperP2.RayoFatuo:
+                            break;
+                        case KeeperP2.rugido_ZarpazoEspectral:
+                            break;
+                        case KeeperP2.rugido_AcidExalation:
+                            break;
+                        case KeeperP2.rugido_RayoFatuo:
+                            break;
+                    }
+                    if (!nextSkill)
+                    {
+                        //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
+                        patronTimeline += Time.deltaTime;
+                    }
+                    //NO MOVER. Deber ir siempre tras el switch
+                    //Debug.Log("patronTimeline= "+patronTimeline);
+                    if (nextSkill)
+                    {
+                        ManageCurrentSkill();
+                    }
+                }
+            }
+        }
+
         gravityFalls();
         CheckGrounded();
         //UpdateGhostsList();
@@ -165,6 +259,101 @@ public class Keeper_Phase2 : EnemyAI {
         }
     }
 
+    void DoTransition()
+    {
+        switch (Trans)
+        {
+            //TRANSICIÓN
+            case Transition.bossAnimation:
+                if (patronTimeline >= espadaRotaMaxTime)
+                {
+                    patronTimeline = 0;
+                    Trans = Transition.bossDissapear;
+                    poseSet = false;
+                    SetPose(0);
+                }
+                break;
+            //boss dissapears and appears on left side
+            case Transition.bossDissapear:
+                switch (dissapeared)
+                {
+                    case 0:
+                        float prog = patronTimeline / maxTimeDissapear;
+                        float a = Mathf.Lerp(0, 1, prog);
+                        float aBoss = Mathf.Lerp(1, 0, prog);
+                        Color colorFilter = new Color(0, 0, 0, a);
+                        Color colorBoss = new Color(1, 1, 1, aBoss);
+                        CameraMovement.instance.BlackFilter.color = colorFilter;
+                        sprite.color = colorBoss;
+                        if (patronTimeline >= maxTimeDissapear)
+                        {
+                            patronTimeline = 0;
+                            dissapeared++;
+                        }
+                        break;
+                    case 1://move player && boss
+                        if (!chenji && patronTimeline >= maxTimeDissapear / 2)
+                        {
+                            chenji = true;
+                            PlayerMovement.instance.transform.position = safePlayerPos.position;
+                            PlayerMovement.instance.pmState = PlayerMovement.pmoveState.stopLeft;
+                            weakBox.transform.parent.rotation = Quaternion.Euler(0, 0, 0);
+                            weakBox.transform.parent.position = bossOriginalPos.position;
+
+                        }
+                        if (patronTimeline >= maxTimeDissapear)
+                        {
+                            patronTimeline = 0;
+                            dissapeared++;
+                        }
+                        break;
+                    case 2://appear again
+                        prog = patronTimeline / maxTimeDissapear;
+                        a = Mathf.Lerp(1, 0, prog);
+                        aBoss = Mathf.Lerp(0, 1, prog);
+                        colorFilter = new Color(0, 0, 0, a);
+                        colorBoss = new Color(1, 1, 1, aBoss);
+                        CameraMovement.instance.BlackFilter.color = colorFilter;
+                        sprite.color = colorBoss;
+                        if (patronTimeline >= maxTimeDissapear)
+                        {
+                            patronTimeline = 0;
+                            dissapeared++;
+                        }
+                        break;
+                    case 3:
+                        patronTimeline = 0;
+                        poseSet = false;
+                        SetPose(2);
+                        CameraMovement.instance.StartShakeCamera(scenaryChangeMaxTime);
+                        Trans = Transition.stageChanging;
+                        /*for(int i = 0; i <= posScenary.Length; i++)
+                        {
+                            posScenary[i].GetComponent<Collider2D>().enabled = false;
+                        }*/
+                        break;
+                }
+                break;
+            //boss roars, camera shakes,  stage changes
+            case Transition.stageChanging:
+                float prog2 = patronTimeline / scenaryChangeMaxTime;
+                for (int i = 0; i <= posScenary.Length; i++)
+                {
+                    float newX = Mathf.Lerp(OrigPosScenary[i].x, OrigPosScenary[i].x, prog2);
+                    float newY = Mathf.Lerp(OrigPosScenary[i].y, OrigPosScenary[i].y, prog2);
+                    posScenary[i].position = new Vector3(newX, newY, 0);
+                }
+                break;
+            //battle starts
+            case Transition.fightStarts:
+                ManageCurrentSkill();
+                inTransition = false;
+                PlayerMovement.instance.stopPlayer = false;
+                patronTimeline = 0;
+                break;
+        }
+        patronTimeline += Time.deltaTime;
+    }
     void ManageCurrentSkill()
     {
         if (patronIndex >= KP2_actPatron.Length)

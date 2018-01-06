@@ -760,18 +760,24 @@ public class Keeper_Phase1 : EnemyAI
         attackTimeline += Time.deltaTime;
         if (attackTimeline >= maxTimeDamaged)
         {
-            attackTimeline = 0;
-            AState = AttackState.ready;
-            poseSet = false;
             stoppu = false;
             doesPursue = false;
             if (p2Start)
             {
-                KeeperP2.enabled=true;
+                for(int i=0; i < colliders.Length; i++)
+                {
+                    colliders[i].enabled = false;
+                }
+                KeeperP2.enabled = true;
                 Debug.Log("PHASE 2");
                 this.enabled = false;
                 //START PHASE2
             }
+            attackTimeline = 0;
+            AState = AttackState.ready;
+            poseSet = false;
+            
+           
         }
     }
 
