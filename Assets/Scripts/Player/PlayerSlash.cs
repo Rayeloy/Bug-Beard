@@ -268,6 +268,10 @@ public class PlayerSlash : MonoBehaviour
                     {
                         Keeper_Phase1.instance.TakeHit();
                     }
+                    else if (col.name.Contains("Tongue"))
+                    {
+                        Keeper_Phase2.instance.TakeHit();
+                    }
                 }
                 else
                 {

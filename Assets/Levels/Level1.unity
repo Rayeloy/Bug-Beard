@@ -2338,6 +2338,22 @@ Transform:
   m_PrefabParentObject: {fileID: 4853627730042322, guid: d8299272fd9b228489523635326624fa,
     type: 2}
   m_PrefabInternal: {fileID: 251307984}
+--- !u!1 &85289895 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1565035484606194, guid: 0b545f39d4953c64c9e4633594d94a97,
+    type: 2}
+  m_PrefabInternal: {fileID: 1859323599}
+--- !u!114 &85289896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 85289895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92cda979df130d4daaab93548f8a120, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &85660038
 Prefab:
   m_ObjectHideFlags: 0
@@ -25767,7 +25783,7 @@ GameObject:
   - component: {fileID: 824833322}
   m_Layer: 11
   m_Name: Pared + columna copy_0
-  m_TagString: Untagged
+  m_TagString: ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -50507,8 +50523,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1689375450}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.229004, y: 53.82, z: 3.1567497}
-  m_LocalScale: {x: 4.3250837, y: 0.31083965, z: 2.66923}
+  m_LocalPosition: {x: -9.18, y: 53.82, z: 3.1567497}
+  m_LocalScale: {x: 4.251918, y: 0.31083965, z: 2.66923}
   m_Children: []
   m_Father: {fileID: 1577535718}
   m_RootOrder: 6
@@ -55552,6 +55568,15 @@ Prefab:
       propertyPath: nightmareAttack
       value: 
       objectReference: {fileID: 1209851753}
+    - target: {fileID: 114182384326816164, guid: 0b545f39d4953c64c9e4633594d94a97,
+        type: 2}
+      propertyPath: acidExalTimeBetweenAttacks
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1565035484606194, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_Name
+      value: weakBoxTongue
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
   m_IsPrefabParent: 0

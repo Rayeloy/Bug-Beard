@@ -192,13 +192,13 @@ public class Keeper_Phase2 : EnemyAI
         {
             CheckGrounded();
             gravityFalls();
-            //UpdateGhostsList();
             if (!stopEnemy)
             {
-                //Debug.Log("Moving= " + moving);
+                //Debug.Log("stopEnemy= false");
                 ManagePose();
                 if (bossWait)
                 {
+                    Debug.Log("bossWait");
                     bossWaitTime += Time.deltaTime;
                     if (bossWaitTime >= bossMaxWaitTime)
                     {
@@ -207,6 +207,7 @@ public class Keeper_Phase2 : EnemyAI
                 }
                 else
                 {
+                    //Debug.Log("current skill= "+KP2);
                     switch (KP2)
                     {
                         case KeeperP2.rugido:
@@ -229,6 +230,7 @@ public class Keeper_Phase2 : EnemyAI
                             }
                             break;
                         case KeeperP2.AcidExalation:
+                            DoAcidExalation();
                             if (patronTimeline >= acidExalMaxTime)
                             {
                                 tongue.enabled = false;
@@ -546,6 +548,7 @@ public class Keeper_Phase2 : EnemyAI
             spikesTime += Time.deltaTime;
         }
     }
+
     List<ZarpEspInfo> zarpazos;
     float zarpEspPosY;
     float zarpEspMinX;
@@ -708,7 +711,9 @@ public class Keeper_Phase2 : EnemyAI
             {
                 acidExalTime = 0;
                 float randomAngle = Random.Range(0, acidExalAngle);
-                Vector2 randomDir = GameController.GetVectorGivenAngleAndVector(Vector2.right, randomAngle);
+                Debug.Log("angle= " + randomAngle);
+                Vector2 randomDir = GameController.GetVectorGivenAngleAndPoint(acidExalOrigin.position, randomAngle);
+                Debug.Log("randomDir" + randomDir);
                 GameObject acidDrop = Instantiate(acidExalPrefab, acidExalOrigin.position, Quaternion.identity, acidDrops);
                 float angle = Vector2.Angle(Vector2.down,randomDir);
                 acidDrop.transform.rotation = Quaternion.Euler(0,0,angle);

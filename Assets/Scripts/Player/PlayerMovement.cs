@@ -136,6 +136,7 @@ public class PlayerMovement : MonoBehaviour
                 playerStopped = true;
                 myRB.velocity = Vector3.zero;
                 phase = jumpphase.fall;
+                PlayerSlash.instance.ExitJumpCrystal();
             }
             if (pmState == pmoveState.wLeft)
             {

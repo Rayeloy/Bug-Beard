@@ -27,6 +27,7 @@ public class Keeper_AcidDrop : MonoBehaviour {
     {
         myPos = transform.position;
         started = true;
+        maxDist = 200;
         int randomSprite = Random.Range(0, sprites.Length);//max exclusive!
         spritedRend.sprite = sprites[randomSprite];
         Vector2 S = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size;

@@ -183,8 +183,24 @@ public class GameController : MonoBehaviour
     public static Vector2 GetVectorGivenAngleAndVector(Vector2 dirOriginal, float angulo)
     {
         Vector2 result = new Vector2();
+        dirOriginal = dirOriginal.normalized;
+        float cos = Mathf.Cos(angulo * Mathf.Deg2Rad);
+        Debug.Log("cos=" + cos);
+        /*result.x = dirOriginal.x / cos;
+        result.y = dirOriginal.y / cos;*/
         result.x = dirOriginal.x * Mathf.Cos(angulo) - dirOriginal.y * Mathf.Sin(angulo);
         result.y = dirOriginal.x * Mathf.Sin(angulo) + dirOriginal.y * Mathf.Cos(angulo);
+        return result;
+    }
+    public static Vector2 GetVectorGivenAngleAndPoint(Vector2 pointOriginal, float angulo)
+    {
+        Vector2 result = new Vector2();
+        Vector2 newPoint = new Vector2();
+        angulo = angulo * Mathf.Deg2Rad;
+        newPoint.x = pointOriginal.x+ Mathf.Cos(angulo);
+        newPoint.y = pointOriginal.y + Mathf.Sin(angulo);
+        result.x = newPoint.x - pointOriginal.x;
+        result.y = newPoint.y - pointOriginal.y;
         return result;
     }
     /*public static GameObject GetFatherWithComponent(GameObject child, Component fatherComponent)//Busca recursivamente un hijo con nombre childName
