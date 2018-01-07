@@ -119,9 +119,9 @@ public class Keeper_Phase1 : EnemyAI
         bossWaitTime = 0;
         bossWait = false;
 
-        hitsTaken = 2;
-        patronIndex = 2;
-        KP1_actPatron = KP1_patron3;
+        hitsTaken = 0;
+        patronIndex = 0;
+        KP1_actPatron = KP1_patron1;
 
         nextSkill = false;
         moving = false;
