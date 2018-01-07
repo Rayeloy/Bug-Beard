@@ -9,6 +9,7 @@ public class Keeper_Phase2 : EnemyAI
     SpriteRenderer playerSprite;
     public GameObject hotSpot1;
     public GameObject hotSpot2;
+    bool bossDamaged;
 
     [Header("Transition")]
     public float espadaRotaMaxTime;
@@ -133,6 +134,7 @@ public class Keeper_Phase2 : EnemyAI
     {
         instance = this;
         playerSprite = PlayerMovement.instance.spriteTransf.GetComponent<SpriteRenderer>();
+        bossDamaged = false;
 
         inTransition = true;
         Trans = Transition.bossAnimation;
@@ -198,11 +200,17 @@ public class Keeper_Phase2 : EnemyAI
                 ManagePose();
                 if (bossWait)
                 {
+                    if (bossDamaged)
+                    {
+                        SetPose(1);
+                        bossDamaged = false;
+                    }
                     Debug.Log("bossWait");
                     bossWaitTime += Time.deltaTime;
                     if (bossWaitTime >= bossMaxWaitTime)
                     {
                         bossWait = false;
+                        poseSet = false;
                     }
                 }
                 else
@@ -734,6 +742,7 @@ public class Keeper_Phase2 : EnemyAI
             patronIndex = 0;
             Debug.Log("hitsTaken=" + hitsTaken);
         }
+        bossDamaged = true;
         hitsTaken++;
         switch (hitsTaken)
         {

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 9e2e6b04158a9ba42ad87228321acf6c
-timeCreated: 1515295877
+timeCreated: 1515352558
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -109,20 +109,6 @@ TextureImporter:
         y: 516
         width: 3572
         height: 600
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: Tentaculo fantasma boss copy_1
-      rect:
-        serializedVersion: 2
-        x: 2692
-        y: 300
-        width: 16
-        height: 18
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

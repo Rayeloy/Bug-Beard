@@ -2343,7 +2343,7 @@ GameObject:
   m_PrefabParentObject: {fileID: 1565035484606194, guid: 0b545f39d4953c64c9e4633594d94a97,
     type: 2}
   m_PrefabInternal: {fileID: 1859323599}
---- !u!114 &85289896
+--- !u!114 &85289898
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -57088,9 +57088,20 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1789999570284452, guid: ebfd840c7d4479f428502797e5676c39, type: 2}
-      propertyPath: m_IsActive
+    - target: {fileID: 212811228873815726, guid: ebfd840c7d4479f428502797e5676c39,
+        type: 2}
+      propertyPath: m_SortingLayerID
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 212811228873815726, guid: ebfd840c7d4479f428502797e5676c39,
+        type: 2}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 212811228873815726, guid: ebfd840c7d4479f428502797e5676c39,
+        type: 2}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ebfd840c7d4479f428502797e5676c39, type: 2}
