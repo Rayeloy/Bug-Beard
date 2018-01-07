@@ -83,6 +83,7 @@ public class GameController : MonoBehaviour
         {
             HUDManager.instance.setupMissionHUD(currentMission);
         }
+        HUDManager.instance.updateHUDHP();
 
         //SlashCDBar.maxValue = PlayerSlash.instance.cdTime;
         //SlashCDBar.interactable = false;

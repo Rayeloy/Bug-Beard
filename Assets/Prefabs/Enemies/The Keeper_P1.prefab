@@ -2049,6 +2049,14 @@ MonoBehaviour:
   spike: {fileID: 1720063025790610, guid: fc385cf4633147543a85a16db6fd6edc, type: 2}
   ceiling: {fileID: 0}
   spikes: {fileID: 0}
+  zarpEspMaxAttacks: 
+  zarpEspWarnMaxTime: 0
+  zarpEspAttackSpeed: 0
+  zarpEspAttackingMaxTime: 0
+  zarpEspPrefab: {fileID: 0}
+  warningLight: {fileID: 0}
+  zarpazosEspectrales: {fileID: 0}
+  warningLights: {fileID: 0}
   eHP: {fileID: 114725749697945866}
   vulnerable: 0
   KP2: 0

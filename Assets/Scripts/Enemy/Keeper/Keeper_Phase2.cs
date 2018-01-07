@@ -35,7 +35,7 @@ public class Keeper_Phase2 : EnemyAI
     List<Vector3> newPosScenary;
 
     [Header("Sprites")]
-    public Sprite[] keeperSprites;//ORDEN: StandBy=0, Damaged=1, Rugido=2, ZarpazaoEspectral=3,AcidExalation=4, RayoFatuo=5, Muerto=6
+    public Sprite[] keeperSprites;//ORDEN: StandBy=0, Damaged=1, Rugido=2, ZarpazaoEspectral=3,AcidExalation=4, RayoFatuo=5, Muerto=6, Anticipation=7
     Vector2 standBySpritePos;
     Vector2 standBySpriteProp;
     public Vector2[] spritesOffsets;
@@ -71,6 +71,22 @@ public class Keeper_Phase2 : EnemyAI
     float spikeHeight = 12.91689f;
 
     [Header("Zarpazo Espectral")]
+    [Tooltip("Zarpazos Espectrales al mismo tiempo en el patrón 1, 2 y 3")]
+    public int[] zarpEspMaxAttacks = new int[3];
+    int zarpEspAttacks;//ATAQUES AL MISMO TIEMPO
+    public float zarpEspWarnMaxTime;
+    public float zarpEspAttackSpeed;
+    public float zarpEspAttackingMaxTime;
+    public GameObject zarpEspPrefab;
+    public GameObject warningLight;
+    public Transform zarpazosEspectrales;
+    public Transform warningLights;
+    float zarpEspTime;
+    bool allZarpazosStopped;
+    bool allZarpazosReturned;
+    bool zarpEspCalculated;
+    bool zarpEspAttacking;
+    bool zarpEspReturning;
 
 
     [Header("Acid Exalation")]
@@ -107,7 +123,7 @@ public class Keeper_Phase2 : EnemyAI
         dissapeared = 0;
         chenji = false;
         OrigPosScenary = new List<Vector3>();
-        for(int i = 0; i < posScenary.Length; i++)
+        for (int i = 0; i < posScenary.Length; i++)
         {
             OrigPosScenary.Add(posScenary[i].transform.position);
         }
@@ -116,7 +132,6 @@ public class Keeper_Phase2 : EnemyAI
         {
             newPosScenary.Add(newScenary[i].transform.position);
         }
-        
 
         attackTimeline = 0;
         bossWaitTime = 0;
@@ -134,6 +149,12 @@ public class Keeper_Phase2 : EnemyAI
 
         standBySpritePos = spritesOffsets[0];
         standBySpriteProp = spritesProportions[0];
+
+        zarpEspAttacks = 0;
+        zarpEspTime = 0;
+        zarpEspAttacking = false;
+        zarpEspCalculated = false;
+        zarpEspReturning = false;
 
         KP2_actPatron = KP2_patron1;
     }
@@ -182,6 +203,11 @@ public class Keeper_Phase2 : EnemyAI
                             }
                             break;
                         case KeeperP2.zarpazoEspectral:
+                            DoZarpazoEspectral();
+                            if (allZarpazosReturned)
+                            {
+                                nextSkill = true;
+                            }
                             break;
                         case KeeperP2.AcidExalation:
                             break;
@@ -295,8 +321,10 @@ public class Keeper_Phase2 : EnemyAI
                 float prog2 = patronTimeline / scenaryChangeMaxTime;
                 for (int i = 0; i < posScenary.Length; i++)
                 {
-                    float newX = Mathf.Lerp(OrigPosScenary[i].x, newPosScenary[i].x, prog2);
-                    float newY = Mathf.Lerp(OrigPosScenary[i].y, newPosScenary[i].y, prog2);
+                    //float newX = Mathf.Lerp(OrigPosScenary[i].x, newPosScenary[i].x, prog2);
+                    //float newY = Mathf.Lerp(OrigPosScenary[i].y, newPosScenary[i].y, prog2);
+                    float newX = EasingCurves.easeInOutQuad(OrigPosScenary[i].x, newPosScenary[i].x, prog2);
+                    float newY = EasingCurves.easeInOutQuad(OrigPosScenary[i].y, newPosScenary[i].y, prog2);
                     posScenary[i].transform.position = new Vector3(newX, newY, 0);
                 }
                 if (patronTimeline >= scenaryChangeMaxTime)
@@ -310,10 +338,14 @@ public class Keeper_Phase2 : EnemyAI
                 ManageCurrentSkill();
                 inTransition = false;
                 PlayerMovement.instance.stopPlayer = false;
+                stopEnemy = false;
                 patronTimeline = 0;
                 break;
         }
-        patronTimeline += Time.deltaTime;
+        if (inTransition)
+        {
+            patronTimeline += Time.deltaTime;
+        }
     }
     void ManageCurrentSkill()
     {
@@ -326,7 +358,6 @@ public class Keeper_Phase2 : EnemyAI
         patronTimeline = 0;
 
         poseSet = false;
-        moving = true;
         patronIndex++;
 
         //puedo poner Ifs para solo resetear lo siguiente en caso de que sea la siguiente skill
@@ -335,7 +366,6 @@ public class Keeper_Phase2 : EnemyAI
         Debug.Log("Current skill= " + KP2);
     }
 
-    bool poseSet = false;
     float posOlgura = 0.5f;
     /*void PositionForSkill()
     {
@@ -384,6 +414,7 @@ public class Keeper_Phase2 : EnemyAI
         HorizontalMovement();
     }
 
+    bool poseSet = false;
     void SetPose(int poseIndex)
     {
         sprite.sprite = keeperSprites[poseIndex];
@@ -418,15 +449,19 @@ public class Keeper_Phase2 : EnemyAI
     }
     void ManagePose()
     {
-        if (moving)
-        {
-            SetPose(0);
-        }
-        else if (!poseSet)
+        if (!poseSet)
         {
             switch (KP2)
             {
                 case KeeperP2.rugido:
+                    if (rugidoCharging)
+                    {
+                        SetPose(0);
+                    }
+                    else
+                    {
+                        SetPose(2);
+                    }
                     break;
                 case KeeperP2.zarpazoEspectral:
                     break;
@@ -451,10 +486,14 @@ public class Keeper_Phase2 : EnemyAI
         {
             if (patronTimeline == 0)//primera vez
             {
+                Debug.Log("RUGIDO FIRST TIME");
                 spikesTime = 0;
+                rugidoCharging = true;
+                poseSet = false;//por si acaso
             }
             if (rugidoCharging && spikesTime >= 1.5f)
             {
+                Debug.Log("RUGIDO CHARGED");
                 spikesTime = 0;
                 rugidoCharging = false;
                 poseSet = false;
@@ -480,6 +519,187 @@ public class Keeper_Phase2 : EnemyAI
                 //spike destroys con collision with stage(care for colliding at spawn)
             }
             spikesTime += Time.deltaTime;
+        }
+    }
+
+    const float zarpEspWidth = 22.05714f;
+    const float zarpEspHeight = 125.898f;
+    public struct ZarpEspInfo
+    {
+        public Vector2 zarpEspPosition;
+        public Vector2 zarpEspWarningPosition;
+        public GameObject ownObj;
+        public GameObject warningLight;
+        public float minX;
+        public float maxX;
+        public ZarpEspInfo(Vector2 _zarpEspPosition, Vector2 _zarpEspWarningPosition, GameObject _ownObj=null, GameObject _warningLight=null)
+        {
+            zarpEspPosition = _zarpEspPosition;
+            zarpEspWarningPosition = _zarpEspWarningPosition;
+            ownObj = _ownObj;
+            minX = zarpEspPosition.x - zarpEspWidth;
+            maxX = zarpEspPosition.x + zarpEspWidth;
+            warningLight = _warningLight;
+
+        }
+        public void SetWarningPos(Vector2 _warningPos)
+        {
+            zarpEspWarningPosition = _warningPos;
+        }
+        public void SetOwnObj(GameObject _ownObj)
+        {
+            ownObj = _ownObj;
+        }
+        public void SetWarningLight(GameObject _warningLight)
+        {
+            warningLight = _warningLight;
+        }
+    }
+
+    List<ZarpEspInfo> zarpazos;
+    float zarpEspPosY;
+    float zarpEspMinX;
+    float zarpEspMaxX;
+    void DoZarpazoEspectral()
+    {
+
+        if (patronTimeline == 0)
+        {
+            zarpEspAttacks = 0;//CAMBIAR A 0
+            zarpEspTime = 0;
+            zarpEspAttacking = false;
+            zarpEspCalculated = false;
+            allZarpazosReturned = false;
+            zarpEspReturning = false;
+
+            zarpEspPosY = ceiling.bounds.min.y + zarpEspHeight / 2;
+            zarpEspMinX = ceiling.bounds.min.x + zarpEspWidth / 2;
+            zarpEspMaxX = ceiling.bounds.max.x - zarpEspWidth / 2;
+
+            switch (hitsTaken)
+            {
+                case 0:
+                    zarpEspAttacks = zarpEspMaxAttacks[0];
+                    break;
+                case 1:
+                    zarpEspAttacks = zarpEspMaxAttacks[1];
+                    break;
+                case 2:
+                    zarpEspAttacks = zarpEspMaxAttacks[2];
+                    break;
+            }
+            zarpazos = new List<ZarpEspInfo>();
+        }
+
+        if (zarpEspTime < zarpEspWarnMaxTime)//Warn por cada tentáculo
+        {
+            if (!zarpEspCalculated)//calculate positions
+            {
+                float posX;
+                for (int i = 0; i < zarpEspAttacks; i++)
+                {
+                    Vector2 randomPos;
+                    if (i == 0)
+                    {
+                        randomPos = new Vector2(PlayerMovement.instance.transform.position.x, zarpEspPosY);
+                    }
+                    else
+                    {
+                        float newMaxX = zarpEspMaxX - (zarpEspWidth * 2 * zarpazos.Count);
+                        posX = Random.Range(zarpEspMinX, newMaxX);
+                        for (int j = 0; j < zarpazos.Count; j++)
+                        {
+                            if (posX > zarpazos[j].minX && posX < zarpazos[j].maxX)
+                            {
+                                posX += zarpEspWidth;
+                            }
+                        }
+                        posX = Mathf.Clamp(posX, zarpEspMinX, zarpEspMaxX);
+                        randomPos = new Vector2(posX, zarpEspPosY);
+                    }
+                    zarpazos.Add(new ZarpEspInfo(randomPos, randomPos));
+                }
+                zarpEspCalculated = true;
+                for (int i = 0; i < zarpazos.Count; i++)
+                {
+                    GameObject light = Instantiate(warningLight,zarpazos[i].zarpEspWarningPosition,Quaternion.identity,warningLights);
+                    zarpazos[i].SetWarningLight(light);
+                }
+            }
+            else//show red light and update pos
+            {
+                float cameraLimitY = CameraMovement.instance.transform.position.y + CameraMovement.instance.GetComponent<Camera>().orthographicSize;
+                for (int i = 0; i < zarpazos.Count; i++)
+                {
+                    zarpazos[i].SetWarningPos(new Vector2(zarpazos[i].zarpEspWarningPosition.x, cameraLimitY));
+                    Debug.Log("zarpazos["+i+"].warningLight.transform.position" + zarpazos[i].warningLight.transform.position);
+                    zarpazos[i].warningLight.transform.position = zarpazos[i].zarpEspWarningPosition;
+                }
+            }
+        }
+        else//attack!
+        {
+            if (!zarpEspAttacking)
+            {
+                for (int i = 0; i < zarpazos.Count; i++)
+                {
+                    Destroy(zarpazos[i].warningLight);
+                    zarpazos[i].SetWarningLight(null);
+
+                    GameObject zarpEsp = Instantiate(zarpEspPrefab, zarpazos[i].zarpEspPosition, Quaternion.Euler(0, 0, 90), zarpazosEspectrales);
+                    zarpazos[i].SetOwnObj(zarpEsp);
+                    zarpEsp.GetComponent<Keeper_ZarpazoEspectral>().KonoStart(zarpEspAttackSpeed, zarpazos[i].zarpEspPosition, zarpEspMinX);
+                }
+                zarpEspAttacking = true;
+            }
+            else
+            {
+                if (!allZarpazosStopped)
+                {
+                    allZarpazosStopped = true;
+                    for (int i = 0; i < zarpazos.Count; i++)
+                    {
+                        if (!zarpazos[i].ownObj.GetComponent<Keeper_ZarpazoEspectral>().stopped)
+                        {
+                            allZarpazosStopped = false;
+                            break;
+                        }
+                        if (allZarpazosStopped)
+                        {
+                            zarpEspTime = 0;
+                        }
+                    }
+                }
+                else if (zarpEspTime >= zarpEspAttackingMaxTime && !zarpEspReturning)
+                {
+                    for (int i = 0; i < zarpazos.Count; i++)
+                    {
+                        zarpazos[i].ownObj.GetComponent<Keeper_ZarpazoEspectral>().ReturnZarpazo();
+                    }
+                    zarpEspReturning = true;
+                }
+                else if(!allZarpazosReturned)
+                {
+                    allZarpazosReturned = true;
+                    for (int i = 0; i < zarpazos.Count; i++)
+                    {
+                        if (!zarpazos[i].ownObj.GetComponent<Keeper_ZarpazoEspectral>().returned)
+                        {
+                            allZarpazosReturned = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        zarpEspTime += Time.deltaTime;
+    }
+
+    void DoAcidExalation()
+    {
+        if (patronTimeline == 0)
+        {
+
         }
     }
 

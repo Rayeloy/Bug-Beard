@@ -22,6 +22,11 @@ public class PlayerBodyTrigger : MonoBehaviour {
                         PlayerMovement.instance.BounceBack(col.transform.position);
                         PlayerHP.instance.TakeDamage(col.GetComponent<Keeper_Spike>().damage);
                     }//nightmareAttack solved inside keeper script
+                    else if (col.name.Contains("Zarpazo"))
+                    {
+                        PlayerMovement.instance.BounceBack(col.transform.position);
+                        PlayerHP.instance.TakeDamage(col.GetComponent<Keeper_ZarpazoEspectral>().damage);
+                    }
                 }
             }
         }
