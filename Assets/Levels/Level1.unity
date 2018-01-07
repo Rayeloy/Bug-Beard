@@ -88,7 +88,6 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -20818,11 +20817,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4655120214670008, guid: 30aa4899019bd1d4ba1d81005994ba88, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 2901
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 4655120214670008, guid: 30aa4899019bd1d4ba1d81005994ba88, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 230.5
+      value: -1.4
       objectReference: {fileID: 0}
     - target: {fileID: 4655120214670008, guid: 30aa4899019bd1d4ba1d81005994ba88, type: 2}
       propertyPath: m_LocalPosition.z
@@ -62053,6 +62052,16 @@ Prefab:
       propertyPath: nightmareAttack
       value: 
       objectReference: {fileID: 1209851753}
+    - target: {fileID: 114182384326816164, guid: 0b545f39d4953c64c9e4633594d94a97,
+        type: 2}
+      propertyPath: rayoFatuoMaxTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114182384326816164, guid: 0b545f39d4953c64c9e4633594d94a97,
+        type: 2}
+      propertyPath: rayoFatuoSmoothFollowTime
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
   m_IsPrefabParent: 0
@@ -64794,6 +64803,11 @@ Prefab:
     - target: {fileID: 1107072641297612, guid: 42397acaea898bc4e90461118b759730, type: 2}
       propertyPath: m_Name
       value: Heavy_enemy (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114270516277133522, guid: 42397acaea898bc4e90461118b759730,
+        type: 2}
+      propertyPath: stopEnemy
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 42397acaea898bc4e90461118b759730, type: 2}
