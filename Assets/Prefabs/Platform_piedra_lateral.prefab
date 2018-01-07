@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4682547616673160}
   - component: {fileID: 212023049160757746}
   - component: {fileID: 61935852626618152}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Platform_piedra_lateral
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,8 +34,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1840145913209582}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2849.5, y: 159.2, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2848.2888, y: 160.58492, z: -11.9375}
   m_LocalScale: {x: 1.184642, y: 1.184642, z: 1.184642}
   m_Children: []
   m_Father: {fileID: 0}
@@ -97,8 +97,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2070550741
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f3d5ba4d005dbfa41a3a3e2d81bd81c7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
