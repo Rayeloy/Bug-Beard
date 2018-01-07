@@ -632,9 +632,9 @@ public class Keeper_Phase2 : EnemyAI
                     posX = Random.Range(zarpEspMinX, newMaxX);
                     while (!posValida)
                     {
+                        posValida = true;
                         for (int j = 0; j < zarpazos.Count; j++)
                         {
-                            posValida = true;
                             if (posX > zarpazos[j].minX && posX < zarpazos[j].maxX)
                             {
                                 posX += ZarpEspInfo.zarpEspWidth;
