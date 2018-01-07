@@ -765,7 +765,7 @@ MonoBehaviour:
   sprite: {fileID: 212611389958698936}
   weakBox: {fileID: 1008461118335572}
   weakBoxOrientation: 1
-  stopEnemy: 0
+  stopEnemy: 1
   eState: 0
   currentDirection: 0
   AState: 0
