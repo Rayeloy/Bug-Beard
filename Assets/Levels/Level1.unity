@@ -2338,22 +2338,6 @@ Transform:
   m_PrefabParentObject: {fileID: 4853627730042322, guid: d8299272fd9b228489523635326624fa,
     type: 2}
   m_PrefabInternal: {fileID: 251307984}
---- !u!1 &85289895 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1565035484606194, guid: 0b545f39d4953c64c9e4633594d94a97,
-    type: 2}
-  m_PrefabInternal: {fileID: 1859323599}
---- !u!114 &85289898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 85289895}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e92cda979df130d4daaab93548f8a120, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &85660038
 Prefab:
   m_ObjectHideFlags: 0
@@ -55568,15 +55552,6 @@ Prefab:
       propertyPath: nightmareAttack
       value: 
       objectReference: {fileID: 1209851753}
-    - target: {fileID: 114182384326816164, guid: 0b545f39d4953c64c9e4633594d94a97,
-        type: 2}
-      propertyPath: acidExalTimeBetweenAttacks
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 1565035484606194, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
-      propertyPath: m_Name
-      value: weakBoxTongue
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
   m_IsPrefabParent: 0
@@ -57087,21 +57062,6 @@ Prefab:
     - target: {fileID: 4511315889295508, guid: ebfd840c7d4479f428502797e5676c39, type: 2}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 212811228873815726, guid: ebfd840c7d4479f428502797e5676c39,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 212811228873815726, guid: ebfd840c7d4479f428502797e5676c39,
-        type: 2}
-      propertyPath: m_SortingLayer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 212811228873815726, guid: ebfd840c7d4479f428502797e5676c39,
-        type: 2}
-      propertyPath: m_SortingOrder
-      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ebfd840c7d4479f428502797e5676c39, type: 2}

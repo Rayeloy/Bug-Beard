@@ -230,7 +230,7 @@ public class Keeper_Phase2 : EnemyAI
                             DoZarpazoEspectral();
                             if (ZEState == ZarpEspState.returned)
                             {
-                                for(int i=0;i<zarpazosEspectrales.childCount; i++)
+                                for (int i = 0; i < zarpazosEspectrales.childCount; i++)
                                 {
                                     Destroy(zarpazosEspectrales.GetChild(i).gameObject);
                                 }
@@ -244,14 +244,38 @@ public class Keeper_Phase2 : EnemyAI
                                 tongue.enabled = false;
                                 nextSkill = true;
                             }
-                                break;
+                            break;
                         case KeeperP2.RayoFatuo:
                             break;
                         case KeeperP2.rugido_ZarpazoEspectral:
+
+                            DoZarpazoEspectral();
+                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && ZEState == ZarpEspState.returned)
+                            {
+                                for (int i = 0; i < zarpazosEspectrales.childCount; i++)
+                                {
+                                    Destroy(zarpazosEspectrales.GetChild(i).gameObject);
+                                }
+                                nextSkill = true;
+                                nextSkill = true;
+                            }
                             break;
                         case KeeperP2.rugido_AcidExalation:
+                            DoRugido();
+                            DoAcidExalation();
+                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && patronTimeline >= acidExalMaxTime)
+                            {
+                                tongue.enabled = false;
+                                nextSkill = true;
+                            }
                             break;
                         case KeeperP2.rugido_RayoFatuo:
+                            DoRugido();
+                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime)
+                            {
+                                nextSkill = true;
+                            }
+
                             break;
                     }
                     if (!nextSkill)
@@ -561,7 +585,7 @@ public class Keeper_Phase2 : EnemyAI
     float zarpEspPosY;
     float zarpEspMinX;
     float zarpEspMaxX;
-    const float zarpEspMinY =124.31f;
+    const float zarpEspMinY = 124.31f;
     void DoZarpazoEspectral()
     {
         if (patronTimeline == 0)
@@ -603,13 +627,19 @@ public class Keeper_Phase2 : EnemyAI
                 }
                 else
                 {
+                    bool posValida = true;
                     float newMaxX = zarpEspMaxX - (ZarpEspInfo.zarpEspWidth * 2 * zarpazos.Count);
                     posX = Random.Range(zarpEspMinX, newMaxX);
-                    for (int j = 0; j < zarpazos.Count; j++)
+                    while (!posValida)
                     {
-                        if (posX > zarpazos[j].minX && posX < zarpazos[j].maxX)
+                        for (int j = 0; j < zarpazos.Count; j++)
                         {
-                            posX += ZarpEspInfo.zarpEspWidth;
+                            posValida = true;
+                            if (posX > zarpazos[j].minX && posX < zarpazos[j].maxX)
+                            {
+                                posX += ZarpEspInfo.zarpEspWidth;
+                                posValida = false;
+                            }
                         }
                     }
                     posX = Mathf.Clamp(posX, zarpEspMinX, zarpEspMaxX);
@@ -723,8 +753,8 @@ public class Keeper_Phase2 : EnemyAI
                 Vector2 randomDir = GameController.GetVectorGivenAngleAndPoint(acidExalOrigin.position, randomAngle);
                 Debug.Log("randomDir" + randomDir);
                 GameObject acidDrop = Instantiate(acidExalPrefab, acidExalOrigin.position, Quaternion.identity, acidDrops);
-                float angle = Vector2.Angle(Vector2.down,randomDir);
-                acidDrop.transform.rotation = Quaternion.Euler(0,0,angle);
+                float angle = Vector2.Angle(Vector2.down, randomDir);
+                acidDrop.transform.rotation = Quaternion.Euler(0, 0, angle);
                 acidDrop.GetComponent<Keeper_AcidDrop>().KonoStart();
                 acidDrop.GetComponent<Rigidbody2D>().velocity = randomDir * acidExalAttacksSpeed;
             }
@@ -741,6 +771,11 @@ public class Keeper_Phase2 : EnemyAI
             poseSet = false;
             patronIndex = 0;
             Debug.Log("hitsTaken=" + hitsTaken);
+            if (KP2 == KeeperP2.AcidExalation || KP2 == KeeperP2.rugido_AcidExalation)
+            {
+                tongue.enabled = false;
+                ManageCurrentSkill();
+            }
         }
         bossDamaged = true;
         hitsTaken++;

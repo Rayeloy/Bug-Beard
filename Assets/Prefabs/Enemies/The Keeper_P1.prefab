@@ -324,8 +324,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4398740519533664}
   - component: {fileID: 61462519746388518}
+  - component: {fileID: 114016404005818398}
   m_Layer: 18
-  m_Name: tongue
+  m_Name: weakBoxTongue
   m_TagString: hitBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2023,6 +2024,17 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 105.3102, y: 308.88235}
   m_Direction: 0
+--- !u!114 &114016404005818398
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1565035484606194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92cda979df130d4daaab93548f8a120, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114182384326816164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2140,7 +2152,7 @@ MonoBehaviour:
   - {fileID: 212872012851380810}
   bossMaxWaitTime: 2
   rugidoMaxTime: 8
-  timeBetweenSpikes: 0.15
+  timeBetweenSpikes: 0.4
   spikesSpeed: 35
   spike: {fileID: 1720063025790610, guid: fc385cf4633147543a85a16db6fd6edc, type: 2}
   ceiling: {fileID: 0}
@@ -2156,7 +2168,7 @@ MonoBehaviour:
   zarpazosEspectrales: {fileID: 0}
   warningLights: {fileID: 0}
   acidExalOrigin: {fileID: 4398740519533664}
-  acidExalTimeBetweenAttacks: 0.3
+  acidExalTimeBetweenAttacks: 0.25
   acidExalMaxTime: 8
   acidExalAttacksSpeed: 35
   acidExalAngle: 80
