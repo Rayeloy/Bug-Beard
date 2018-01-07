@@ -956,8 +956,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1726008986790826}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -3.49, y: -1.02, z: 0}
-  m_LocalScale: {x: 1.0000033, y: 1.0000035, z: 1.0000035}
+  m_LocalPosition: {x: -3.5, y: -1.06, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4025688300907902}
   m_RootOrder: 10
@@ -1001,7 +1001,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1084028929204802}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1042,7 +1042,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1483276890601266}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1192,7 +1192,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1751605995673958}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1264,7 +1264,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1947354640431798}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1389,7 +1389,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1703475679360018}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1438,7 +1438,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1486020389320222}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1485,7 +1485,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1161554522566740}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1748,7 +1748,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1639108011657980}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -2013,7 +2013,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 84f52620eced9ed4ca6801f7d55687c2, type: 3}
   - {fileID: 21300002, guid: 9aef73363d1107a44af3b2810fe7efe4, type: 3}
   - {fileID: 21300000, guid: a0014d7ff9d4b9f4da68abbab6c6e19a, type: 3}
-  - {fileID: 21300000, guid: a0014d7ff9d4b9f4da68abbab6c6e19a, type: 3}
+  - {fileID: 21300000, guid: ff84a423c846e2040bde67c217cb9853, type: 3}
   spritesOffsets:
   - {x: -2.43, y: -3.31}
   - {x: -3.02, y: 0.04}
@@ -2022,7 +2022,7 @@ MonoBehaviour:
   - {x: -0.43, y: -3.49}
   - {x: -3.83, y: -3.71}
   - {x: 1.06, y: -6.76}
-  - {x: -3.49, y: -1.02}
+  - {x: -3.5, y: -1.06}
   spritesProportions:
   - {x: 1, y: 1}
   - {x: 1, y: 1}
@@ -2049,12 +2049,14 @@ MonoBehaviour:
   spike: {fileID: 1720063025790610, guid: fc385cf4633147543a85a16db6fd6edc, type: 2}
   ceiling: {fileID: 0}
   spikes: {fileID: 0}
-  zarpEspMaxAttacks: 
-  zarpEspWarnMaxTime: 0
-  zarpEspAttackSpeed: 0
-  zarpEspAttackingMaxTime: 0
-  zarpEspPrefab: {fileID: 0}
-  warningLight: {fileID: 0}
+  zarpEspMaxAttacks: 010000000200000003000000
+  zarpEspWarnMaxTime: 2
+  zarpEspAttackSpeed: 45
+  zarpEspAttackingMaxTime: 2
+  zarpEspPrefab: {fileID: 1789999570284452, guid: ebfd840c7d4479f428502797e5676c39,
+    type: 2}
+  warningLight: {fileID: 1213417796016920, guid: eac4ee5778378e54886f1785342d10e3,
+    type: 2}
   zarpazosEspectrales: {fileID: 0}
   warningLights: {fileID: 0}
   eHP: {fileID: 114725749697945866}
