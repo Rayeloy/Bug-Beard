@@ -6464,6 +6464,10 @@ Prefab:
       propertyPath: m_Name
       value: 1 Tile piedra IZq (1)_0
       objectReference: {fileID: 0}
+    - target: {fileID: 1140524663164540, guid: 05293a078a839194b9d9a903861f4d1e, type: 2}
+      propertyPath: m_TagString
+      value: platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 05293a078a839194b9d9a903861f4d1e, type: 2}
   m_IsPrefabParent: 0
@@ -6867,6 +6871,10 @@ Prefab:
     - target: {fileID: 4682547616673160, guid: bae7fa143244fc444965e93bdcbb6383, type: 2}
       propertyPath: m_RootOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840145913209582, guid: bae7fa143244fc444965e93bdcbb6383, type: 2}
+      propertyPath: m_TagString
+      value: platform
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bae7fa143244fc444965e93bdcbb6383, type: 2}
@@ -38422,7 +38430,7 @@ GameObject:
   - component: {fileID: 1281405604}
   m_Layer: 17
   m_Name: 2 Tile piedra intermedio_0 (3)
-  m_TagString: Untagged
+  m_TagString: platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42168,7 +42176,7 @@ GameObject:
   - component: {fileID: 1432476916}
   m_Layer: 17
   m_Name: 2 Tile piedra intermedio_0
-  m_TagString: Untagged
+  m_TagString: platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -59370,7 +59378,7 @@ GameObject:
   - component: {fileID: 1970003691}
   m_Layer: 17
   m_Name: 2 Tile piedra intermedio_0 (1)
-  m_TagString: Untagged
+  m_TagString: platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -61318,7 +61326,7 @@ GameObject:
   - component: {fileID: 2016535881}
   m_Layer: 17
   m_Name: 2 Tile piedra intermedio_0 (2)
-  m_TagString: Untagged
+  m_TagString: platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
