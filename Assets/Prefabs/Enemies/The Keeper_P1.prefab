@@ -2868,8 +2868,8 @@ MonoBehaviour:
   acidDrops: {fileID: 0}
   rayoFatuoHeadAndRay: {fileID: 1294520705894268}
   rayo: {fileID: 1840542501829976}
-  rayoFatuoMaxTime: 5
-  rayoFatuoSmoothFollowTime: 2
+  rayoFatuoMaxTime: 3
+  rayoFatuoSmoothFollowTime: 3
   rayoFatuoMaxChargingTime: 2
   eHP: {fileID: 114725749697945866}
   vulnerable: 0
@@ -3055,9 +3055,9 @@ MonoBehaviour:
   nightmareMaxTimeDissapear: 2.5
   bossEyes: {fileID: 0}
   nightmareAttack: {fileID: 0}
-  nightmareAttackWarn: {fileID: 21300000, guid: 9fb1b42cc75f4e84fb40aa44b1cb9d25,
+  nightmareAttackWarn: {fileID: 21300000, guid: 9aee20149c5bca243a91d75936f3b9b8,
     type: 3}
-  nightmareAttackActivated: {fileID: 21300000, guid: 83f69257568e9d2479725d1d9557f18b,
+  nightmareAttackActivated: {fileID: 21300000, guid: c5b4b7cd2d1ad7f4aa01069cdef0ea30,
     type: 3}
   eHP: {fileID: 114725749697945866}
   EARange: {fileID: 114241048098815086}
