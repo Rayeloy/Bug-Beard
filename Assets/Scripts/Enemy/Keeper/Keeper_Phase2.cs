@@ -111,9 +111,11 @@ public class Keeper_Phase2 : EnemyAI
 
     [Header("Rayo Fatuo")]
     public GameObject rayoFatuoHeadAndRay;
-    public Transform rayoFatuoTurningPoint;
+    public GameObject rayo;
+    //public Transform rayoFatuoTurningPoint;
     public float rayoFatuoMaxTime;
     public float rayoFatuoSmoothFollowTime;
+    public float rayoFatuoMaxChargingTime;
     float rayoFatuoTime;
     bool chargingRayoFatuo;
 
@@ -181,6 +183,8 @@ public class Keeper_Phase2 : EnemyAI
 
         rayoFatuoTime = 0;
         chargingRayoFatuo = false;
+        //rayo = rayoFatuoHeadAndRay.transform.GetChild(0).gameObject;
+        rayoFatuoHeadAndRay.SetActive(false);
 
         KP2_actPatron = KP2_patron1;
     }
@@ -255,6 +259,14 @@ public class Keeper_Phase2 : EnemyAI
                             }
                             break;
                         case KeeperP2.RayoFatuo:
+                            DoRayoFatuo();
+                            if (patronTimeline >= rayoFatuoMaxTime)
+                            {
+                                rayo.GetComponent<SpriteRenderer>().enabled = false;
+                                rayo.GetComponent<Collider2D>().enabled = false;
+                                rayoFatuoHeadAndRay.SetActive(false);
+                                nextSkill = true;
+                            }
                             break;
                         case KeeperP2.rugido_ZarpazoEspectral:
 
@@ -280,8 +292,12 @@ public class Keeper_Phase2 : EnemyAI
                             break;
                         case KeeperP2.rugido_RayoFatuo:
                             DoRugido();
-                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime)
+                            DoRayoFatuo();
+                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && patronTimeline >= rayoFatuoMaxTime)
                             {
+                                rayo.GetComponent<SpriteRenderer>().enabled = false;
+                                rayo.GetComponent<Collider2D>().enabled = false;
+                                rayoFatuoHeadAndRay.SetActive(false);
                                 nextSkill = true;
                             }
 
@@ -532,7 +548,14 @@ public class Keeper_Phase2 : EnemyAI
                     SetPose(4);
                     break;
                 case KeeperP2.RayoFatuo:
-                    SetPose(5);
+                    if (chargingRayoFatuo)
+                    {
+                        SetPose(7);
+                    }
+                    else
+                    {
+                        SetPose(5);
+                    }
                     break;
                 case KeeperP2.rugido_ZarpazoEspectral:
                     SetPose(3);
@@ -541,7 +564,14 @@ public class Keeper_Phase2 : EnemyAI
                     SetPose(4);
                     break;
                 case KeeperP2.rugido_RayoFatuo:
-                    SetPose(5);
+                    if (chargingRayoFatuo)
+                    {
+                        SetPose(7);
+                    }
+                    else
+                    {
+                        SetPose(5);
+                    }
                     break;
             }
             poseSet = true;
@@ -771,6 +801,42 @@ public class Keeper_Phase2 : EnemyAI
             }
             acidExalTime += Time.deltaTime;
         }
+    }
+
+    float rayoFatuoCurrentAngle = 0;
+    float rayoFatuoSmoothSpeed;
+    void DoRayoFatuo()
+    {
+        if (patronTimeline == 0)
+        {
+            rayoFatuoTime = 0;
+            chargingRayoFatuo = true;
+            rayoFatuoHeadAndRay.SetActive(false);
+            rayo.GetComponent<SpriteRenderer>().enabled = false;
+            rayo.GetComponent<Collider2D>().enabled = false;
+            rayoFatuoCurrentAngle = 0;
+        }
+        if (chargingRayoFatuo)
+        {
+            if (rayoFatuoTime >= rayoFatuoMaxChargingTime)
+            {
+                rayoFatuoTime = 0;
+                chargingRayoFatuo = false;
+                //cabeza
+                rayoFatuoHeadAndRay.SetActive(true);
+                //rayo
+                rayo.GetComponent<SpriteRenderer>().enabled = true;
+                rayo.GetComponent<Collider2D>().enabled = true;
+            }
+        }
+        else
+        {
+            Vector2 playerDir = (PlayerMovement.instance.transform.position - rayoFatuoHeadAndRay.transform.position).normalized;
+            float targetAngle = Vector2.Angle(Vector2.right, playerDir);
+            rayoFatuoCurrentAngle = Mathf.SmoothDamp(rayoFatuoCurrentAngle, targetAngle, ref rayoFatuoSmoothSpeed, rayoFatuoSmoothFollowTime);
+            rayoFatuoHeadAndRay.transform.rotation = Quaternion.Euler(0, rayoFatuoHeadAndRay.transform.rotation.y, rayoFatuoCurrentAngle);
+        }
+        rayoFatuoTime += Time.deltaTime;
     }
 
     public void TakeHit()

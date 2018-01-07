@@ -37,6 +37,7 @@ public class HeavyAI : EnemyAI
     public override void Update()
     {
         base.Update();
+        ManagePose();
         if (!stopEnemy)
         {
             Attack();
@@ -52,8 +53,9 @@ public class HeavyAI : EnemyAI
             AState = AttackState.preparing;
             Debug.Log("stoppu true");
             stoppu = true;
-            garrote.SetActive(true);
-            garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 3);
+            poseSet = false;
+            //garrote.SetActive(true);
+            //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 3);
         }
         else
         {
@@ -67,21 +69,24 @@ public class HeavyAI : EnemyAI
                 if (AState == AttackState.preparing)//separo la condición aqui abajo para poder comprobar si hace daño constantemente y no una sola vez
                 {
                     AState = AttackState.damaging;
-                    garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 3);
+                    poseSet = false;
+                    //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 3);
                 }
             }
             else if (attackTimeline > timeDamaging + timeToAttack && AState == AttackState.damaging)
             {
                 damaged = false;
                 AState = AttackState.recovering;
-                garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 1);
+                poseSet = false;
+                //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y - 1);
             }
             else if (attackTimeline > timeDamaging + timeToAttack + timeRecovering && AState == AttackState.recovering)
             {
                 AState = AttackState.ready;
                 stoppu = false;
-                garrote.SetActive(false);
-                garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 1);
+                poseSet = false;
+                //garrote.SetActive(false);
+                //garrote.transform.position = new Vector2(garrote.transform.position.x, garrote.transform.position.y + 1);
             }
         }
         if (AState != AttackState.ready)
