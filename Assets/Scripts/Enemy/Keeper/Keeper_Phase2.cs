@@ -10,6 +10,7 @@ public class Keeper_Phase2 : EnemyAI
     public GameObject hotSpot1;
     public GameObject hotSpot2;
     bool bossDamaged;
+    bool endFight=false;
 
     [Header("Transition")]
     public float espadaRotaMaxTime;
@@ -140,6 +141,7 @@ public class Keeper_Phase2 : EnemyAI
     public void KonoStart()
     {
         instance = this;
+        endFight = false;
         playerSprite = PlayerMovement.instance.spriteTransf.GetComponent<SpriteRenderer>();
         bossDamaged = false;
 
@@ -199,120 +201,123 @@ public class Keeper_Phase2 : EnemyAI
 
     public override void Update()
     {
-        if (inTransition)
+        if (!endFight)
         {
-            DoTransition();
-        }
-        else
-        {
-            CheckGrounded();
-            //gravityFalls();
-            if (!stopEnemy)
+            if (inTransition)
             {
-                //Debug.Log("stopEnemy= false");
-                ManagePose();
-                if (bossWait)
+                DoTransition();
+            }
+            else
+            {
+                CheckGrounded();
+                //gravityFalls();
+                if (!stopEnemy)
                 {
-                    if (bossDamaged)
+                    //Debug.Log("stopEnemy= false");
+                    ManagePose();
+                    if (bossWait)
                     {
-                        SetPose(1);
-                        bossDamaged = false;
+                        if (bossDamaged)
+                        {
+                            SetPose(1);
+                            bossDamaged = false;
+                        }
+                        Debug.Log("bossWait");
+                        bossWaitTime += Time.deltaTime;
+                        if (bossWaitTime >= bossMaxWaitTime)
+                        {
+                            bossWait = false;
+                            poseSet = false;
+                        }
                     }
-                    Debug.Log("bossWait");
-                    bossWaitTime += Time.deltaTime;
-                    if (bossWaitTime >= bossMaxWaitTime)
+                    else
                     {
-                        bossWait = false;
-                        poseSet = false;
-                    }
-                }
-                else
-                {
-                    //Debug.Log("current skill= "+KP2);
-                    switch (KP2)
-                    {
-                        case KeeperP2.rugido:
-                            DoRugido();
-                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime)
-                            {
-
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP2.zarpazoEspectral:
-                            DoZarpazoEspectral();
-                            if (ZEState == ZarpEspState.returned)
-                            {
-                                for (int i = 0; i < zarpazosEspectrales.childCount; i++)
+                        //Debug.Log("current skill= "+KP2);
+                        switch (KP2)
+                        {
+                            case KeeperP2.rugido:
+                                DoRugido();
+                                if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime)
                                 {
-                                    Destroy(zarpazosEspectrales.GetChild(i).gameObject);
-                                }
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP2.AcidExalation:
-                            DoAcidExalation();
-                            if (patronTimeline >= acidExalMaxTime)
-                            {
-                                tongue.enabled = false;
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP2.RayoFatuo:
-                            DoRayoFatuo();
-                            if (patronTimeline >= rayoFatuoMaxTime)
-                            {
-                                rayo.GetComponent<SpriteRenderer>().enabled = false;
-                                rayo.GetComponent<Collider2D>().enabled = false;
-                                rayoFatuoHeadAndRay.SetActive(false);
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP2.rugido_ZarpazoEspectral:
 
-                            DoZarpazoEspectral();
-                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && ZEState == ZarpEspState.returned)
-                            {
-                                for (int i = 0; i < zarpazosEspectrales.childCount; i++)
+                                    nextSkill = true;
+                                }
+                                break;
+                            case KeeperP2.zarpazoEspectral:
+                                DoZarpazoEspectral();
+                                if (ZEState == ZarpEspState.returned)
                                 {
-                                    Destroy(zarpazosEspectrales.GetChild(i).gameObject);
+                                    for (int i = 0; i < zarpazosEspectrales.childCount; i++)
+                                    {
+                                        Destroy(zarpazosEspectrales.GetChild(i).gameObject);
+                                    }
+                                    nextSkill = true;
                                 }
-                                nextSkill = true;
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP2.rugido_AcidExalation:
-                            DoRugido();
-                            DoAcidExalation();
-                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && patronTimeline >= acidExalMaxTime)
-                            {
-                                tongue.enabled = false;
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP2.rugido_RayoFatuo:
-                            DoRugido();
-                            DoRayoFatuo();
-                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && patronTimeline >= rayoFatuoMaxTime)
-                            {
-                                rayo.GetComponent<SpriteRenderer>().enabled = false;
-                                rayo.GetComponent<Collider2D>().enabled = false;
-                                rayoFatuoHeadAndRay.SetActive(false);
-                                nextSkill = true;
-                            }
+                                break;
+                            case KeeperP2.AcidExalation:
+                                DoAcidExalation();
+                                if (patronTimeline >= acidExalMaxTime)
+                                {
+                                    tongue.enabled = false;
+                                    nextSkill = true;
+                                }
+                                break;
+                            case KeeperP2.RayoFatuo:
+                                DoRayoFatuo();
+                                if (rayoFatuoTime >= rayoFatuoMaxTime)
+                                {
+                                    rayo.GetComponent<SpriteRenderer>().enabled = false;
+                                    rayo.GetComponent<Collider2D>().enabled = false;
+                                    rayoFatuoHeadAndRay.SetActive(false);
+                                    nextSkill = true;
+                                }
+                                break;
+                            case KeeperP2.rugido_ZarpazoEspectral:
+                                DoRugido();
+                                DoZarpazoEspectral();
+                                if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && ZEState == ZarpEspState.returned)
+                                {
+                                    for (int i = 0; i < zarpazosEspectrales.childCount; i++)
+                                    {
+                                        Destroy(zarpazosEspectrales.GetChild(i).gameObject);
+                                    }
+                                    nextSkill = true;
+                                    nextSkill = true;
+                                }
+                                break;
+                            case KeeperP2.rugido_AcidExalation:
+                                DoRugido();
+                                DoAcidExalation();
+                                if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && patronTimeline >= acidExalMaxTime)
+                                {
+                                    tongue.enabled = false;
+                                    nextSkill = true;
+                                }
+                                break;
+                            case KeeperP2.rugido_RayoFatuo:
+                                DoRugido();
+                                DoRayoFatuo();
+                                if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && rayoFatuoTime >= rayoFatuoMaxTime)
+                                {
+                                    rayo.GetComponent<SpriteRenderer>().enabled = false;
+                                    rayo.GetComponent<Collider2D>().enabled = false;
+                                    rayoFatuoHeadAndRay.SetActive(false);
+                                    nextSkill = true;
+                                }
 
-                            break;
-                    }
-                    if (!nextSkill)
-                    {
-                        //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
-                        patronTimeline += Time.deltaTime;
-                    }
-                    //NO MOVER. Deber ir siempre tras el switch
-                    //Debug.Log("patronTimeline= "+patronTimeline);
-                    if (nextSkill)
-                    {
-                        ManageCurrentSkill();
+                                break;
+                        }
+                        if (!nextSkill)
+                        {
+                            //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
+                            patronTimeline += Time.deltaTime;
+                        }
+                        //NO MOVER. Deber ir siempre tras el switch
+                        //Debug.Log("patronTimeline= "+patronTimeline);
+                        if (nextSkill)
+                        {
+                            ManageCurrentSkill();
+                        }
                     }
                 }
             }
@@ -446,6 +451,7 @@ public class Keeper_Phase2 : EnemyAI
         //puedo poner Ifs para solo resetear lo siguiente en caso de que sea la siguiente skill
         spikesTime = 0;
         rugidoCharging = true;
+        chargingRayoFatuo = true;
         Debug.Log("Current skill= " + KP2);
     }
 
@@ -827,6 +833,7 @@ public class Keeper_Phase2 : EnemyAI
                 //rayo
                 rayo.GetComponent<SpriteRenderer>().enabled = true;
                 rayo.GetComponent<Collider2D>().enabled = true;
+                poseSet = false;
             }
         }
         else
@@ -834,7 +841,7 @@ public class Keeper_Phase2 : EnemyAI
             Vector2 playerDir = (PlayerMovement.instance.transform.position - rayoFatuoHeadAndRay.transform.position).normalized;
             float targetAngle = Vector2.Angle(Vector2.right, playerDir);
             rayoFatuoCurrentAngle = Mathf.SmoothDamp(rayoFatuoCurrentAngle, targetAngle, ref rayoFatuoSmoothSpeed, rayoFatuoSmoothFollowTime);
-            rayoFatuoHeadAndRay.transform.rotation = Quaternion.Euler(0, rayoFatuoHeadAndRay.transform.rotation.y, rayoFatuoCurrentAngle);
+            rayoFatuoHeadAndRay.transform.localRotation = Quaternion.Euler(0, 180, -rayoFatuoCurrentAngle);
         }
         rayoFatuoTime += Time.deltaTime;
     }
@@ -847,16 +854,10 @@ public class Keeper_Phase2 : EnemyAI
             bossWait = true;
             poseSet = false;
             patronIndex = 0;
-            Debug.Log("hitsTaken=" + hitsTaken);
-            if (KP2 == KeeperP2.AcidExalation || KP2 == KeeperP2.rugido_AcidExalation)
-            {
-                myRB.velocity = Vector2.zero;
-                tongue.enabled = false;
-                ManageCurrentSkill();
-            }
         }
         bossDamaged = true;
         hitsTaken++;
+        Debug.Log("hitsTaken=" + hitsTaken);
         switch (hitsTaken)
         {
             case 0:
@@ -869,8 +870,17 @@ public class Keeper_Phase2 : EnemyAI
                 KP2_actPatron = KP2_patron3;
                 break;
             case 3:
+                SetPose(6);
+                colliders[6].enabled = false;
+                endFight = true;
                 //end fight
                 break;
+        }
+        if (KP2 == KeeperP2.AcidExalation || KP2 == KeeperP2.rugido_AcidExalation)
+        {
+            myRB.velocity = Vector2.zero;
+            tongue.enabled = false;
+            ManageCurrentSkill();
         }
 
     }

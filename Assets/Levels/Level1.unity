@@ -15708,6 +15708,11 @@ Transform:
   m_Father: {fileID: 767541109}
   m_RootOrder: 38
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &518968509 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4447727257248714, guid: a75692123915e644dbd9f182f9950622,
+    type: 2}
+  m_PrefabInternal: {fileID: 402043117}
 --- !u!1001 &519349154
 Prefab:
   m_ObjectHideFlags: 0
@@ -17967,6 +17972,53 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!1001 &584731005
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 518968509}
+    m_Modifications:
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 3019
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 107
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738764034440542, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82598631449375870, guid: 15d74b945b8f72a4f832a19603f49ec6,
+        type: 2}
+      propertyPath: m_Volume
+      value: 0.323
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 15d74b945b8f72a4f832a19603f49ec6, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &584931996
 GameObject:
   m_ObjectHideFlags: 0
@@ -62001,10 +62053,6 @@ Prefab:
       propertyPath: nightmareAttack
       value: 
       objectReference: {fileID: 1209851753}
-    - target: {fileID: 1294520705894268, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
   m_IsPrefabParent: 0

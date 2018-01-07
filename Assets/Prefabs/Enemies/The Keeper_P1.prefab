@@ -891,15 +891,15 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1294520705894268}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0.00000028088027}
-  m_LocalPosition: {x: 3.69, y: -0.48, z: -7.703416}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 3.69, y: -0.48, z: 0}
   m_LocalScale: {x: 0.77034163, y: 0.7703415, z: 0.7703415}
   m_Children:
   - {fileID: 4543805952008492}
   - {fileID: 4246427248462532}
   m_Father: {fileID: 4025688300907902}
   m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: -179.99998, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!4 &4479020995773816
 Transform:
   m_ObjectHideFlags: 1
@@ -946,7 +946,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1840542501829976}
   m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: -80.80977, y: 0, z: -20}
+  m_LocalPosition: {x: -80.80977, y: 0, z: 0}
   m_LocalScale: {x: 3.064557, y: 3.0645576, z: 3.0645576}
   m_Children: []
   m_Father: {fileID: 4459494446141592}
@@ -2847,7 +2847,7 @@ MonoBehaviour:
   spike: {fileID: 1720063025790610, guid: fc385cf4633147543a85a16db6fd6edc, type: 2}
   ceiling: {fileID: 0}
   spikes: {fileID: 0}
-  zarpEspMaxAttacks: 030000000200000003000000
+  zarpEspMaxAttacks: 010000000200000003000000
   zarpEspWarnMaxTime: 2
   zarpEspAttackSpeed: 45
   zarpEspAttackingMaxTime: 2
@@ -2858,7 +2858,7 @@ MonoBehaviour:
   zarpazosEspectrales: {fileID: 0}
   warningLights: {fileID: 0}
   acidExalOrigin: {fileID: 4398740519533664}
-  acidExalTimeBetweenAttacks: 0.25
+  acidExalTimeBetweenAttacks: 0.3
   acidExalMaxTime: 8
   acidExalAttacksSpeed: 35
   acidExalAngle: 80
