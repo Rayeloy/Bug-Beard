@@ -7,7 +7,7 @@ public class Keeper_ZarpazoEspectral : MonoBehaviour {
     public Rigidbody2D myRB;
     public float damage;
     [HideInInspector]
-    public bool started;
+    public bool started = false;
     Vector2 origPos;
     float minPosY;
     bool returnZarpazo;
@@ -16,39 +16,43 @@ public class Keeper_ZarpazoEspectral : MonoBehaviour {
     public bool stopped;
     [HideInInspector]
     public bool returned;
-
-    private void Awake()
-    {
-        started = false;
-        returnZarpazo = false;
-        stopped = false;
-        returned = false;
-    }
+    bool going = false;
 
     public void KonoStart(float _speed,Vector2 _origPos,float _minPosY)
     {
         started = true;
+        returnZarpazo = false;
+        stopped = false;
+        returned = false;
         origPos = _origPos;
-        minPosY = _minPosY;
+        minPosY = _minPosY+ ZarpEspInfo.zarpEspHeight / 2;
         speed = _speed;
         myRB.velocity = Vector2.down * speed;
+        going = true;
+        Debug.Log("minPosY= " + minPosY);
     }
 
     private void Update()
     {
         if (started)
         {
-            if(transform.position.y<= minPosY)
+            if (going)
             {
-                StopZarpazo();
+                myRB.velocity = Vector2.down * speed;
+                if (transform.position.y <= minPosY)
+                {
+                    StopZarpazo();
+                }
             }
+
+
             if (returnZarpazo)
             {
+                myRB.velocity = Vector2.up * speed;
                 if (transform.position.y >= origPos.y)
                 {
                     StopZarpazo();
                     returned = true;
-                    Destroy(gameObject);
                 }
             }
         }
@@ -56,7 +60,9 @@ public class Keeper_ZarpazoEspectral : MonoBehaviour {
 
     void StopZarpazo()
     {
+        Debug.Log("ZARPAZO STOPPED");
         myRB.velocity = Vector2.zero;
+        going = false;
         stopped = true;
     }
 
@@ -65,6 +71,5 @@ public class Keeper_ZarpazoEspectral : MonoBehaviour {
         returnZarpazo = true;
         myRB.velocity = Vector2.up * speed;
     }
-
 
 }
