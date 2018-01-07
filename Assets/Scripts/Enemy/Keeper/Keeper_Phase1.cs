@@ -8,6 +8,7 @@ public class Keeper_Phase1 : EnemyAI
     [HideInInspector]
     public bool p2Start;
     public Keeper_Phase2 KeeperP2;
+    public GameObject senses;
 
     [Header("Sprites")]
     public Sprite[] keeperSprites;
@@ -111,13 +112,17 @@ public class Keeper_Phase1 : EnemyAI
         base.Awake();
         instance = this;
         p2Start = false;
+        senses.SetActive(true);
 
         attackTimeline = 0;
         timeVulnerable = 0;
         bossWaitTime = 0;
         bossWait = false;
-        hitsTaken = 0;
-        patronIndex = 0;
+
+        hitsTaken = 2;
+        patronIndex = 2;
+        KP1_actPatron = KP1_patron3;
+
         nextSkill = false;
         moving = false;
         poseSet = false;
@@ -139,7 +144,7 @@ public class Keeper_Phase1 : EnemyAI
         lostSoulsTime = 0;
         ghostsList = new List<GameObject>();
 
-        KP1_actPatron = KP1_patron1;
+
     }
 
     private void Start()
@@ -244,7 +249,7 @@ public class Keeper_Phase1 : EnemyAI
                 }
                 //NO MOVER. Deber ir siempre tras el switch
                 //Debug.Log("patronTimeline= "+patronTimeline);
-                if (nextSkill)
+                if (nextSkill && !p2Start)
                 {
                     ManageCurrentSkill();
                 }
@@ -343,7 +348,8 @@ public class Keeper_Phase1 : EnemyAI
         {
             luces[0].enabled = true;
             luces[1].enabled = false;
-        }else if(poseIndex == 4)
+        }
+        else if (poseIndex == 4)
         {
             luces[0].enabled = false;
             luces[1].enabled = true;
@@ -449,6 +455,9 @@ public class Keeper_Phase1 : EnemyAI
                         case AttackState.vulnerable:
                             SetPose(4);
                             break;
+                        case AttackState.damagedAfterVulnerable:
+                            SetPose(3);
+                            break;
                     }
                     break;
             }
@@ -471,7 +480,7 @@ public class Keeper_Phase1 : EnemyAI
                 poseSet = false;
                 CameraMovement.instance.StartShakeCamera(excaliburMaxTime);
             }
-            else if(!excaliburCharging && spikesTime >= timeBetweenSpikes)
+            else if (!excaliburCharging && spikesTime >= timeBetweenSpikes)
             {
                 spikesTime = 0;
                 //get random pos x between range (room wide-offset); pos y will be the same always
@@ -501,15 +510,16 @@ public class Keeper_Phase1 : EnemyAI
             doesPursue = true;
             attackTimeline = 0;
         }
-        if (AState != AttackState.vulnerable && AState!=AttackState.damagedAfterVulnerable)
+        if (AState != AttackState.vulnerable && AState != AttackState.damagedAfterVulnerable)
         {
             HorizontalMovement();
             Attack();
         }
-        else if(AState == AttackState.vulnerable)
+        else if (AState == AttackState.vulnerable)
         {
             DoVulnerable();
-        }else if (AState == AttackState.damagedAfterVulnerable)
+        }
+        else if (AState == AttackState.damagedAfterVulnerable)
         {
             DoDamagedAfterVulnerable();
         }
@@ -580,6 +590,7 @@ public class Keeper_Phase1 : EnemyAI
             {
                 attackTimeline = 0;
                 timeVulnerable = 0;
+                espada.enabled = true;
                 AState = AttackState.vulnerable;
                 poseSet = false;
             }
@@ -691,7 +702,7 @@ public class Keeper_Phase1 : EnemyAI
                     nightmareAttack.transform.position = new Vector3(attackPosX, attackPosY, 0);
                     if (nightmareTime >= nightmareTimeFollowingPlayer)//attack!!
                     {
-                        nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder = PlayerAnimations.instance.SpriteRend.sortingOrder+1;
+                        nightmareAttack.GetComponent<SpriteRenderer>().sortingOrder = PlayerAnimations.instance.SpriteRend.sortingOrder + 1;
                         nightmareAttack.GetComponent<SpriteRenderer>().sprite = nightmareAttackActivated;
                         //nightmareAttack.GetComponent<Collider2D>().enabled = true;
                         if (nightmareAttack.GetComponent<CheckHitBox>().CheckFor("Player"))
@@ -746,7 +757,6 @@ public class Keeper_Phase1 : EnemyAI
         Debug.Log("VULNERABLE!");
         //doesPursue = false;
         weakBox.SetActive(false);
-        espada.enabled = true;
         vulnerable = false;//esta variable es para saber si está activa la hitbox de la rodilla
         AState = AttackState.damaged;
         poseSet = false;
@@ -756,7 +766,7 @@ public class Keeper_Phase1 : EnemyAI
     }
     void DoDamagedAfterVulnerable()
     {
-        Debug.Log("damaged after vulnerable");
+        //Debug.Log("damaged after vulnerable");
         attackTimeline += Time.deltaTime;
         if (attackTimeline >= maxTimeDamaged)
         {
@@ -764,10 +774,22 @@ public class Keeper_Phase1 : EnemyAI
             doesPursue = false;
             if (p2Start)
             {
-                for(int i=0; i < colliders.Length; i++)
+                //parar lost souls
+                lostSoulsWaves = lostSoulsMaxWaves + 1;
+                lostSoulsTime = lostSoulsTimeWaves * 2 + 1;
+                for (int i = 0; i < ghosts.childCount; i++)
+                {
+                    Destroy(ghosts.GetChild(i).gameObject);
+                }
+                //quitamos colliders
+                for (int i = 0; i < colliders.Length; i++)
                 {
                     colliders[i].enabled = false;
                 }
+                senses.SetActive(false);
+                //quitamos luces de keeper 1
+                luces[0].enabled = false;
+                luces[0].enabled = false;
                 KeeperP2.enabled = true;
                 Debug.Log("PHASE 2");
                 this.enabled = false;
@@ -776,8 +798,8 @@ public class Keeper_Phase1 : EnemyAI
             attackTimeline = 0;
             AState = AttackState.ready;
             poseSet = false;
-            
-           
+
+
         }
     }
 
@@ -796,9 +818,9 @@ public class Keeper_Phase1 : EnemyAI
                 poseSet = false;
             }
             patronIndex = 0;
-            Debug.Log("hitsTaken=" + hitsTaken);
         }
         hitsTaken++;
+        Debug.Log("hitsTaken=" + hitsTaken);
         switch (hitsTaken)
         {
             case 0:
@@ -811,7 +833,7 @@ public class Keeper_Phase1 : EnemyAI
                 KP1_actPatron = KP1_patron3;
                 break;
             case 3:
-                p2Start = true;
+                p2Start = true;//en DoDamagedAfterVulnerable() se comienza la phase 2
                 break;
         }
 

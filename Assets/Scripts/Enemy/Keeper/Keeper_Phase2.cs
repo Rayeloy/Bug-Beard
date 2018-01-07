@@ -6,6 +6,9 @@ public class Keeper_Phase2 : EnemyAI
 {
 
     public static Keeper_Phase2 instance;
+    SpriteRenderer playerSprite;
+    public GameObject hotSpot1;
+    public GameObject hotSpot2;
 
     [Header("Transition")]
     public float espadaRotaMaxTime;
@@ -26,9 +29,10 @@ public class Keeper_Phase2 : EnemyAI
     public Transform safePlayerPos;
     public Transform bossOriginalPos;
     bool chenji;
-    public Transform[] posScenary;//grounds from left to right (only the ones that change), Platforms from left to right, crystals from left to right
-    public Transform[] newPosScenary;
+    public GameObject[] posScenary;//grounds from left to right (only the ones that change), Platforms from left to right, crystals from left to right
+    public Transform[] newScenary;
     List<Vector3> OrigPosScenary;
+    List<Vector3> newPosScenary;
 
     [Header("Sprites")]
     public Sprite[] keeperSprites;//ORDEN: StandBy=0, Damaged=1, Rugido=2, ZarpazaoEspectral=3,AcidExalation=4, RayoFatuo=5, Muerto=6
@@ -96,15 +100,23 @@ public class Keeper_Phase2 : EnemyAI
     public void KonoStart()
     {
         instance = this;
+        playerSprite = PlayerMovement.instance.spriteTransf.GetComponent<SpriteRenderer>();
+
         inTransition = true;
         Trans = Transition.bossAnimation;
         dissapeared = 0;
         chenji = false;
         OrigPosScenary = new List<Vector3>();
-        for(int i = 0; i <= posScenary.Length; i++)
+        for(int i = 0; i < posScenary.Length; i++)
         {
-            OrigPosScenary.Add(posScenary[i].position);
+            OrigPosScenary.Add(posScenary[i].transform.position);
         }
+        newPosScenary = new List<Vector3>();
+        for (int i = 0; i < newScenary.Length; i++)
+        {
+            newPosScenary.Add(newScenary[i].transform.position);
+        }
+        
 
         attackTimeline = 0;
         bossWaitTime = 0;
@@ -117,8 +129,8 @@ public class Keeper_Phase2 : EnemyAI
         AState = AttackState.ready;
         damaged = false;
 
-        luces[0].enabled = false;
-        luces[1].enabled = false;
+        //luces[0].enabled = false;
+        //luces[1].enabled = false;
 
         standBySpritePos = spritesOffsets[0];
         standBySpriteProp = spritesProportions[0];
@@ -196,67 +208,6 @@ public class Keeper_Phase2 : EnemyAI
                 }
             }
         }
-
-        gravityFalls();
-        CheckGrounded();
-        //UpdateGhostsList();
-        if (!stopEnemy)
-        {
-            //Debug.Log("Moving= " + moving);
-            ManagePose();
-            if (bossWait)
-            {
-                bossWaitTime += Time.deltaTime;
-                if (bossWaitTime >= bossMaxWaitTime)
-                {
-                    bossWait = false;
-                }
-            }
-            else
-            {
-                if (moving)
-                {
-                    //PositionForSkill();
-                }
-                else
-                {
-                    switch (KP2)
-                    {
-                        case KeeperP2.rugido:
-                            DoRugido();
-                            if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime)
-                            {
-
-                                nextSkill = true;
-                            }
-                            break;
-                        case KeeperP2.zarpazoEspectral:
-                            break;
-                        case KeeperP2.AcidExalation:
-                            break;
-                        case KeeperP2.RayoFatuo:
-                            break;
-                        case KeeperP2.rugido_ZarpazoEspectral:
-                            break;
-                        case KeeperP2.rugido_AcidExalation:
-                            break;
-                        case KeeperP2.rugido_RayoFatuo:
-                            break;
-                    }
-                    if (!nextSkill)
-                    {
-                        //NO MOVER; hago comprobaciones de si patronTimeline==0 para saber si es primera entrada en cada skill
-                        patronTimeline += Time.deltaTime;
-                    }
-                }
-                //NO MOVER. Deber ir siempre tras el switch
-                //Debug.Log("patronTimeline= "+patronTimeline);
-                if (nextSkill)
-                {
-                    ManageCurrentSkill();
-                }
-            }
-        }
     }
 
     void DoTransition()
@@ -285,6 +236,7 @@ public class Keeper_Phase2 : EnemyAI
                         Color colorBoss = new Color(1, 1, 1, aBoss);
                         CameraMovement.instance.BlackFilter.color = colorFilter;
                         sprite.color = colorBoss;
+                        playerSprite.color = colorBoss;
                         if (patronTimeline >= maxTimeDissapear)
                         {
                             patronTimeline = 0;
@@ -297,8 +249,11 @@ public class Keeper_Phase2 : EnemyAI
                             chenji = true;
                             PlayerMovement.instance.transform.position = safePlayerPos.position;
                             PlayerMovement.instance.pmState = PlayerMovement.pmoveState.stopLeft;
+                            playerSprite.transform.rotation = Quaternion.Euler(0, 0, 0);
                             weakBox.transform.parent.rotation = Quaternion.Euler(0, 0, 0);
                             weakBox.transform.parent.position = bossOriginalPos.position;
+                            hotSpot1.SetActive(false);
+                            hotSpot2.SetActive(true);
 
                         }
                         if (patronTimeline >= maxTimeDissapear)
@@ -315,6 +270,7 @@ public class Keeper_Phase2 : EnemyAI
                         colorBoss = new Color(1, 1, 1, aBoss);
                         CameraMovement.instance.BlackFilter.color = colorFilter;
                         sprite.color = colorBoss;
+                        playerSprite.color = colorBoss;
                         if (patronTimeline >= maxTimeDissapear)
                         {
                             patronTimeline = 0;
@@ -337,11 +293,16 @@ public class Keeper_Phase2 : EnemyAI
             //boss roars, camera shakes,  stage changes
             case Transition.stageChanging:
                 float prog2 = patronTimeline / scenaryChangeMaxTime;
-                for (int i = 0; i <= posScenary.Length; i++)
+                for (int i = 0; i < posScenary.Length; i++)
                 {
-                    float newX = Mathf.Lerp(OrigPosScenary[i].x, OrigPosScenary[i].x, prog2);
-                    float newY = Mathf.Lerp(OrigPosScenary[i].y, OrigPosScenary[i].y, prog2);
-                    posScenary[i].position = new Vector3(newX, newY, 0);
+                    float newX = Mathf.Lerp(OrigPosScenary[i].x, newPosScenary[i].x, prog2);
+                    float newY = Mathf.Lerp(OrigPosScenary[i].y, newPosScenary[i].y, prog2);
+                    posScenary[i].transform.position = new Vector3(newX, newY, 0);
+                }
+                if (patronTimeline >= scenaryChangeMaxTime)
+                {
+                    Trans = Transition.fightStarts;
+                    patronTimeline = 0;
                 }
                 break;
             //battle starts
@@ -426,7 +387,7 @@ public class Keeper_Phase2 : EnemyAI
     void SetPose(int poseIndex)
     {
         sprite.sprite = keeperSprites[poseIndex];
-        sprite.transform.localPosition = standBySpritePos + spritesOffsets[poseIndex];
+        sprite.transform.localPosition = spritesOffsets[poseIndex];
         sprite.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -441,18 +402,18 @@ public class Keeper_Phase2 : EnemyAI
         }
         if (poseIndex == 1)
         {
-            luces[0].enabled = true;
-            luces[1].enabled = false;
+            //luces[0].enabled = true;
+            //luces[1].enabled = false;
         }
         else if (poseIndex == 4)
         {
-            luces[0].enabled = false;
-            luces[1].enabled = true;
+            //luces[0].enabled = false;
+            //luces[1].enabled = true;
         }
         else
         {
-            luces[0].enabled = false;
-            luces[1].enabled = false;
+            //luces[0].enabled = false;
+            //luces[1].enabled = false;
         }
     }
     void ManagePose()
