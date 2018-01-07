@@ -6556,6 +6556,60 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc7ba350b027b5e49892af235db2cb53, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &204474446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 204474447}
+  - component: {fileID: 204474448}
+  m_Layer: 9
+  m_Name: StandBy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &204474447
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 204474446}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1649528237}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &204474448
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 204474446}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &206748074
 GameObject:
   m_ObjectHideFlags: 0
@@ -28102,6 +28156,11 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!4 &896732135 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4983962198977334, guid: 42397acaea898bc4e90461118b759730,
+    type: 2}
+  m_PrefabInternal: {fileID: 2110635991}
 --- !u!1001 &897990702
 Prefab:
   m_ObjectHideFlags: 0
@@ -48997,6 +49056,35 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!1 &1649528236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1649528237}
+  m_Layer: 9
+  m_Name: BodyColliders
+  m_TagString: enemy
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1649528237
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1649528236}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 204474447}
+  m_Father: {fileID: 896732135}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1650137865
 GameObject:
   m_ObjectHideFlags: 0
@@ -55552,6 +55640,63 @@ Prefab:
       propertyPath: nightmareAttack
       value: 
       objectReference: {fileID: 1209851753}
+    - target: {fileID: 114182384326816164, guid: 0b545f39d4953c64c9e4633594d94a97,
+        type: 2}
+      propertyPath: zarpEspMaxAttacks.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692275774894580, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4619854225943070, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932665869873940, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055191539664864, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4013866986401088, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4818830681204820, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398740519533664, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280319305279692, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115819311279900, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4663227754781526, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246427248462532, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4186347734996846, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4099818618984042, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0b545f39d4953c64c9e4633594d94a97, type: 2}
   m_IsPrefabParent: 0
@@ -64564,7 +64709,13 @@ Prefab:
       propertyPath: stopEnemy
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 114270516277133522, guid: 42397acaea898bc4e90461118b759730,
+        type: 2}
+      propertyPath: enemyCol
+      value: 
+      objectReference: {fileID: 204474448}
+    m_RemovedComponents:
+    - {fileID: 61335171776150898, guid: 42397acaea898bc4e90461118b759730, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 42397acaea898bc4e90461118b759730, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &2112337777

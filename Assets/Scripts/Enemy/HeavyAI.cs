@@ -15,6 +15,14 @@ public class HeavyAI : EnemyAI
     private bool damaged;
     public GameObject garrote;
 
+    [Header("Sprites")]
+    public Sprite[] enemySprites;
+    Vector2 standBySpritePos;
+    Vector2 standBySpriteProp;
+    public Vector2[] spritesOffsets;//ORDEN: Standby, Anticipation, Attack,
+    public Vector2[] spritesProportions;
+    public Collider2D[] colliders;
+
 
     public override void Awake()
     {
@@ -22,6 +30,8 @@ public class HeavyAI : EnemyAI
         attackTimeline = 0;
         AState = AttackState.ready;
         damaged = false;
+        standBySpritePos = spritesOffsets[0];
+        standBySpriteProp = spritesProportions[0];
     }
 
     public override void Update()
@@ -77,6 +87,53 @@ public class HeavyAI : EnemyAI
         if (AState != AttackState.ready)
         {
             attackTimeline += Time.deltaTime;
+        }
+    }
+
+    bool poseSet = false;
+    void SetPose(int poseIndex)
+    {
+        sprite.sprite = enemySprites[poseIndex];
+        sprite.transform.localPosition = spritesOffsets[poseIndex];
+        sprite.transform.localScale = new Vector2(standBySpriteProp.x * spritesProportions[poseIndex].x, standBySpriteProp.y * spritesProportions[poseIndex].y);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (i == poseIndex)
+            {
+                colliders[i].enabled = true;
+            }
+            else
+            {
+                colliders[i].enabled = false;
+            }
+        }
+    }
+    void ManagePose()
+    {
+        if (!poseSet)
+        {
+            switch (AState)
+            {
+                case AttackState.ready:
+                    SetPose(0);
+                    break;
+                case AttackState.preparing:
+                    SetPose(1);
+                    break;
+                case AttackState.damaging:
+                    SetPose(2);
+                    break;
+                case AttackState.recovering:
+                    SetPose(2);
+                    break;
+                case AttackState.damaged:
+                    break;
+                case AttackState.vulnerable:
+                    break;
+                case AttackState.damagedAfterVulnerable:
+                    break;
+            }
+            poseSet = true;
         }
     }
 }

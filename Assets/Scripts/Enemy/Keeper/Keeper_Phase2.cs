@@ -110,7 +110,12 @@ public class Keeper_Phase2 : EnemyAI
     float acidExalTime;
 
     [Header("Rayo Fatuo")]
-
+    public GameObject rayoFatuoHeadAndRay;
+    public Transform rayoFatuoTurningPoint;
+    public float rayoFatuoMaxTime;
+    public float rayoFatuoSmoothFollowTime;
+    float rayoFatuoTime;
+    bool chargingRayoFatuo;
 
     public EnemyHP eHP;
     private bool damaged;
@@ -172,6 +177,10 @@ public class Keeper_Phase2 : EnemyAI
         zarpEspTime = 0;
 
         tongue.enabled = false;
+        acidExalTime = 0;
+
+        rayoFatuoTime = 0;
+        chargingRayoFatuo = false;
 
         KP2_actPatron = KP2_patron1;
     }
@@ -193,7 +202,7 @@ public class Keeper_Phase2 : EnemyAI
         else
         {
             CheckGrounded();
-            gravityFalls();
+            //gravityFalls();
             if (!stopEnemy)
             {
                 //Debug.Log("stopEnemy= false");
@@ -627,7 +636,7 @@ public class Keeper_Phase2 : EnemyAI
                 }
                 else
                 {
-                    bool posValida = true;
+                    bool posValida = false;
                     float newMaxX = zarpEspMaxX - (ZarpEspInfo.zarpEspWidth * 2 * zarpazos.Count);
                     posX = Random.Range(zarpEspMinX, newMaxX);
                     while (!posValida)
@@ -635,6 +644,8 @@ public class Keeper_Phase2 : EnemyAI
                         posValida = true;
                         for (int j = 0; j < zarpazos.Count; j++)
                         {
+                            Debug.Log("zarpazos["+j+"].minX= " + zarpazos[j].minX + "; zarpazos["+j+"].maxX= " + zarpazos[j].maxX);
+                            Debug.Log("posX= "+posX);
                             if (posX > zarpazos[j].minX && posX < zarpazos[j].maxX)
                             {
                                 posX += ZarpEspInfo.zarpEspWidth;
@@ -773,6 +784,7 @@ public class Keeper_Phase2 : EnemyAI
             Debug.Log("hitsTaken=" + hitsTaken);
             if (KP2 == KeeperP2.AcidExalation || KP2 == KeeperP2.rugido_AcidExalation)
             {
+                myRB.velocity = Vector2.zero;
                 tongue.enabled = false;
                 ManageCurrentSkill();
             }
