@@ -98,7 +98,15 @@ public class Keeper_Phase2 : EnemyAI
 
 
     [Header("Acid Exalation")]
-
+    public Transform acidExalOrigin;
+    public float acidExalTimeBetweenAttacks;
+    public float acidExalMaxTime;
+    public float acidExalAttacksSpeed;
+    public float acidExalAngle;//º ,not radians
+    public GameObject acidExalPrefab;
+    public Collider2D tongue;
+    public Transform acidDrops;
+    float acidExalTime;
 
     [Header("Rayo Fatuo")]
 
@@ -152,7 +160,7 @@ public class Keeper_Phase2 : EnemyAI
         AState = AttackState.ready;
         damaged = false;
 
-        //luces[0].enabled = false;
+        luces[0].enabled = false;
         //luces[1].enabled = false;
 
         standBySpritePos = spritesOffsets[0];
@@ -160,6 +168,8 @@ public class Keeper_Phase2 : EnemyAI
 
         zarpEspAttacks = 0;
         zarpEspTime = 0;
+
+        tongue.enabled = false;
 
         KP2_actPatron = KP2_patron1;
     }
@@ -219,7 +229,12 @@ public class Keeper_Phase2 : EnemyAI
                             }
                             break;
                         case KeeperP2.AcidExalation:
-                            break;
+                            if (patronTimeline >= acidExalMaxTime)
+                            {
+                                tongue.enabled = false;
+                                nextSkill = true;
+                            }
+                                break;
                         case KeeperP2.RayoFatuo:
                             break;
                         case KeeperP2.rugido_ZarpazoEspectral:
@@ -440,19 +455,14 @@ public class Keeper_Phase2 : EnemyAI
                 colliders[i].enabled = false;
             }
         }
-        if (poseIndex == 1)
+        if (poseIndex == 4)
         {
-            //luces[0].enabled = true;
+            luces[0].enabled = true;
             //luces[1].enabled = false;
-        }
-        else if (poseIndex == 4)
-        {
-            //luces[0].enabled = false;
-            //luces[1].enabled = true;
         }
         else
         {
-            //luces[0].enabled = false;
+            luces[0].enabled = false;
             //luces[1].enabled = false;
         }
     }
@@ -473,16 +483,22 @@ public class Keeper_Phase2 : EnemyAI
                     }
                     break;
                 case KeeperP2.zarpazoEspectral:
+                    SetPose(3);
                     break;
                 case KeeperP2.AcidExalation:
+                    SetPose(4);
                     break;
                 case KeeperP2.RayoFatuo:
+                    SetPose(5);
                     break;
                 case KeeperP2.rugido_ZarpazoEspectral:
+                    SetPose(3);
                     break;
                 case KeeperP2.rugido_AcidExalation:
+                    SetPose(4);
                     break;
                 case KeeperP2.rugido_RayoFatuo:
+                    SetPose(5);
                     break;
             }
             poseSet = true;
@@ -588,16 +604,16 @@ public class Keeper_Phase2 : EnemyAI
                     posX = Mathf.Clamp(posX, zarpEspMinX, zarpEspMaxX);
                     randomPos = new Vector2(posX, zarpEspPosY);
                 }
-                Debug.Log("Add zarpazo");
+                //Debug.Log("Add zarpazo");
                 zarpazos.Add(new ZarpEspInfo(randomPos, randomPos));
             }
             for (int i = 0; i < zarpazos.Count; i++)
             {
                 GameObject light = Instantiate(warningLight, zarpazos[i].zarpEspWarningPosition, Quaternion.identity, warningLights);
-                Debug.Log("Add zarpazo light object= " + light);
+                //Debug.Log("Add zarpazo light object= " + light);
                 zarpazos[i].warningLight = light;
                 //zarpazos[i] = new ZarpEspInfo(zarpazos[i].zarpEspPosition, zarpazos[i].zarpEspWarningPosition,null,light);
-                Debug.Log("zarpazos[i].warningLight= " + zarpazos[i].warningLight);
+                //Debug.Log("zarpazos[i].warningLight= " + zarpazos[i].warningLight);
             }
             ZEState = ZarpEspState.warning;
             zarpEspTime = 0;
@@ -610,8 +626,8 @@ public class Keeper_Phase2 : EnemyAI
                 for (int i = 0; i < zarpazos.Count; i++)
                 {
                     zarpazos[i].zarpEspWarningPosition = new Vector2(zarpazos[i].zarpEspWarningPosition.x, cameraLimitY);
-                    Debug.Log("move zarpazo light on index =" + i);
-                    Debug.Log("zarpazos[" + i + "].warningLight.transform.position" + zarpazos[i].warningLight.transform.position);
+                    //Debug.Log("move zarpazo light on index =" + i);
+                    //Debug.Log("zarpazos[" + i + "].warningLight.transform.position" + zarpazos[i].warningLight.transform.position);
                     zarpazos[i].warningLight.transform.position = zarpazos[i].zarpEspWarningPosition;
                 }
             }
@@ -681,9 +697,25 @@ public class Keeper_Phase2 : EnemyAI
 
     void DoAcidExalation()
     {
-        if (patronTimeline == 0)
+        if (patronTimeline < acidExalMaxTime)
         {
-
+            if (patronTimeline == 0)
+            {
+                acidExalTime = 0;
+                tongue.enabled = true;
+            }
+            if (acidExalTime >= acidExalTimeBetweenAttacks)//Attack
+            {
+                acidExalTime = 0;
+                float randomAngle = Random.Range(0, acidExalAngle);
+                Vector2 randomDir = GameController.GetVectorGivenAngleAndVector(Vector2.right, randomAngle);
+                GameObject acidDrop = Instantiate(acidExalPrefab, acidExalOrigin.position, Quaternion.identity, acidDrops);
+                float angle = Vector2.Angle(Vector2.down,randomDir);
+                acidDrop.transform.rotation = Quaternion.Euler(0,0,angle);
+                acidDrop.GetComponent<Keeper_AcidDrop>().KonoStart();
+                acidDrop.GetComponent<Rigidbody2D>().velocity = randomDir * acidExalAttacksSpeed;
+            }
+            acidExalTime += Time.deltaTime;
         }
     }
 

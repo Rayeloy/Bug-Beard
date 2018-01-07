@@ -163,7 +163,8 @@ public class GameController : MonoBehaviour
             }
         }
     }
-    public GameObject GetChild(GameObject padre, string childName)//Busca recursivamente un hijo con nombre childName
+    //FUNCIONES AUXILIARES
+    public static GameObject GetChild(GameObject padre, string childName)//Busca recursivamente un hijo con nombre childName
     {
         GameObject findResult;
         for (int i = 0; i < padre.transform.childCount; i++)
@@ -178,6 +179,13 @@ public class GameController : MonoBehaviour
         }
 
         return null;
+    }
+    public static Vector2 GetVectorGivenAngleAndVector(Vector2 dirOriginal, float angulo)
+    {
+        Vector2 result = new Vector2();
+        result.x = dirOriginal.x * Mathf.Cos(angulo) - dirOriginal.y * Mathf.Sin(angulo);
+        result.y = dirOriginal.x * Mathf.Sin(angulo) + dirOriginal.y * Mathf.Cos(angulo);
+        return result;
     }
     /*public static GameObject GetFatherWithComponent(GameObject child, Component fatherComponent)//Busca recursivamente un hijo con nombre childName
     {

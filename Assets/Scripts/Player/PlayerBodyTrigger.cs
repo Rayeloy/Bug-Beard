@@ -27,6 +27,11 @@ public class PlayerBodyTrigger : MonoBehaviour {
                         PlayerMovement.instance.BounceBack(col.transform.position);
                         PlayerHP.instance.TakeDamage(col.GetComponent<Keeper_ZarpazoEspectral>().damage);
                     }
+                    else if (col.name.Contains("AcidDrop"))
+                    {
+                        PlayerMovement.instance.BounceBack(col.transform.position);
+                        PlayerHP.instance.TakeDamage(col.GetComponent<Keeper_AcidDrop>().damage);
+                    }
                 }
             }
         }

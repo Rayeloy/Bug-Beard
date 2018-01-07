@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZarpEspInfo : MonoBehaviour
+public class ZarpEspInfo
 {
     public const float zarpEspWidth = 22.05714f;
     public const float zarpEspHeight = 125.898f;

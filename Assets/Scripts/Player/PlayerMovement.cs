@@ -404,7 +404,7 @@ public class PlayerMovement : MonoBehaviour
         phase = jumpphase.none;
         PlayerSlash.instance.slashSt = PlayerSlash.SlashState.crystal;
         myRB.velocity = Vector2.zero;
-        GameObject crystalPos = GameController.instance.GetChild(crystal, "playerPos");
+        GameObject crystalPos = GameController.GetChild(crystal, "playerPos");
         transform.position = crystalPos.transform.position;
         Pointer.instance.attackHBnormal();
         if (!gameObject.isStatic)

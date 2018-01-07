@@ -29,7 +29,6 @@ public class Keeper_ZarpazoEspectral : MonoBehaviour {
         speed = _speed;
         myRB.velocity = Vector2.down * speed;
         going = true;
-        Debug.Log("minPosY= " + minPosY);
     }
 
     private void Update()
@@ -51,7 +50,7 @@ public class Keeper_ZarpazoEspectral : MonoBehaviour {
                 myRB.velocity = Vector2.up * speed;
                 if (transform.position.y >= origPos.y)
                 {
-                    StopZarpazo();
+                    myRB.velocity = Vector2.zero;
                     returned = true;
                 }
             }
