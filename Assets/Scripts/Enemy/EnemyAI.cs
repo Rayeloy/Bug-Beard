@@ -29,6 +29,9 @@ public class EnemyAI : MonoBehaviour
     private bool bouncing = false;
 
     [HideInInspector]
+    public RespawnEnemy myRespEnemy;
+
+    [HideInInspector]
     public enemyState eState;
     [HideInInspector]
     public enemyState currentDirection;
@@ -79,6 +82,9 @@ public class EnemyAI : MonoBehaviour
     }
     private void Start()
     {
+        AssingRespObject();
+        //myRespEnemy.PrintAll();
+
         bounceForce = PlayerMovement.instance.bounceForce / 2f;
         maxBounceTime = PlayerMovement.instance.MaxBounceTime;
         gravity = PlayerMovement.instance.gravity;
@@ -98,7 +104,10 @@ public class EnemyAI : MonoBehaviour
         }
 
     }
-
+    public void AssingRespObject()
+    {
+        myRespEnemy = new RespawnEnemy(transform.position, transform.localRotation.eulerAngles, name, stopEnemy);
+    }
     protected virtual void gravityFalls()
     {
 
@@ -220,7 +229,16 @@ public class EnemyAI : MonoBehaviour
                 }
                 else
                 {
-                    if (playerGO.transform.position.x < transform.position.x + olgura && playerGO.transform.position.x > transform.position.x - olgura)
+                    float newOlgura;
+                    if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.crystal)
+                    {
+                        newOlgura = 20;
+                    }
+                    else
+                    {
+                        newOlgura = olgura;
+                    }
+                    if (transform.position.x>playerGO.transform.position.x -newOlgura && transform.position.x< playerGO.transform.position.x+newOlgura)
                     {
                         eState = enemyState.stop;
                     }

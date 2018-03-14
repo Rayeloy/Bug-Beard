@@ -266,8 +266,6 @@ public class Keeper_Phase2 : EnemyAI
                                 DoRayoFatuo();
                                 if (rayoFatuoTime >= rayoFatuoMaxTime)
                                 {
-                                    rayo.GetComponent<SpriteRenderer>().enabled = false;
-                                    rayo.GetComponent<Collider2D>().enabled = false;
                                     rayoFatuoHeadAndRay.SetActive(false);
                                     nextSkill = true;
                                 }
@@ -299,8 +297,6 @@ public class Keeper_Phase2 : EnemyAI
                                 DoRayoFatuo();
                                 if (patronTimeline >= rugidoMaxTime + bossMaxWaitTime && rayoFatuoTime >= rayoFatuoMaxTime)
                                 {
-                                    rayo.GetComponent<SpriteRenderer>().enabled = false;
-                                    rayo.GetComponent<Collider2D>().enabled = false;
                                     rayoFatuoHeadAndRay.SetActive(false);
                                     nextSkill = true;
                                 }
@@ -813,37 +809,45 @@ public class Keeper_Phase2 : EnemyAI
     float rayoFatuoSmoothSpeed;
     void DoRayoFatuo()
     {
-        if (patronTimeline == 0)
+        if (rayoFatuoTime < rayoFatuoMaxTime)
         {
-            rayoFatuoTime = 0;
-            chargingRayoFatuo = true;
-            rayoFatuoHeadAndRay.SetActive(false);
-            rayo.GetComponent<SpriteRenderer>().enabled = false;
-            rayo.GetComponent<Collider2D>().enabled = false;
-            rayoFatuoCurrentAngle = 0;
-        }
-        if (chargingRayoFatuo)
-        {
-            if (rayoFatuoTime >= rayoFatuoMaxChargingTime)
+            if (patronTimeline == 0)
             {
                 rayoFatuoTime = 0;
-                chargingRayoFatuo = false;
-                //cabeza
-                rayoFatuoHeadAndRay.SetActive(true);
-                //rayo
-                rayo.GetComponent<SpriteRenderer>().enabled = true;
-                rayo.GetComponent<Collider2D>().enabled = true;
-                poseSet = false;
+                chargingRayoFatuo = true;
+                rayoFatuoHeadAndRay.SetActive(false);
+                rayo.GetComponent<SpriteRenderer>().enabled = false;
+                rayo.GetComponent<Collider2D>().enabled = false;
+                rayoFatuoCurrentAngle = 0;
             }
+            if (chargingRayoFatuo)
+            {
+                if (rayoFatuoTime >= rayoFatuoMaxChargingTime)
+                {
+                    rayoFatuoTime = 0;
+                    chargingRayoFatuo = false;
+                    //cabeza
+                    rayoFatuoHeadAndRay.SetActive(true);
+                    //rayo
+                    rayo.GetComponent<SpriteRenderer>().enabled = true;
+                    rayo.GetComponent<Collider2D>().enabled = true;
+                    poseSet = false;
+                }
+            }
+            else
+            {
+                Vector2 playerDir = (PlayerMovement.instance.transform.position - rayoFatuoHeadAndRay.transform.position).normalized;
+                float targetAngle = Vector2.Angle(Vector2.right, playerDir);
+                rayoFatuoCurrentAngle = Mathf.SmoothDamp(rayoFatuoCurrentAngle, targetAngle, ref rayoFatuoSmoothSpeed, rayoFatuoSmoothFollowTime);
+                rayoFatuoHeadAndRay.transform.localRotation = Quaternion.Euler(0, 180, -rayoFatuoCurrentAngle);
+            }
+            rayoFatuoTime += Time.deltaTime;
         }
         else
         {
-            Vector2 playerDir = (PlayerMovement.instance.transform.position - rayoFatuoHeadAndRay.transform.position).normalized;
-            float targetAngle = Vector2.Angle(Vector2.right, playerDir);
-            rayoFatuoCurrentAngle = Mathf.SmoothDamp(rayoFatuoCurrentAngle, targetAngle, ref rayoFatuoSmoothSpeed, rayoFatuoSmoothFollowTime);
-            rayoFatuoHeadAndRay.transform.localRotation = Quaternion.Euler(0, 180, -rayoFatuoCurrentAngle);
+            rayo.GetComponent<SpriteRenderer>().enabled = false;
+            rayo.GetComponent<Collider2D>().enabled = false;
         }
-        rayoFatuoTime += Time.deltaTime;
     }
 
     public void TakeHit()

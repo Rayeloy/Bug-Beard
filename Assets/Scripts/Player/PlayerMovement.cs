@@ -309,12 +309,16 @@ public class PlayerMovement : MonoBehaviour
     void JumpWithHeight()//Mecanica de salto chachi piruli
     {
 
-        if (Input.GetButtonDown("Jump") && IsGrounded)//Nos abre las puertas para saltar
+        if ((Input.GetButtonDown("Jump") && IsGrounded)||PlayerSlash.instance.jumpUpCrystal)//Nos abre las puertas para saltar
         {
             phase = jumpphase.rise;
             jumpingTime = 0;
             initialHeight = transform.position.y;
             myRB.velocity = new Vector2(myRB.velocity.x, 2 * maxHeight / timeToReach);
+            if (PlayerSlash.instance.jumpUpCrystal)
+            {
+                PlayerSlash.instance.jumpUpCrystal = false;
+            }
         }
         if (Input.GetButton("Jump") && phase == jumpphase.rise)//saltando
         {
@@ -586,4 +590,5 @@ public class PlayerMovement : MonoBehaviour
         }
         return res;
     }
+
 }

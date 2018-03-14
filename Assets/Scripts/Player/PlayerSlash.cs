@@ -10,7 +10,6 @@ public class PlayerSlash : MonoBehaviour
     public bool gravityOn;
     public bool stopOnMove;
     public bool abruptEnd;
-    public bool jumpOutOfCrystal;
 
     private Vector3 mousePosition;
     public float InitialSpeed;
@@ -24,6 +23,8 @@ public class PlayerSlash : MonoBehaviour
     public Rigidbody2D myRB;
     private Vector2 myPos;//my position - Origen del slash
     public PlayerMovement playerM;
+    public bool jumpUpCrystal;
+    bool jumpDownCrystal;
 
     public GameObject slashSplash;
     public Transform slashSplashes;
@@ -65,6 +66,8 @@ public class PlayerSlash : MonoBehaviour
         timeSlashing = 0;
         lastSlashDir = Vector2.zero;
         cd = cdTime;//para la barra de progreso, si no empieza en cdTime, empieza en 0
+        jumpUpCrystal = false;
+        jumpDownCrystal = false;
     }
 
     private void FixedUpdate()
@@ -125,9 +128,14 @@ public class PlayerSlash : MonoBehaviour
                 //Debug.Log("SLASH!");
                 slash();
             }
-            if (jumpOutOfCrystal && Input.GetButtonDown("Jump") && slashSt == SlashState.crystal)
+            float v = Input.GetAxisRaw("Vertical");
+            if(slashSt == SlashState.crystal && v < 0 && Input.GetButtonDown("Jump"))
             {
                 ExitJumpCrystal();
+            }
+            else if (slashSt == SlashState.crystal && Input.GetButtonDown("Jump"))
+            {
+                JumpOutCrystal();
             }
         }
         else
@@ -284,8 +292,9 @@ public class PlayerSlash : MonoBehaviour
                 //Debug.Log("ray " + ray + ":PAttack agains " + col.name);
                 PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack(col.transform.position);
-                if (col.gameObject.layer != 18)// no Keeper
+                if (col.gameObject.layer != 18 && !col.GetComponentInParent<EnemyHP>().gameObject.name.Contains("Heavy"))// no Keeper, no heavy
                 {
+                    Debug.Log("HEAVY: dont bounceback");
                     (col.transform.GetComponentInParent(typeof(EnemyAI)) as EnemyAI).BounceBack(PlayerMovement.instance.transform.position);
                 }
             }
@@ -295,6 +304,8 @@ public class PlayerSlash : MonoBehaviour
             }
             else if (col.tag == "destructible")
             {
+                RespawnControler.instance.AddObject(col.GetComponent<Destructible>().myRespDestructible);
+                StartCoroutine(SplashAnim(hit.point));
                 PlayerSlash.instance.StopSlash();
                 PlayerMovement.instance.BounceBack(col.transform.position);
                 PlayerSlash.instance.ResetSlash();
@@ -327,6 +338,15 @@ public class PlayerSlash : MonoBehaviour
         }
         playerM.phase = PlayerMovement.jumpphase.normal;
         slashSt = PlayerSlash.SlashState.ready;
+    }
+    public void JumpOutCrystal()
+    {
+        if (gameObject.isStatic)
+        {
+            gameObject.isStatic = false;
+        }
+        slashSt = PlayerSlash.SlashState.ready;
+        jumpUpCrystal = true;
     }
 
     Vector2 slideStartPos;

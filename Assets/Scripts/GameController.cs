@@ -38,6 +38,7 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        RespawnControler.instance.konoStart();
         if(currentMission!=null)
         currentMission.konoStart();
         setupHUD();
@@ -112,6 +113,7 @@ public class GameController : MonoBehaviour
         PlayerHP.instance.HitPoints = PlayerHP.instance.MaxHitPoints;
         HUDManager.instance.updateHUDHP();
         PlayerSlash.instance.cd = 2;
+        RespawnControler.instance.RespawnAll();
     }
     public void GameOver(GameObject player)
     {
@@ -144,10 +146,8 @@ public class GameController : MonoBehaviour
         {
             lastCheckPoint = newCP;
         }
-        for (int i = 0; i < checkPoints.Count; i++)
-        {
-            //Debug.Log("checkPoint " + i + "= " + checkPoints[i].ToString());
-        }
+
+        RespawnControler.instance.ClearRespawnObjects();
     }
 
     void Cheats()

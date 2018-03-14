@@ -28,6 +28,7 @@ public class EnemyHP : MonoBehaviour
     public void Die()
     {
         GameController.enemyList.Remove(this);
+        RespawnControler.instance.AddEnemy(GetComponent<EnemyAI>());
         Destroy(wholeEnemy);
     }
     public void TakeDamage(float damage)
