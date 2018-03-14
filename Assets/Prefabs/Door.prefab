@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 61460942765684788}
   - component: {fileID: 114446033099220918}
   m_Layer: 11
-  m_Name: Door
+  m_Name: Door(Clone)(Clone)(Clone)(Clone)(Clone)
   m_TagString: destructible
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
