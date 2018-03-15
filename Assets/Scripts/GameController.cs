@@ -113,7 +113,9 @@ public class GameController : MonoBehaviour
         PlayerHP.instance.HitPoints = PlayerHP.instance.MaxHitPoints;
         HUDManager.instance.updateHUDHP();
         PlayerSlash.instance.cd = 2;
+
         RespawnControler.instance.RespawnAll();
+        RespawnControler.instance.RepositionEnemies();
     }
     public void GameOver(GameObject player)
     {
@@ -148,6 +150,7 @@ public class GameController : MonoBehaviour
         }
 
         RespawnControler.instance.ClearRespawnObjects();
+        RespawnControler.instance.ClearRepositionEnemies();
     }
 
     void Cheats()

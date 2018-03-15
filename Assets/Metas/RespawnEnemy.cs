@@ -13,7 +13,7 @@ public class RespawnEnemy : RespawnObject {
         HeavyEnemy
     }
 
-    public RespawnEnemy(Vector2 _position, Vector3 _rotation, string _name, bool _stopEnemy)
+    public RespawnEnemy(Vector2 _position, Vector3 _rotation, string _name, bool _stopEnemy, GameObject _thisObject = null)
     {
         type = Type.Enemy;
         Position = _position;
@@ -32,6 +32,7 @@ public class RespawnEnemy : RespawnObject {
             EnemType = EnemyType.HeavyEnemy;
         }
         StopEnemy = _stopEnemy;
+        thisObject = _thisObject;
     }
 
     public void PrintAll()

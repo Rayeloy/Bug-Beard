@@ -17,6 +17,7 @@ public class RespawnControler : MonoBehaviour {
 
 
     public List<RespawnObject> respObjects;
+    public List<RespawnEnemy> reposEnemies;
 
     private void Awake()
     {
@@ -25,8 +26,37 @@ public class RespawnControler : MonoBehaviour {
     public void konoStart()
     {
         respObjects = new List<RespawnObject>();
+        reposEnemies = new List<RespawnEnemy>();
     }
 
+    //---------------------------Reposition Enemies----------------------------
+    public void AddReposEnemy(RespawnEnemy enemy)
+    {
+        reposEnemies.Add(enemy);
+        Debug.Log("Enemy "+enemy.Name+" moved");
+    }
+
+    public void RepositionEnemies()
+    {
+        for (int i = 0; i < reposEnemies.Count; i++)
+        {
+            reposEnemies[i].thisObject.transform.position = reposEnemies[i].Position;
+            Debug.Log("Enemy " + reposEnemies[i].thisObject + " is moved to pos " + reposEnemies[i].Position);
+            reposEnemies[i].thisObject.transform.localRotation = Quaternion.Euler(reposEnemies[i].Rotation);
+            reposEnemies[i].thisObject.GetComponent<EnemyAI>().stopEnemy = reposEnemies[i].StopEnemy;
+            reposEnemies[i].thisObject.GetComponent<EnemyAI>().moved = false;
+        }
+        ClearRepositionEnemies();
+    }
+    public void ClearRepositionEnemies()
+    {
+        for (int i = 0; i < reposEnemies.Count; i++)
+        {
+            reposEnemies[i].thisObject.GetComponent<EnemyAI>().moved = false;
+        }
+            reposEnemies.Clear();
+    }
+    //---------------------------Respawn All Objects----------------------------
     public void AddObject(RespawnObject _object)
     {
         respObjects.Add(_object);
@@ -39,7 +69,6 @@ public class RespawnControler : MonoBehaviour {
     {
         respObjects.Remove(enemy.myRespEnemy);
     }
-
     public void RespawnAll()
     {
         for(int i = 0; i < respObjects.Count; i++)

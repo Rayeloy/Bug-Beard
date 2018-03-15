@@ -12,13 +12,14 @@ public class RespawnDestructible : RespawnObject
         Door
     }
 
-    public RespawnDestructible(Vector2 _position, Vector3 _rotation, string _name, Vector3 _proportions)
+    public RespawnDestructible(Vector2 _position, Vector3 _rotation, string _name, Vector3 _proportions,GameObject _thisObject=null)
     {
         type = Type.Destructible;
         Position = _position;
         Rotation = _rotation;
         Name = _name;
         Proportions = _proportions;
+        thisObject = _thisObject;
         if (Name.Contains("Door"))
         {
             DestType = DestructibleType.Door;

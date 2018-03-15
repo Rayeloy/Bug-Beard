@@ -38,6 +38,11 @@ public class Ghost_AI : EnemyAI{
             default:
                 weakBoxOrient();
                 myRB.velocity = CurrentDir.normalized * speed;
+                if (!moved)
+                {
+                    moved = true;
+                    RespawnControler.instance.AddReposEnemy(myRespEnemy);
+                }
                 break;
             case enemyState.stop:
                 myRB.velocity = Vector2.zero;

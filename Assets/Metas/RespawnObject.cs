@@ -14,5 +14,6 @@ public class RespawnObject {
     public Type type;
     public Vector2 Position;
     public string Name;
+    public GameObject thisObject;
 
 }

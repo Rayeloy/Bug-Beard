@@ -30,6 +30,8 @@ public class EnemyAI : MonoBehaviour
 
     [HideInInspector]
     public RespawnEnemy myRespEnemy;
+    [HideInInspector]
+    public bool moved;
 
     [HideInInspector]
     public enemyState eState;
@@ -60,6 +62,7 @@ public class EnemyAI : MonoBehaviour
         fallSpeed = 0;
         playerDetected = 0;
         playerGO = null;
+        moved = false;
         if (stopIfNoPlayerDetected)
         {
             eState = enemyState.stop;
@@ -106,7 +109,7 @@ public class EnemyAI : MonoBehaviour
     }
     public void AssingRespObject()
     {
-        myRespEnemy = new RespawnEnemy(transform.position, transform.localRotation.eulerAngles, name, stopEnemy);
+        myRespEnemy = new RespawnEnemy(transform.position, transform.localRotation.eulerAngles, name, stopEnemy,gameObject);
     }
     protected virtual void gravityFalls()
     {
@@ -149,12 +152,22 @@ public class EnemyAI : MonoBehaviour
                     weakBoxOrient();
                     myRB.velocity = new Vector2(speed, myRB.velocity.y);
                 }
+                if (!moved)
+                {
+                    moved = true;
+                    RespawnControler.instance.AddReposEnemy(myRespEnemy);
+                }
                 break;
             case enemyState.wLeft:
                 if (myRB.velocity.x != -speed)
                 {
                     weakBoxOrient();
                     myRB.velocity = new Vector2(-speed, myRB.velocity.y);
+                }
+                if (!moved)
+                {
+                    moved = true;
+                    RespawnControler.instance.AddReposEnemy(myRespEnemy);
                 }
                 break;
             case enemyState.stop:

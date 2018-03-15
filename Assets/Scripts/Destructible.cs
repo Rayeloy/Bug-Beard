@@ -13,7 +13,7 @@ public class Destructible : MonoBehaviour {
     }
     public void AssingRespObject()
     {
-        myRespDestructible = new RespawnDestructible(transform.position, transform.localRotation.eulerAngles, name, transform.localScale);
+        myRespDestructible = new RespawnDestructible(transform.position, transform.localRotation.eulerAngles, name, transform.localScale, gameObject);
     }
     public float Health;
     public void TakeDamage(float damage)
