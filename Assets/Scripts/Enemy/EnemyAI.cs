@@ -32,6 +32,10 @@ public class EnemyAI : MonoBehaviour
     public RespawnEnemy myRespEnemy;
     [HideInInspector]
     public bool moved;
+    [HideInInspector]
+    public GameObject FTEvent;//el evento del que soy focus target, si no hay es null
+    [HideInInspector]
+    public GameObject EnemigosEvent; //el evento del que soy parte de su lista "Enemigos", si no hay es null
 
     [HideInInspector]
     public enemyState eState;
@@ -105,11 +109,17 @@ public class EnemyAI : MonoBehaviour
             CheckCollisionFoward();
             HorizontalMovement();
         }
+        else
+        {
+            myRB.velocity = new Vector2(0, myRB.velocity.y); ;
+        }
 
     }
     public void AssingRespObject()
     {
         myRespEnemy = new RespawnEnemy(transform.position, transform.localRotation.eulerAngles, name, stopEnemy,gameObject);
+        myRespEnemy.FTEvent = FTEvent;
+        myRespEnemy.EnemigosEvent = EnemigosEvent;
     }
     protected virtual void gravityFalls()
     {

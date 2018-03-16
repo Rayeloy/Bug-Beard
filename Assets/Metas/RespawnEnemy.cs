@@ -6,6 +6,8 @@ public class RespawnEnemy : RespawnObject {
     public Vector3 Rotation;
     public bool StopEnemy;
     public EnemyType EnemType;
+    public GameObject FTEvent;//el evento del que soy focus target, si no hay es null
+    public GameObject EnemigosEvent; //el evento del que soy parte de su lista "Enemigos", si no hay es null
     public enum EnemyType
     {
         Demoperro,

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 61680210708651076}
   - component: {fileID: 114009955068730562}
   m_Layer: 13
-  m_Name: Ghost_enemy
+  m_Name: Ghost_enemy (5)(Clone)
   m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -382,6 +382,9 @@ MonoBehaviour:
   weakBox: {fileID: 1768508423423414}
   weakBoxOrientation: 1
   stopEnemy: 0
+  moved: 0
+  FTEvent: {fileID: 0}
+  EnemigosEvent: {fileID: 0}
   eState: 0
   currentDirection: 0
   AState: 0

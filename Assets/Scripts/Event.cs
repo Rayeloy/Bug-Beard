@@ -22,9 +22,12 @@ public class Event : MonoBehaviour {
     [Tooltip("Objective that is completed when the event ends.")]
     public Objective targetObjective;
     [Tooltip("List of enemies that activate after event ends.")]
-    public EnemyAI[] enemigos;
+    public List<EnemyAI> enemigos;
 
     hotSpotData myHotSpot;
+
+    [HideInInspector]
+    public RespawnEvent myRespEvent;
 
     public enum EventTrigger
     {
@@ -37,6 +40,16 @@ public class Event : MonoBehaviour {
         eventFinished = false;
         startEvent = false;
         eventTime = 0;
+
+        //Aviso al Focus Target y a los enemigos de la lista de enemigos que soy su Evento
+        if (focusTarget != null && focusTarget.tag == "enemy")
+        {
+            focusTarget.GetComponent<EnemyAI>().FTEvent = gameObject;
+        }
+        for(int i = 0; i < enemigos.Count; i++)
+        {
+            enemigos[i].EnemigosEvent = gameObject;
+        }
 
         //revisión de errores
         if (eventTriggers.Length == 0)
@@ -54,6 +67,7 @@ public class Event : MonoBehaviour {
     }
     private void Start()
     {
+        AssingRespObject();
         if (doFocusTarget)
         {
             List<Transform> targetList = new List<Transform>();
@@ -62,10 +76,17 @@ public class Event : MonoBehaviour {
             myHotSpot = new hotSpotData(hotSpotData.HotSpotMode.listCentre, targetList);
         }
     }
+
+    public void AssingRespObject()
+    {
+        myRespEvent = new RespawnEvent(transform.position, name, this, gameObject);
+    }
+
     private void Update()
     {
         if (!eventFinished && !startEvent && EventTriggered)
         {
+            Debug.Log("EVENT STARTS");
             StartEvent();
         }
         if (!eventFinished && startEvent)
@@ -189,15 +210,25 @@ public class Event : MonoBehaviour {
             return res;
         }
     }
+
     protected void OnTriggerEnter2D(Collider2D col)
     {
-        //Debug.Log("eventFinished=" + eventFinished + "; hasEnterEvTrigger=" + hasEnterEvTrigger + "; allObjTriggered=" + allObjTriggered);
+        Debug.Log("eventFinished=" + eventFinished + "; allObjTriggered=" + allObjTriggered + "; startEvent=" + startEvent);
         if (!eventFinished && hasEnterEvTrigger && allObjTriggered)
         {
             if (col.name == "Player")
             {
                 playerEntered = true;
-                StartEvent();
+            }
+        }
+    }
+    protected void OnTriggerExit2D(Collider2D col)
+    {
+        if (hasEnterEvTrigger)//puedo necesitar más condiciones aqui...
+        {
+            if (col.name == "Player")
+            {
+                playerEntered = false;
             }
         }
     }
@@ -206,6 +237,9 @@ public class Event : MonoBehaviour {
     {
         if (!startEvent)
         {
+            //Empieza el evento y lo guardamos para resetearlo si morimos
+            RespawnControler.instance.AddObject(myRespEvent);
+
             if (PlayerSlash.instance.slashSt == PlayerSlash.SlashState.crystal)
             {
                 PlayerSlash.instance.ExitJumpCrystal();
@@ -227,7 +261,7 @@ public class Event : MonoBehaviour {
     {
         PlayerMovement.instance.stopPlayer = false;
         startEvent = false;
-        for (int i = 0; i < enemigos.Length; i++)
+        for (int i = 0; i < enemigos.Count; i++)
         {
             enemigos[i].stopEnemy = false;
         }
@@ -241,6 +275,15 @@ public class Event : MonoBehaviour {
             CameraMovement.instance.stopHotSpot(myHotSpot);
         }
         eventFinished = true;
+
+    }
+    public virtual void ResetEvent()
+    {
+        eventFinished = false;
+        startEvent = false;
+        eventTime = 0;
+        playerEntered = false;
+        //resetear objetivos a no completados...(extra)
 
     }
 }

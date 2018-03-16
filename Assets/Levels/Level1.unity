@@ -19165,6 +19165,9 @@ MonoBehaviour:
   weakBox: {fileID: 633444271}
   weakBoxOrientation: 1
   stopEnemy: 1
+  moved: 0
+  FTEvent: {fileID: 0}
+  EnemigosEvent: {fileID: 0}
   eState: 0
   currentDirection: 0
   AState: 0
@@ -19239,6 +19242,9 @@ MonoBehaviour:
   weakBox: {fileID: 633444271}
   weakBoxOrientation: 1
   stopEnemy: 1
+  moved: 0
+  FTEvent: {fileID: 0}
+  EnemigosEvent: {fileID: 0}
   eState: 1
   currentDirection: 0
   AState: 0
@@ -20844,11 +20850,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4655120214670008, guid: 30aa4899019bd1d4ba1d81005994ba88, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -15
+      value: 481.5
       objectReference: {fileID: 0}
     - target: {fileID: 4655120214670008, guid: 30aa4899019bd1d4ba1d81005994ba88, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -1.4
+      value: 74.4
       objectReference: {fileID: 0}
     - target: {fileID: 4655120214670008, guid: 30aa4899019bd1d4ba1d81005994ba88, type: 2}
       propertyPath: m_LocalPosition.z

@@ -29,6 +29,11 @@ public class EnemyHP : MonoBehaviour
     {
         GameController.enemyList.Remove(this);
         RespawnControler.instance.AddEnemy(GetComponent<EnemyAI>());
+        RespawnControler.instance.RemoveEnemy(gameObject);
+        if (GetComponent<EnemyAI>().EnemigosEvent != null)
+        {
+            GetComponent<EnemyAI>().EnemigosEvent.GetComponent<Event>().enemigos.Remove(GetComponent<EnemyAI>());
+        }
         Destroy(wholeEnemy);
     }
     public void TakeDamage(float damage)

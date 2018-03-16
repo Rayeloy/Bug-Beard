@@ -40,14 +40,26 @@ public class RespawnControler : MonoBehaviour {
     {
         for (int i = 0; i < reposEnemies.Count; i++)
         {
+            Debug.Log("Enemy " + reposEnemies[i].Name + " is moved to pos " + reposEnemies[i].Position);
             reposEnemies[i].thisObject.transform.position = reposEnemies[i].Position;
-            Debug.Log("Enemy " + reposEnemies[i].thisObject + " is moved to pos " + reposEnemies[i].Position);
             reposEnemies[i].thisObject.transform.localRotation = Quaternion.Euler(reposEnemies[i].Rotation);
             reposEnemies[i].thisObject.GetComponent<EnemyAI>().stopEnemy = reposEnemies[i].StopEnemy;
             reposEnemies[i].thisObject.GetComponent<EnemyAI>().moved = false;
         }
         ClearRepositionEnemies();
     }
+
+    public void RemoveEnemy(GameObject enemy)//When an enemy on this list is killed, he must be erased from the list
+    {
+        for (int i = 0; i < reposEnemies.Count; i++)
+        {
+            if(reposEnemies[i].thisObject == enemy)
+            {
+                reposEnemies.RemoveAt(i);
+            }
+        }
+    }
+
     public void ClearRepositionEnemies()
     {
         for (int i = 0; i < reposEnemies.Count; i++)
@@ -93,7 +105,19 @@ public class RespawnControler : MonoBehaviour {
                     GameObject enemy=Instantiate(thePrefab, respObjects[i].Position,Quaternion.identity,enemiesFather);
                     enemy.transform.localRotation = Quaternion.Euler((respObjects[i] as RespawnEnemy).Rotation);
                     enemy.GetComponent<EnemyAI>().stopEnemy = (respObjects[i] as RespawnEnemy).StopEnemy;
+                    enemy.GetComponent<EnemyAI>().FTEvent = (respObjects[i] as RespawnEnemy).FTEvent;
+                    enemy.GetComponent<EnemyAI>().EnemigosEvent = (respObjects[i] as RespawnEnemy).EnemigosEvent;
                     enemy.GetComponent<EnemyAI>().AssingRespObject();
+                    //reasignamos en el evento el FT y/o añadimos este enemigo en su lista de "Enemigos"
+                    if((respObjects[i] as RespawnEnemy).FTEvent != null)
+                    {
+                        (respObjects[i] as RespawnEnemy).FTEvent.GetComponent<Event>().focusTarget = enemy.transform;
+                    }
+                    if ((respObjects[i] as RespawnEnemy).EnemigosEvent != null)
+                    {
+                        (respObjects[i] as RespawnEnemy).EnemigosEvent.GetComponent<Event>().enemigos.Add(enemy.GetComponent<EnemyAI>());
+                    }
+                    thePrefab.name = respObjects[i].Name;
                     break;
 
                 case RespawnObject.Type.Destructible:
@@ -106,12 +130,13 @@ public class RespawnControler : MonoBehaviour {
                     GameObject destructible = Instantiate(thePrefab, respObjects[i].Position, Quaternion.identity, destructFather);
                     destructible.transform.localScale = (respObjects[i] as RespawnDestructible).Proportions;
                     destructible.GetComponent<Destructible>().AssingRespObject();
+                    thePrefab.name = respObjects[i].Name;
                     break;
 
                 case RespawnObject.Type.Event:
+                    (respObjects[i] as RespawnEvent).myEvent.ResetEvent();
                     break;
             }
-            thePrefab.name = respObjects[i].Name;
         }
 
         ClearRespawnObjects();
